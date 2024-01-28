@@ -60,6 +60,17 @@ class CustomerController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function getCustomerByUUID($uuid)
+    {
+        $customer = Customer::where('uuid', $uuid)->first();
+
+        if (!$customer) {
+            return response()->json(['error' => 'Customer not found'], 404);
+        }
+
+        return response()->json(['data' => $customer]);
+    }
     
     public function addCustomer(Request $request)
     {

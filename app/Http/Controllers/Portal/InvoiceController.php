@@ -47,23 +47,37 @@ class InvoiceController extends Controller
     }
 
     public function getInvoiceItems($invNumber)
-{
-    try {
-        // Cari invoice berdasarkan nomor invoice
-        $invoice = ItemInvoice::where('invoice_id', $invNumber)->first();
+    {
+        try {
+            // Cari invoice berdasarkan nomor invoice
+            $invoice = ItemInvoice::where('invoice_id', $invNumber)->first();
 
-        if (!$invoice) {
-            return response()->json(['error' => 'Invoice not found.'], 404);
+            if (!$invoice) {
+                return response()->json(['error' => 'Invoice not found.'], 404);
+            }
+
+            // Ambil data item dari invoice
+            $items = $invoice->items;
+
+            return response()->json(['data' => $items]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        // Ambil data item dari invoice
-        $items = $invoice->items;
-
-        return response()->json(['data' => $items]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
     }
-}
+
+    public function getItemById($itemId)
+    {
+        // Fetch item details by ID        
+        $item = ItemInvoice::where('id', $itemId)->first();
+    
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Item not found'], 404);
+        }
+    
+        // Return the item data as JSON response
+        return response()->json(['data' => $item]);
+    }
+    
 
 
     public function showInvoiceIndex(Request $request)
@@ -209,12 +223,6 @@ class InvoiceController extends Controller
         return view('Konten/Invoice/addItem', $additionalData);
     }
 
-    public function create()
-    {
-        return view('invoices.create');
-    }
-
-
     public function store(Request $request)
     {
         try {
@@ -293,7 +301,7 @@ class InvoiceController extends Controller
             'barang' => 'required|string',
             'deskripsi' => 'required|string',
             'ukurana' => 'required|string',
-            'ukuranb' => 'required|string', // Tambahkan validasi untuk ukuranb
+            'ukuranb' => 'required|string',
             'qty' => 'required|integer',
             'harga_satuan' => 'required',
             'discount' => 'required',
@@ -364,8 +372,9 @@ class InvoiceController extends Controller
     
                 $response = [
                     'success' => true,
-                    'message' => 'Item updated successfully',
-                ];
+                    'title' => 'Berhasil',
+                    'message' => 'Item Berhasil Ditambahkan'
+                ];            
     
                 // Ambil data invoiceNumber dan customerUuid dari request
                 $invoiceNumber = $request->input('invoice_id');
@@ -388,41 +397,60 @@ class InvoiceController extends Controller
             return response()->json(['success' => false, 'message' => 'Failed to create item', 'error' => $e->getMessage()], 500);
         }
     }
-    
-       
 
-    public function show(Invoice $invoice)
+    public function deleteItem(Request $request)
     {
-        // Tampilkan detail invoice
-        return view('invoices.show', compact('invoice'));
-    }
-
-    public function deleteItem($id)
-    {
-        $item = ItemInvoice::find($id);
-
+        $itemId = $request->input('itemId');
+        
+        if (!$itemId) {
+            return redirect()->back()->with('error', 'Item not found');
+        }
+        
+        // Fetch the item using the $itemId
+        $item = ItemInvoice::find($itemId);
+        
         if (!$item) {
             return redirect()->back()->with('error', 'Item not found');
         }
-    
-        $totalTransaction = ($item->harga_satuan * $item->qty) - $item->discount * ( $item->tax / 100);
-
-        // Temukan invoice yang memiliki invoice_id yang sama dengan item invoice
-        $invoice = Invoice::where('invoice_number', $item->invoice_id)->first();
-
+        
+        // Get necessary information before deletion
+        $totalTransaction = ($item->harga_satuan * $item->qty) - $item->discount * ($item->tax / 100) * $item->ukuran;
+        $invoiceId = $item->invoice_id;
+        
+        // Delete the item invoice
+        $item->delete();
+        
+        // Fetch all remaining items associated with the invoice
+        $remainingItems = ItemInvoice::where('invoice_id', $invoiceId)->get();
+        
+        // Recalculate the total amount for the invoice
+        $totalAmount = 0;
+        foreach ($remainingItems as $remainingItem) {
+            $totalAmount += ($remainingItem->harga_satuan * $remainingItem->qty) - $remainingItem->discount * ($remainingItem->tax / 100) * $remainingItem->ukuran;
+        }
+        
+        // Find the invoice that has the same invoice_id as the item invoice
+        $invoice = Invoice::where('invoice_number', $invoiceId)->first();
+        
         if (!$invoice) {
             return redirect()->back()->with('error', 'Invoice not found');
         }
-
-        // Kurangi total transaksi dari total_amount di invoice
-        $invoice->total_amount -= $totalTransaction;
+        
+        // Update the total amount in the invoice
+        $invoice->total_amount = $totalAmount;
         $invoice->save();
-
-        // Hapus item invoice
-        $item->delete();
-
-        return redirect()->back()->with('success', 'Item deleted successfully');
+        
+        $response = [
+            'success' => true,
+            'title' => 'Berhasil',
+            'message' => 'Item Berhasil Dihapus'
+        ];
+        
+        return redirect()->back()->with('response', $response);
     }
+
+    
+
 
     public function updateInvoiceDates(Request $request)
     {

@@ -45,13 +45,12 @@ $(function () {
             var itemId = full['id']; // Ganti 'id' dengan kunci yang sesuai pada data item
             return (
                 '<div class="d-flex align-items-center">' +
-                '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-uuid="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' +
-                '<a href="javascript:;" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus Item" onclick="return confirmDelete(\'/delete-item?id=' + itemId + '\')"><i class="bx bx-trash mx-1"></i></a>' +   
+                '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-item-id="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' + 
+                '<a href="javascript:;" class="btn-open-delete-confirmation text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Item" data-uuid="' + itemId + '" onclick="return confirmDelete(\'/delete-item?itemId=' + itemId + '\')"><i class="bx bx-trash mx-1"></i></a>' +
                 '</div>'
             );
         }
-    },
-    
+      },
       { 
         data: null,
         name: 'ukuran',
@@ -144,13 +143,11 @@ $(function () {
   dt_item_table.on('draw.dt', function () {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl, {
-        boundary: document.body
-      });
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            boundary: document.body
+        });
     });
   });
-
-//   console.log('dt_item_table:', dt_item_table);
 
   setTimeout(() => {
     $('.dataTables_filter .form-control').removeClass('form-control-sm');
@@ -158,14 +155,15 @@ $(function () {
   }, 300);
 });
 
+
 function simplifyNumber(value) {
-    if (value === 0) {
-        return 'Rp. 0';
-    }
-    return 'Rp. ' + value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (value === 0) {
+      return 'Rp. 0';
+  }
+  return 'Rp. ' + value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-$(function () {
+$(document).ready(function () {
   // Handle change in the select element
   $('#select2Product').on('change', function () {
       // Get the selected product ID
@@ -190,7 +188,6 @@ $(function () {
       });
   });
 
-  // Fetch products and populate the select options
   $.ajax({
       url: '/get-products', // Replace with the correct URL to fetch products
       type: 'GET',
@@ -210,58 +207,124 @@ $(function () {
   });
 });
 
-
 function bulatkanUkuran(ukuran) {
-    // Jika ukuran kurang dari atau sama dengan 100 cm, bulatkan ke 100 cm
-    if (ukuran <= 100) {
-        return 100;
-    } else {
-        // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
-        return Math.ceil((ukuran - 5) / 50) * 50;
-    }
+  // Jika ukuran kurang dari atau sama dengan 100 cm, bulatkan ke 100 cm
+  if (ukuran <= 100) {
+      return 100;
+  } else {
+      // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
+      return Math.ceil((ukuran - 5) / 50) * 50;
+  }
 }
 
-// Fungsi perhitungan total
 function calculateTotal() {
-    var hargaSatuan = parseFloat($('#harga_satuan').val().replace(/[^\d]/g, '')) || 0;
-    var qty = parseInt($('#qty').val()) || 0;
-    var discount = parseFloat($('#discount').val().replace(/[^\d]/g, '')) || 0;
-    var tax = parseFloat($('#tax').val()) || 0;
+  var hargaSatuan = parseFloat($('#harga_satuan').val().replace(/[^\d]/g, '')) || 0;
+  var qty = parseInt($('#qty').val()) || 0;
+  var discount = parseFloat($('#discount').val().replace(/[^\d]/g, '')) || 0;
+  var tax = parseFloat($('#tax').val()) || 0;
 
-    // Ambil nilai ukuran a dan b dari input
-    var ukurana = parseFloat($('#ukurana').val()) || 0;
-    var ukuranb = parseFloat($('#ukuranb').val()) || 0;
+  // Ambil nilai ukuran a dan b dari input
+  var ukurana = parseFloat($('#ukurana').val()) || 0;
+  var ukuranb = parseFloat($('#ukuranb').val()) || 0;
 
-    // Bulatkan ukuran a dan b
-    var bulatUkurana = bulatkanUkuran(ukurana) / 100;
-    var bulatUkuranb = bulatkanUkuran(ukuranb) / 100;
+  // Bulatkan ukuran a dan b
+  var bulatUkurana = bulatkanUkuran(ukurana) / 100;
+  var bulatUkuranb = bulatkanUkuran(ukuranb) / 100;
 
-    // Perhitungan total berdasarkan ukuran yang sudah dibulatkan
-    var volume = bulatUkurana * bulatUkuranb;
-    var total = (hargaSatuan * qty * volume) - discount + ((hargaSatuan * qty * volume - discount) * (tax / 100));
+  // Perhitungan total berdasarkan ukuran yang sudah dibulatkan
+  var volume = bulatUkurana * bulatUkuranb;
+  var total = (hargaSatuan * qty * volume) - discount + ((hargaSatuan * qty * volume - discount) * (tax / 100));
 
-    // Format dan tampilkan total
-    var formattedTotal = 'Rp. ' + total.toLocaleString('id-ID', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    });
+  // Format dan tampilkan total
+  var formattedTotal = 'Rp. ' + total.toLocaleString('id-ID', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+  });
 
-    $('#total').text(formattedTotal);
+  $('#total').text(formattedTotal);
+}
+
+function updateSisa(id, totalAmount, panjarAmount, sisaId) {
+  const formattedValue = $('#' + id).val().replace(/[^\d]/g, '');
+  const amount = parseFloat(formattedValue) || 0;
+
+  const sisa = totalAmount - panjarAmount - amount;
+
+  // Format the Sisa value with currency symbol
+  const formattedSisa = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+  }).format(sisa);
+
+  // Set the formatted Sisa value to the specified input field
+  $('#' + sisaId).val(formattedSisa.replace('Rp', ''));
 }
 
 function formatCurrency(input, id) {
-    const value = input.value.replace(/[^\d]/g, '');
+  const value = input.value.replace(/[^\d]/g, '');
 
-    // Format the number with currency symbol
-    const formattedValue = new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(value);
+  // Format the number with currency symbol
+  const formattedValue = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+  }).format(value);
 
-    // Set the formatted value to the specified input field
-    $('#' + id).val(formattedValue.replace('Rp', ''));
+  // Set the formatted value to the specified input field
+  $('#' + id).val(formattedValue.replace('Rp', ''));
+}
+
+$(document).on('click', '.btn-open-edit-modal', function () {
+  // Get the item ID from the button's data attribute
+  var itemId = $(this).data('item-id');
+
+  // Make an AJAX request to get item data
+  $.ajax({
+    url: '/edit-items/' + itemId,
+    type: 'GET',
+    success: function (response) {
+        // Handle the successful response
+        var itemData = response.data;
+      $('#editModal #kode_barang').val(itemData.kode_barang);
+      $('#editModal #barang').val(itemData.barang);
+      $('#editModal #deskripsi').val(itemData.deskripsi);
+      $('#editModal #ukurana').val(itemData.ukurana);
+      $('#editModal #ukuranb').val(itemData.ukuranb);
+      $('#editModal #harga_satuan').val(itemData.harga_satuan);
+      $('#editModal #discount').val(itemData.discount);
+      $('#editModal #tax').val(itemData.tax);
+      $('#editModal #qty').val(itemData.qty);
+      $('#editModal #total').text(itemData.total);
+
+      // Assuming you're using Bootstrap, show the modal
+      $('#editModal').modal('show');
+    },
+    error: function () {
+      alert('Failed to fetch item details.');
+    }
+  });
+});
+
+
+function confirmDelete(deleteUrl, barang) {
+  Swal.fire({
+      title: 'Are you sure?',
+      text: `Yakin Ingin Mengahpus Ini?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+      if (result.isConfirmed) {
+          // If the user confirms, proceed to the delete URL
+          window.location.href = deleteUrl;
+      }
+  });
+  return false; // Prevent the default link behavior
 }
 
 function showSweetAlert(response) {
