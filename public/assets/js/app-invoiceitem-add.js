@@ -45,7 +45,7 @@ $(function () {
             var itemId = full['id']; // Ganti 'id' dengan kunci yang sesuai pada data item
             return (
                 '<div class="d-flex align-items-center">' +
-                '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-item-id="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' + 
+                // '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-item-id="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' + 
                 '<a href="javascript:;" class="btn-open-delete-confirmation text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Item" data-uuid="' + itemId + '" onclick="return confirmDelete(\'/delete-item?itemId=' + itemId + '\')"><i class="bx bx-trash mx-1"></i></a>' +
                 '</div>'
             );
@@ -277,6 +277,11 @@ function formatCurrency(input, id) {
   $('#' + id).val(formattedValue.replace('Rp', ''));
 }
 
+function openModal(invoiceNumber) {
+  var modalId = '#metodebayar' + invoiceNumber;
+  $(modalId).modal('show');
+}
+
 $(document).on('click', '.btn-open-edit-modal', function () {
   // Get the item ID from the button's data attribute
   var itemId = $(this).data('item-id');
@@ -288,6 +293,7 @@ $(document).on('click', '.btn-open-edit-modal', function () {
     success: function (response) {
         // Handle the successful response
         var itemData = response.data;
+      $('#editModal #id').val(itemData.id);
       $('#editModal #kode_barang').val(itemData.kode_barang);
       $('#editModal #barang').val(itemData.barang);
       $('#editModal #deskripsi').val(itemData.deskripsi);
@@ -307,7 +313,6 @@ $(document).on('click', '.btn-open-edit-modal', function () {
     }
   });
 });
-
 
 function confirmDelete(deleteUrl, barang) {
   Swal.fire({

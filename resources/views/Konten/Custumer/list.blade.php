@@ -290,7 +290,7 @@
           <form id="salesForm" action="{{ route('add.invoice') }}" method="POST">
             @csrf
             <input type="text" class="form-control" name="type" value="Sales" />
-            <input type="text" class="form-control" name="customer_uuid" id="customerUUIDSales" value="" />
+            <input type="hidden" class="form-control" name="customer_uuid" id="customerUUIDSales" value="" />
             <div class="mb-4">
                 <label for="invoiceName">Invoice Name:</label>
                 <input type="text" class="form-control" name="invoiceName" id="invoiceName" placeholder="Spanduk Burger 4x3" required>
@@ -328,7 +328,7 @@
               <label for="invoiceNameProject">Invoice Name:</label>
               <input type="text" class="form-control" name="invoiceName" id="invoiceNameProject" placeholder="Project Tata Ruang Bank Aceh" required>
             </div>
-            <input type="text" class="form-control" name="customer_uuid" id="customerUUIDProject" placeholder="Customer UUID" readonly />
+            <input type="hidden" class="form-control" name="customer_uuid" id="customerUUIDProject" placeholder="Customer UUID" readonly />
             <div class="col-12 text-end">
               <button type="button" class="btn btn-label-secondary me-sm-3 me-2 px-3 px-sm-4" data-bs-toggle="modal" data-bs-target="#jenisinvoice">
                 <i class="bx bx-left-arrow-alt bx-xs me-1 scaleX-n1-rtl"></i><span class="align-middle">Back</span>

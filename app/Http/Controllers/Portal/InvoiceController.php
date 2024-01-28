@@ -77,8 +77,6 @@ class InvoiceController extends Controller
         // Return the item data as JSON response
         return response()->json(['data' => $item]);
     }
-    
-
 
     public function showInvoiceIndex(Request $request)
     {     
@@ -447,10 +445,7 @@ class InvoiceController extends Controller
         ];
         
         return redirect()->back()->with('response', $response);
-    }
-
-    
-
+    } 
 
     public function updateInvoiceDates(Request $request)
     {
@@ -504,12 +499,13 @@ class InvoiceController extends Controller
         }
     }
 
-    public function updateItem(Request $request, $id)
+    public function updateItem(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $item = ItemInvoice::findOrFail($id);
+            $itemId = $request->input('id');
+            $item = ItemInvoice::findOrFail($itemId);
 
             // Save old values for potential rollback
             $oldHargaSatuan = $item->harga_satuan;
@@ -517,8 +513,7 @@ class InvoiceController extends Controller
             $oldDiscount = $item->discount;
             $oldTax = $item->tax;
             $oldInvoiceId = $item->invoice_id;
-
-            // Set discount and tax from request
+        
             $item->discount = $request->input('discount');
             $item->tax = $request->input('tax');
 
@@ -606,7 +601,6 @@ class InvoiceController extends Controller
         }
     }
     
-
     public function bayarInvoice(Request $request)
     {        
         try {
@@ -718,42 +712,106 @@ class InvoiceController extends Controller
         }
     }
 
-    public function generatePdf()
+    public function generatePdf($invoiceNumber)
     {
-        $data = ['example' => 'Hello, this is an example!'];
+        // Retrieve data from the Invoice model based on $invoiceNumber
+        $invoiceData = Invoice::where('invoice_number', $invoiceNumber)->first();
+
+        if (!$invoiceData) {
+            // Handle the case where the invoice with the provided number is not found
+            abort(404); // You can customize this based on your application's error handling
+        }
+
+        // Retrieve customer data based on the customer_uuid in the invoice
+        $customer = Customer::where('uuid', $invoiceData->customer_uuid)->first();
+
+        // Retrieve item data based on the invoice_id in the ItemInvoice (assuming it might be multiple items)
+        $items = ItemInvoice::where('invoice_id', $invoiceNumber)->get();
+
+        // Set locale to Indonesian
+        app()->setLocale('id');
+
+        $formattedDate = Carbon::parse($invoiceData->created_at)->isoFormat('LL'); // Format "29 Januari 2024"
+
+        $subtotal = $items->sum(function ($item) {
+            return $item->harga_satuan * $item->qty * $item->ukuran;
+        });
+
+        $discount = $items->sum(function ($item) {
+            return $item->discount;
+        });
+
+        $format_subtotal = "Rp. " . number_format($subtotal, 2);
+        $format_discount = "Rp. " . number_format($discount, 2);
+
+        $firstItem = $items->first();
+
+        if ($firstItem) {
+            $tax = $firstItem->tax . "%";
+        } else {
+            // Handle the case when no item with the given invoice_id is found
+            // You can set a default tax value or handle it based on your requirements
+            $tax = "0%";
+        }
+
+        $panjar_amount = $invoiceData->panjar_amount;
+        $total_amount       = $invoiceData->total_amount - $invoiceData->panjar_amount;
+        $format_panjar      = "Rp. " . number_format($panjar_amount, 2);
+        $format_total     = "Rp. " . number_format($total_amount, 2);
+
+        $data = [
+            'title'          => 'Invoice List',
+            'subtitle'       => 'Dashboard',
+            'formattedDate'  => $formattedDate,
+            'subtotal'       => $format_subtotal,
+            'panjar_amount'  => $format_panjar,
+            'discount'       => $format_discount,
+            'total'       => $format_total,
+            'tax'            => $tax,
+            'invoice'        => $invoiceData,
+            'customer'       => $customer,
+            'items'          => $items,
+        ];
+
+        return view('Konten/Invoice/invoicePDF', $data);
+    }
     
-        // $pdf = PDF::loadView('Konten/Invoice/invoicePDF');
-    
-        // return $pdf->download('example.pdf');
-        return view('Konten/Invoice/invoicePDF');
+    public function generateDetilPdf($invoiceNumber)
+    {
+        $data = [
+            'title'                     => 'Invoice List',
+            'subtitle'                  => 'Dashboard',
+        ];
+        
+        return view('Konten/Invoice/invoicePDF', $data);
     }
         
 
-private function cleanNumericInput($input)
-{
-    // Menghapus titik (.) dan koma (,)
-    $cleanedInput = str_replace(['.', ','], '', $input);
+    private function cleanNumericInput($input)
+    {
+        // Menghapus titik (.) dan koma (,)
+        $cleanedInput = str_replace(['.', ','], '', $input);
 
-    // Menghapus dua digit nol di belakang koma
-    $cleanedInput = preg_replace('/,00$/', '', $cleanedInput);
+        // Menghapus dua digit nol di belakang koma
+        $cleanedInput = preg_replace('/,00$/', '', $cleanedInput);
 
-    return $cleanedInput;
-}
-
-public function bulatkanUkuran($ukuran)
-{
-    // Pastikan bahwa $ukuran adalah angka
-    if (!is_numeric($ukuran)) {
-        throw new \InvalidArgumentException('Invalid input format. Expected a number.');
+        return $cleanedInput;
     }
 
-    // Jika angka kurang dari atau sama dengan 100, bulatkan ke 100
-    if ($ukuran <= 100) {
-        return 100;
-    } else {
-        // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
-        return ceil(($ukuran - 5) / 50) * 50;
+    public function bulatkanUkuran($ukuran)
+    {
+        // Pastikan bahwa $ukuran adalah angka
+        if (!is_numeric($ukuran)) {
+            throw new \InvalidArgumentException('Invalid input format. Expected a number.');
+        }
+
+        // Jika angka kurang dari atau sama dengan 100, bulatkan ke 100
+        if ($ukuran <= 100) {
+            return 100;
+        } else {
+            // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
+            return ceil(($ukuran - 5) / 50) * 50;
+        }
     }
-}
     
 }

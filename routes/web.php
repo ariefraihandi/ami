@@ -33,24 +33,26 @@ Route::get('/get-customer/{uuid}',      [CustomerController::class, 'getCustomer
 
 
 Route::get('/get-all-invoice',          [InvoiceController::class, 'getAllInvoices'])->name('getAllInvoices');
-Route::get('/get-items/{invNumber}',    [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-Route::get('/get-items',                [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-Route::get('/edit-items/{itemId}',      [InvoiceController::class, 'getItemById'])->name('get.items.byId');
 
 
 Route::get('invoice',                   [InvoiceController::class, 'showInvoiceIndex'])->name('invoices.index');
 Route::post('add-invoice',              [InvoiceController::class, 'store'])->name('add.invoice');
+
+//item
+Route::get('/get-items/{invNumber}',    [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+Route::get('/get-items',                [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+Route::get('/edit-items/{itemId}',      [InvoiceController::class, 'getItemById'])->name('get.items.byId');
 Route::get('invoice/item',              [InvoiceController::class, 'addItem'])->name('addItem.index');
 Route::post('item-invoices',            [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
-
-
 Route::get('delete-item/',              [InvoiceController::class, 'deleteItem'])->name('delete.invoice');
+
 Route::post('update-invoice-dates',     [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
 Route::get('itemData/{ItemId}',         [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
 Route::post('updateItem/',              [InvoiceController::class, 'updateItem'])->name('updateItem');
 Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');
 Route::get('delete-invoice',            [InvoiceController::class, 'deleteInvoice'])->name('deleteInvoice');
-Route::get('test',                      [InvoiceController::class, 'generatePdf'])->name('generatePdf');
+Route::get('print/{invoiceNumber}',     [InvoiceController::class, 'generatePdf'])->name('generatePdf');
+
 
 Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('showKeuanganIndex');
 Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');

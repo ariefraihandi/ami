@@ -262,7 +262,7 @@
                   Bayar
                 </span>
               </button>            
-              <a href="/test" class="btn btn-label-secondary d-grid w-100 mb-3">Download</a>
+              <a href="/print/{{ $invoiceNumber }}" target="_blank" class="btn btn-label-secondary d-grid w-100 mb-3">Download</a>
               <a href="{{ route("deleteInvoice") }}?invoiceNumber={{$invoiceNumber}}" class="btn btn-label-danger d-grid w-100 mb-3" onclick="return confirm('Are you sure?')">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                     <i class="bx bx-trash bx-xs me-1"></i>
@@ -315,7 +315,189 @@
   </div>
    
   
- 
+ <!-- Modal metodebayar -->
+ @foreach($invoices as $data)
+ <div class="modal fade" id="metodebayar{{ $data->invoice_number  }}" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
+     <div class="modal-content p-3 p-md-5">
+       <div class="modal-body">
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         <div class="text-center mb-4">
+           <h3 class="mb-2">Pilih Jenis Pembayaran</h3>
+           <p class="text-muted">
+             Pilih Metode Pembayaran Untuk Invoice No #{{ $data->invoice_number  }} 
+           </p>
+         </div>
+         <div class="row">
+           <div class="col-12 mb-3">
+             <div class="form-check custom-option custom-option-basic">
+               <label class="form-check-label custom-option-content ps-3" for="customRadioTemp1" data-bs-target="#cash{{ $data->invoice_number  }}" data-bs-toggle="modal">
+                 <input name="customRadioTemp" class="form-check-input d-none" type="radio" value="" id="customRadioTemp1" />
+                 <span class="d-flex align-items-start"><i class='bx bx-money bx-md me-3'></i>
+                   <span>
+                     <span class="custom-option-header">
+                       <span class="h4 mb-2">Cash</span>
+                     </span>
+                     <span class="custom-option-body">
+                       <span class="mb-0">
+                         Metode pembayaran Cash
+                       </span>
+                     </span>
+                   </span>
+                 </span>
+               </label>
+             </div>
+           </div>
+           <div class="col-12">
+             <div class="form-check custom-option custom-option-basic">
+               <label class="form-check-label custom-option-content ps-3" for="customRadioTemp2" data-bs-target="#transfer{{ $data->invoice_number  }}" data-bs-toggle="modal">
+                 <input name="customRadioTemp" class="form-check-input d-none" type="radio" value="" id="customRadioTemp2" />
+                 <span class="d-flex align-items-start"> <i class='bx bx-credit-card bx-md me-3'></i>
+                   <span>
+                     <span class="custom-option-header">
+                       <span class="h4 mb-2">Transfer</span>
+                     </span>
+                     <span class="custom-option-body">
+                       <span class="mb-0">
+                         Metode Pembayaran transfer
+                         </span>
+                     </span>
+                   </span>
+                 </span>
+               </label>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+@endforeach
+<!--/ Modal Metodebayar -->
+
+<!-- Modal Cash -->
+@foreach($invoices as $data)
+<div class="modal fade" id="cash{{ $data->invoice_number }}" tabindex="-1" aria-hidden="true">
+ <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
+   <div class="modal-content p-3 p-md-5">
+     <div class="modal-body">
+       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       <div class="text-center mb-2">
+         <h3 class="mb-0">Masukkan Nominal Pembayaran</h3>
+       </div>
+       <form id="cashForm{{ $data->invoice_number }}" action="{{ route('bayarInvoice') }}" method="POST">
+         @csrf          
+         <div class="mb-4">
+           <label for="total_amount_display">Total Tagihan Invoice {{ $data->invoice_name }}:</label>
+           @if ($data->invoice_panjar_amount != 0)
+           <div class="input-group input-group-merge">
+             <span class="input-group-text">Rp.</span>
+             <input type="text" class="form-control" name="total_amount_display" id="total_amount_display{{ $data->invoice_number }}" value="{{ number_format($data->total_amount, 0, ',', '.') }}" readonly />
+             <span class="input-group-text">.00</span>
+           </div>                  
+           @else
+           <div class="input-group input-group-merge">
+             <span class="input-group-text">Rp.</span>
+             <input type="text" class="form-control" name="total_amount_display" id="total_amount_display{{ $data->invoice_number }}" value="{{ number_format($data->total_amount - $data->panjar_amount, 0, ',', '.') }}" readonly />
+             <span class="input-group-text">.00</span>
+           </div>
+           @endif
+         </div>
+         <div class="mb-4">
+           <label for="total_amount_input_cash{{ $data->invoice_number }}">Total Bayar:</label>
+           <div class="input-group input-group-merge">
+               <span class="input-group-text">Rp.</span>
+               <input type="text" class="form-control total-amount-input" oninput="formatCurrency(this, 'total_amount_input_cash{{ $data->invoice_number }}', {{ $data->total_amount }}, {{ $data->panjar_amount }}, 'sisa_cash_cash{{ $data->invoice_number }}'); updateSisa('total_amount_input_cash{{ $data->invoice_number }}', {{ $data->total_amount }}, {{ $data->panjar_amount }}, 'sisa_cash_cash{{ $data->invoice_number }}');" placeholder="100" name="total_amount_input" id="total_amount_input_cash{{ $data->invoice_number }}" value="" />
+               <span class="input-group-text">.00</span>
+           </div>
+       </div>
+       
+       <div class="mb-4">
+           <label for="sisa_cash_cash{{ $data->invoice_number }}">Sisa:</label>
+           <input type="text" class="form-control" name="sisa" id="sisa_cash_cash{{ $data->invoice_number }}" value="Rp. 0" readonly />
+       </div>
+         <input type="hidden" class="form-control" name="methode" value="1" />
+         <input type="hidden" class="form-control" name="invoice_number" value="{{ $data->invoice_number }}" />
+         <input type="hidden" name="uuid" id="uuid" value="{{ $customerUuid }}">
+
+         <div class="col-12 text-end">
+           <button type="button" class="btn btn-label-secondary me-sm-3 me-2 px-3 px-sm-4" data-bs-toggle="modal" data-bs-target="#metodebayar{{ $data->invoice_number }}">
+             <i class="bx bx-left-arrow-alt bx-xs me-1 scaleX-n1-rtl"></i>
+             <span class="align-middle">Back</span>
+           </button>
+           <button type="submit" class="btn btn-success px-3 px-sm-4">
+             <span class="align-middle">Bayar</span><i class="bx bx-money-withdraw bx-xs ms-1 scaleX-n1-rtl"></i>
+           </button>
+         </div>
+       </form>
+     </div>
+   </div>
+ </div>
+</div>
+@endforeach
+<!--/ Modal Cash -->
+
+<!-- Modal Transfer -->
+@foreach($invoices as $data)
+<div class="modal fade" id="transfer{{ $data->invoice_number }}" tabindex="-1" aria-hidden="true">
+ <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
+   <div class="modal-content p-3 p-md-5">
+     <div class="modal-body">
+       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+       <div class="text-center mb-2">
+         <h3 class="mb-0">Masukkan Nominal Transfer</h3>
+       </div>
+       <form id="transferForm{{ $data->invoice_number }}" action="{{ route('bayarInvoice') }}" method="POST">
+         @csrf
+         <div class="mb-4">
+           <label for="total_amount_display">Total Tagihan Invoice {{ $data->invoice_name }}:</label>
+           @if ($data->invoice_panjar_amount != 0)
+           <div class="input-group input-group-merge">
+             <span class="input-group-text">Rp.</span>
+             <input type="text" class="form-control" name="total_amount_display" id="total_amount_display{{ $data->invoice_number }}" value="{{ number_format($data->total_amount, 0, ',', '.') }}" readonly />
+             <span class="input-group-text">.00</span>
+           </div>                  
+           @else
+           <div class="input-group input-group-merge">
+             <span class="input-group-text">Rp.</span>
+             <input type="text" class="form-control" name="total_amount_display" id="total_amount_display{{ $data->invoice_number }}" value="{{ number_format($data->total_amount - $data->panjar_amount, 0, ',', '.') }}" readonly />
+             <span class="input-group-text">.00</span>
+           </div>
+           @endif
+         </div>
+         <div class="mb-4">
+           <label for="total_amount_input_transfer{{ $data->invoice_number }}">Total Bayar:</label>
+           <div class="input-group input-group-merge">
+               <span class="input-group-text">Rp.</span>
+               <input type="text" class="form-control total-amount-input" oninput="formatCurrency(this, 'total_amount_input_transfer{{ $data->invoice_number }}', {{ $data->total_amount }}, {{ $data->panjar_amount }}, 'sisa_cash_transfer{{ $data->invoice_number }}'); updateSisa('total_amount_input_transfer{{ $data->invoice_number }}', {{ $data->total_amount }}, {{ $data->panjar_amount }}, 'sisa_cash_transfer{{ $data->invoice_number }}');" placeholder="100" name="total_amount_input" id="total_amount_input_transfer{{ $data->invoice_number }}" value="" />
+               <span class="input-group-text">.00</span>
+           </div>
+       </div>
+       
+       <div class="mb-4">
+           <label for="sisa_cash_transfer{{ $data->invoice_number }}">Sisa:</label>
+           <input type="text" class="form-control" name="sisa" id="sisa_cash_transfer{{ $data->invoice_number }}" value="Rp. 0" readonly />
+       </div>
+         <input type="hidden" class="form-control" name="methode" value="2" />
+         <input type="hidden" class="form-control" name="invoice_number" value="{{ $data->invoice_number }}" />
+         <input type="hidden" name="uuid" id="uuid" value="{{ $customerUuid }}">
+
+         <div class="col-12 text-end">
+           <button type="button" class="btn btn-label-secondary me-sm-3 me-2 px-3 px-sm-4" data-bs-toggle="modal" data-bs-target="#metodebayar{{ $data->invoice_number }}">
+             <i class="bx bx-left-arrow-alt bx-xs me-1 scaleX-n1-rtl"></i>
+             <span class="align-middle">Back</span>
+           </button>
+           <button type="submit" class="btn btn-success px-3 px-sm-4">
+             <span class="align-middle">Bayar</span><i class="bx bx-money-withdraw bx-xs ms-1 scaleX-n1-rtl"></i>
+           </button>
+         </div>
+       </form>
+     </div>
+   </div>
+ </div>
+</div>
+@endforeach
+<!--/ Modal Transfer -->
 
   <!-- Modal Edit Invoice -->
   <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -374,6 +556,7 @@
                       </div>
                     </div>
                   </div>
+                  <input type="text" class="form-control item-name mb-2" name="id" id="id" value="">
                   <input type="hidden" name="invoice_id" id="invoice_id" value="{{$invoiceNumber}}">
                   <input type="hidden" name="uuid" id="uuid" value="{{$customerUuid }}">
                   <div class="col-md-3 col-12 mb-md-0 mb-3">

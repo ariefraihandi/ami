@@ -2,11 +2,11 @@
     <div class="app-brand demo">
       <a href="index.html" class="app-brand-link">
         <span class="app-brand-logo demo">
-            <img src="/assets/img/icons/brands/ami-logo.png" alt="AMI Fast Logo" width="35">
+            <img src="{{ asset('assets') }}/img/icons/brands/ami-logo.png" alt="AMI Fast Logo" width="35">
         </span>
 
         <span class="app-brand-text demo menu-text fw-bold ms-2">
-          <img src="/assets/img/icons/brands/fast.png" alt="AMI Fast Logo" width="120">
+          <img src="{{ asset('assets') }}/img/icons/brands/fast.png" alt="AMI Fast Logo" width="120">
         </span>
       </a>
 
@@ -45,7 +45,7 @@
         <ul class="menu-sub">
           <li class="menu-item active">
             <a href="{{ url('/custumer-profile') }}" class="menu-link">
-              <div class="text-truncate" data-i18n="Add Invoice">Custumer Profile</div>
+              <div class="text-truncate" data-i18n="Custumer Profile">Custumer Profile</div>
             </a>
           </li>
         </ul>
