@@ -209,7 +209,7 @@ $(document).ready(function () {
                         return (
                             '<div class="d-flex align-items-center">' +
                             '<a href="javascript:;" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="confirmDelete(\'' + id + '\', \'/delete-role?id=' + id + '\', \'' + menuName + '\')"><i class="bx bx-trash mx-1"></i></a>' +
-                            '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Dummy Action 3" data-uuid="' + full.uuid + '"><i class="bx bx-edit mx-1"></i></a>' +
+                            '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Dummy Action 3" data-uuid="' + id + '"><i class="bx bx-edit mx-1"></i></a>' +
                             '</div>'
                         );
                     }
@@ -227,7 +227,7 @@ $(document).ready(function () {
             language: {
                 sLengthMenu: '_MENU_',
                 search: '',
-                searchPlaceholder: 'Cari Submenu',
+                searchPlaceholder: 'Cari Role',
             },
             responsive: true,
         });
