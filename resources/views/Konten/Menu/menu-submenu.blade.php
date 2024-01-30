@@ -78,8 +78,11 @@
                         <div class="col-sm-6 col-lg-3">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <h6 class="mb-2">Inactive Custumer</h6>
-                                    <h2 class="mb-2" style="color: red;">{{ $inActiveCustumer }}</h2>
+                                    <h3 class="mb-2">{{ $roleCount }} Role</h3>
+                                    <!-- Button to open the modal with the plus icon -->
+                                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalAddRole">
+                                      <i class="bx bx-plus me-1"></i> Add Role
+                                    </button>
                                 </div>
                                 <div class="avatar">
                                     <span class="avatar-initial rounded bg-label-secondary">
@@ -249,6 +252,35 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalAddRole" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Header Modal -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Body Modal -->
+                <div class="modal-body">
+                    <!-- Form untuk menambahkan role -->
+                    <form action="{{ route('add.role') }}" method="post">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role Name</label>
+                            <input type="text" class="form-control" id="role" name="role" required>
+                        </div>
+
+                        <!-- Tombol Submit dan Close -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Role</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('footer-script')  

@@ -13,6 +13,7 @@ use App\Models\FinancialTransaction;
 use App\Models\Menu;
 use App\Models\MenuSub;
 use App\Models\MenuSubsChild;
+use App\Models\UserRole;
 use App\Models\AccessMenu;
 use App\Models\AccessSub;
 use App\Models\AccessSubChild;
@@ -38,9 +39,11 @@ class MenuController extends Controller
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
+        $role           = UserRole::all();
         $menuCount      = $menu->count();
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
+        $roleCount      = $role->count();
       
         $additionalData = [
             'title'                 => 'Menu',
@@ -51,16 +54,7 @@ class MenuController extends Controller
             'menuCount'             => $menuCount,
             'menusubCount'          => $menusubCount,
             'menuchildCount'        => $menuchildCount,
-            'individualCount'       => Customer::countIndividualCustomers(),
-            'individualToday'       => Customer::todayIndividual('individual'),
-            'individualPercn'       => Customer::individualPecentage('individual'),
-            'biroCustomerCount'     => Customer::countBiroCustomers(),
-            'biroToday'             => Customer::todayIndividual('biro'),
-            'biroPercn'             => Customer::individualPecentage('biro'),
-            'instansiCount'         => Customer::countInstansiCustomers(),            
-            'instToday'             => Customer::todayIndividual('instansi'),
-            'instPercn'             => Customer::individualPecentage('instansi'),
-            'inActiveCustumer'      => Customer::countInactiveCustomer(),
+            'roleCount'             => $roleCount,
         ];   
         return view('Konten/Menu/menu-index', $additionalData);
     }
@@ -169,9 +163,11 @@ class MenuController extends Controller
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
+        $role           = UserRole::all();
         $menuCount      = $menu->count();
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
+        $roleCount      = $role->count();
       
         $additionalData = [
             'title'                 => 'Submenu',
@@ -182,16 +178,7 @@ class MenuController extends Controller
             'menuCount'             => $menuCount,
             'menusubCount'          => $menusubCount,
             'menuchildCount'        => $menuchildCount,
-            'individualCount'       => Customer::countIndividualCustomers(),
-            'individualToday'       => Customer::todayIndividual('individual'),
-            'individualPercn'       => Customer::individualPecentage('individual'),
-            'biroCustomerCount'     => Customer::countBiroCustomers(),
-            'biroToday'             => Customer::todayIndividual('biro'),
-            'biroPercn'             => Customer::individualPecentage('biro'),
-            'instansiCount'         => Customer::countInstansiCustomers(),            
-            'instToday'             => Customer::todayIndividual('instansi'),
-            'instPercn'             => Customer::individualPecentage('instansi'),
-            'inActiveCustumer'      => Customer::countInactiveCustomer(),
+            'roleCount'             => $roleCount,
         ];   
         return view('Konten/Menu/menu-submenu', $additionalData);
     }
@@ -361,9 +348,11 @@ class MenuController extends Controller
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
+        $role           = UserRole::all();
         $menuCount      = $menu->count();
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
+        $roleCount      = $role->count();
       
         $additionalData = [
             'title'                 => 'Submenu',
@@ -374,16 +363,7 @@ class MenuController extends Controller
             'menuCount'             => $menuCount,
             'menusubCount'          => $menusubCount,
             'menuchildCount'        => $menuchildCount,
-            'individualCount'       => Customer::countIndividualCustomers(),
-            'individualToday'       => Customer::todayIndividual('individual'),
-            'individualPercn'       => Customer::individualPecentage('individual'),
-            'biroCustomerCount'     => Customer::countBiroCustomers(),
-            'biroToday'             => Customer::todayIndividual('biro'),
-            'biroPercn'             => Customer::individualPecentage('biro'),
-            'instansiCount'         => Customer::countInstansiCustomers(),            
-            'instToday'             => Customer::todayIndividual('instansi'),
-            'instPercn'             => Customer::individualPecentage('instansi'),
-            'inActiveCustumer'      => Customer::countInactiveCustomer(),
+            'roleCount'             => $roleCount,
         ];   
         return view('Konten/Menu/menu-submenuchild', $additionalData);
     }
@@ -467,6 +447,112 @@ class MenuController extends Controller
             $errorMessage = 'Failed to delete menu and associated access menu records. ' . $e->getMessage();
     
             return redirect()->route('childsubmenus.index')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => $errorMessage,
+                ],
+            ]);
+        }
+    }
+
+    // Role 
+    public function getAllRole()
+    {
+        try {
+            $role = UserRole::all();
+
+            return response()->json(['data' => $role]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+    public function showRoleIndex(Request $request)
+    {       
+        $menu           = Menu::all();
+        $menusub        = MenuSub::all();
+        $menuchild      = MenuSubsChild::all();
+        $role           = UserRole::all();
+        $menuCount      = $menu->count();
+        $menusubCount   = $menusub->count();
+        $menuchildCount = $menuchild->count();
+        $roleCount      = $role->count();
+      
+        $additionalData = [
+            'title'                 => 'User Role',
+            'subtitle'              => 'List',
+            'menu'                  => $menu,
+            'menusub'               => $menusub,
+            'menuchild'             => $menuchild,
+            'menuCount'             => $menuCount,
+            'menusubCount'          => $menusubCount,
+            'menuchildCount'        => $menuchildCount,
+            'roleCount'             => $roleCount,            
+        ];   
+        return view('Konten/Menu/menu-subrole', $additionalData);
+    }
+
+    public function addRole(Request $request)
+    {
+        try {
+            // Validate the request data for role
+            $request->validate([
+                'role' => 'required|string|max:255',
+            ]);
+
+            // Create a new role
+            $role = new UserRole([
+                'role' => $request->input('role'),
+            ]);
+
+            // Save the role
+            $role->save();
+
+            // Flash success response to the session
+            return redirect()->route('role.index')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Success',
+                    'message' => 'Role added successfully',
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Flash error response to the session
+            return redirect()->route('role.index')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Failed to add role. ' . $e->getMessage(),
+                ],
+            ]);
+        }
+    }
+
+    public function deleteRole(Request $request)
+    {
+        try {
+            // Retrieve the ID from the query parameters
+            $id = $request->input('id');
+    
+            // Delete the menu with the specified ID
+            UserRole::where('id', $id)->delete();
+    
+            // Delete the associated access menu records          
+    
+            $successMessage = 'Role Berhasil Dihapus';
+    
+            return redirect()->route('role.index')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Success',
+                    'message' => $successMessage,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $errorMessage = 'Failed to delete Role records. ' . $e->getMessage();
+    
+            return redirect()->route('role.index')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',

@@ -66,8 +66,8 @@
                                     <!-- Button to open the modal with the plus icon -->
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddChildSubmenus">
                                       <i class="bx bx-plus me-1"></i> Add Child
-                                  </button>
-                                  </div>
+                                    </button>
+                                </div>
                                 <div class="avatar me-sm-4">
                                     <span class="avatar-initial rounded bg-label-secondary">
                                         <i class='bx bx-buildings'></i>
@@ -96,10 +96,11 @@
             </div>
         </div>
 
-        <div class="col-xl-12 col-lg-12 col-md-12 order-0 order-md-1">            
+        <div class="col-xl-12 col-lg-12 col-md-12 order-0 order-md-1">
+            <!-- User Pills -->
             <ul class="nav nav-pills flex-column flex-md-row mb-3">
                 <li class="nav-item">
-                    <a class="nav-link active" href="/menu"><i class="bx bx-menu-alt-left me-1"></i>Menu</a>
+                    <a class="nav-link" href="/menu"><i class="bx bx-menu-alt-left me-1"></i>Menu</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/menu/submenu"><i class="bx bx-menu-alt-left me-1"></i>Submenu</a>
@@ -108,22 +109,20 @@
                     <a class="nav-link" href="/menu/child"><i class="bx bx-menu-alt-left me-1"></i>Childs Submenu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/menu/role"><i class="bx bx-menu-alt-left me-1"></i>Role</a>
+                    <a class="nav-link active" href="/menu/role"><i class="bx bx-menu-alt-left me-1"></i>Role</a>
                 </li>
             </ul>
 
             <div class="card">
                 <div class="card-datatable table-responsive">
-                    <table class="datatables-menus table border-top">
+                    <table class="datatables-roles table border-top">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Menu</th>
-                                <th>Urutan</th>
-                                <th>Status</th>
+                                <th>Role</th>                                                                                        
                                 <th>Action</th>
                             </tr>
-                        </thead>                        
+                        </thead>
                     </table>
                 </div>
             </div>
@@ -290,7 +289,6 @@
   <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave.js"></script>
   <script src="{{ asset('assets') }}/vendor/libs/cleavejs/cleave-phone.js"></script>
   <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
-
   <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/bundle/popular.min.js"></script>
   <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-bootstrap5/index.min.js"></script>
   <script src="{{ asset('assets') }}/vendor/libs/@form-validation/umd/plugin-auto-focus/index.min.js"></script>

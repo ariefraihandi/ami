@@ -10,18 +10,8 @@ use App\Http\Controllers\Portal\KeuanganController;
 use App\Http\Controllers\Portal\ProductController;
 use App\Http\Controllers\Portal\MenuController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
-Route::get('login',                 [AuthController::class, 'showLoginPage'])->name('login.page');
+Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login.page');
 
 Route::get('dashboard',                 [DashboardController::class, 'showPortalPage'])->name('dashboard.page');
 
@@ -88,3 +78,8 @@ Route::get('menu/child',            [MenuController::class, 'showChildSubmenusIn
 Route::post('/add-childsubmenu',    [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
 Route::get('/delete-childsubmenu',  [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 
+//menu role
+Route::get('/get-all-role',         [MenuController::class, 'getAllRole'])->name('getAll.role');
+Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('role.index');
+Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
+Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');

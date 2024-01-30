@@ -11,9 +11,9 @@ class AuthController extends Controller
     {
         $data = [
             'title' => "Login",
-            'subtitle' => "CV AMI",
+            'subtitle' => "Portal Atjeh Mediatama Indonesia",
         ];
 
-        return view('Konten.login', $data);
+        return view('Konten.Auth.login', $data);
     }
 }
