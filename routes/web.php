@@ -8,6 +8,7 @@ use App\Http\Controllers\Portal\CustomerController;
 use App\Http\Controllers\Portal\InvoiceController;
 use App\Http\Controllers\Portal\KeuanganController;
 use App\Http\Controllers\Portal\ProductController;
+use App\Http\Controllers\Portal\MenuController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,5 +70,21 @@ Route::post('/categories',          [ProductController::class, 'storeCategory'])
 Route::post('/updateCategory',      [ProductController::class, 'updateCategory'])->name('updateCategory');
 Route::get('/categories/del/{id}',  [ProductController::class, 'deleteCategory'])->name('deleteCategory');
 
+//menus
+Route::get('/get-all-menus',        [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
+Route::get('menu',                  [MenuController::class, 'showMenusIndex'])->name('menus.index');
+Route::post('/add-menu',            [MenuController::class, 'addMenu'])->name('add.menu');
+Route::get('/delete-menu',          [MenuController::class, 'deleteMenu'])->name('delete.menu');
 
+//submenus
+Route::get('/get-all-submenus',     [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
+Route::get('menu/submenu',          [MenuController::class, 'showSubmenusIndex'])->name('submenus.index');
+Route::post('/add-submenu',         [MenuController::class, 'addSubmenu'])->name('add.submenu');
+Route::get('/delete-submenu',       [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
+
+//child Submenu
+Route::get('/get-all-child',        [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
+Route::get('menu/child',            [MenuController::class, 'showChildSubmenusIndex'])->name('childsubmenus.index');
+Route::post('/add-childsubmenu',    [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
+Route::get('/delete-childsubmenu',  [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 

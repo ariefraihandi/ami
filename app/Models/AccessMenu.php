@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models; // Update the namespace to App\Models
 
 use Illuminate\Database\Eloquent\Model;
 
