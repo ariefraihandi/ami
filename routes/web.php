@@ -22,7 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
     //custumer fix route
     Route::get('/get-all-customers',        [CustomerController::class, 'getAllCustomers'])->name('getAllCustomers');
-    Route::get('customer',                  [CustomerController::class, 'showCustIndex'])->name('customer.list');
+    Route::get('customer/list',                  [CustomerController::class, 'showCustIndex'])->name('customer.list');
     Route::get('/delete-customer',          [CustomerController::class, 'deleteCustomer'])->name('deleteCustomer');
     Route::post('custumer',                 [CustomerController::class, 'addCustomer'])->name('add.customer');
     //!custumer fix route

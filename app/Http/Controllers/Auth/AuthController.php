@@ -151,7 +151,7 @@ class AuthController extends Controller
                 ];
     
                 // Redirect to the login page with SweetAlert response
-                return redirect()->route('login.page')->with('response', $response);
+                return redirect()->route('login')->with('response', $response);
             } else {
                 // Set error message
                 $response = [
