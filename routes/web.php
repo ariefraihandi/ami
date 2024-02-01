@@ -11,7 +11,7 @@ use App\Http\Controllers\Portal\ProductController;
 use App\Http\Controllers\Portal\MenuController;
 
 
-Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login.page');
+Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
 Route::post('/login',                   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register',                 [AuthController::class, 'showRegisForm'])->name('register');
 Route::post('/register',                [AuthController::class, 'register'])->name('register.post');
