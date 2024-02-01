@@ -73,18 +73,20 @@ class ProductController extends Controller
         $inProductCount = Product::where('status', '=', 'inactive')->count();
         $categor        = Category::all()->pluck('nama')->toArray();
 
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessMenus    = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
         $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
     
-        // Mengambil data berdasarkan hak akses
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $menus          = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData       = UserRole::where('id', $user->role)->first();
     
         $additionalData = [
             'title'         => 'Product & Stock',
             'subtitle'      => 'Index',
+            'user'          => $user,
+            'role'          => $roleData,
             'menus'         => $menus,
             'subMenus'      => $subMenus,
             'childSubMenus' => $childSubMenus,
@@ -218,20 +220,23 @@ class ProductController extends Controller
             return redirect('/login');
         }
 
-        $categories = Category::all();        
+        $categories     = Category::all();        
 
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessMenus    = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
         $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
     
         // Mengambil data berdasarkan hak akses
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $menus          = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData       = UserRole::where('id', $user->role)->first();
 
         $additionalData = [
             'title'         => 'Product',
             'subtitle'      => 'Categories',
+            'user'          => $user,
+            'role'          => $roleData,
             'categories'    => $categories,
             'menus'         => $menus,
             'subMenus'      => $subMenus,

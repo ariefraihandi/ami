@@ -9,12 +9,15 @@ use App\Http\Controllers\Portal\InvoiceController;
 use App\Http\Controllers\Portal\KeuanganController;
 use App\Http\Controllers\Portal\ProductController;
 use App\Http\Controllers\Portal\MenuController;
+use App\Http\Controllers\Portal\UserController;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
 Route::post('/login',                   [AuthController::class, 'login'])->name('login.post');
 Route::get('/register',                 [AuthController::class, 'showRegisForm'])->name('register');
 Route::post('/register',                [AuthController::class, 'register'])->name('register.post');
+Route::get('/logout',                   [AuthController::class, 'logout'])->name('logout');
+
 
 Route::middleware(['auth'])->group(function () {
 
@@ -95,4 +98,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('menu.role');
     Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
     Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');
+
+    //user role
+    Route::get('/user/profile',         [UserController::class, 'index'])->name('user.profile');
+    //!!user role
+    
+    
+    // users Administrator
+    Route::get('/users',         [UserController::class, 'index'])->name('users');
+    //!! users Administrator
 });

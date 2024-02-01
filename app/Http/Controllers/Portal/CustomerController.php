@@ -17,6 +17,7 @@ use App\Models\AccessSubChild;
 use App\Models\Menu;
 use App\Models\MenuSub;
 use App\Models\MenuSubsChild;
+use App\Models\UserRole;
 
 use App\Models\FinancialTransaction;
 
@@ -41,6 +42,8 @@ class CustomerController extends Controller
         $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
 
+        $roleData = UserRole::where('id', $user->role)->first();
+
         $customers = Customer::all();
         $additionalData = [
             'title'                 => 'Custumer',
@@ -49,6 +52,8 @@ class CustomerController extends Controller
             'menus'                 => $menus,
             'subMenus'              => $subMenus,
             'childSubMenus'         => $childSubMenus,
+            'user'                  => $user,
+            'role'                  => $roleData,
             'individualCount'       => Customer::countIndividualCustomers(),
             'individualToday'       => Customer::todayIndividual('individual'),
             'individualPercn'       => Customer::individualPecentage('individual'),

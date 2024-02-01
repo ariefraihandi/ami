@@ -118,10 +118,13 @@ class KeuanganController extends Controller
         $menus = Menu::whereIn('id', $accessMenus)->get();
         $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData = UserRole::where('id', $user->role)->first();
 
         $additionalData = [
             'title'                     => 'Bisnis',
             'subtitle'                  => 'Keuangan',
+            'user'                      => $user,
+            'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,

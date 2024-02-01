@@ -144,10 +144,13 @@ class InvoiceController extends Controller
         $menus = Menu::whereIn('id', $accessMenus)->get();
         $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-            
+        $roleData = UserRole::where('id', $user->role)->first();
+
         $additionalData = [
             'title'                     => 'Invoice List',
             'subtitle'                  => 'Dashboard',
+            'user'                      => $user,
+            'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,
@@ -302,10 +305,13 @@ class InvoiceController extends Controller
         $menus = Menu::whereIn('id', $accessMenus)->get();
         $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData = UserRole::where('id', $user->role)->first();
 
         $additionalData = [
             'title'         => 'Add Item Invoice #' . $invoice->invoice_number,
             'subtitle'      => 'Invoice',
+            'user'                      => $user,
+            'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,

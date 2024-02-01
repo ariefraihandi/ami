@@ -52,7 +52,7 @@ class AuthController extends Controller
                     'message' => "Hallo, $user->name. Selamat datang! Semangat berkerja.",
                 ];
     
-                return redirect('/customer')->with('response', $response);
+                return redirect('/user/profile')->with('response', $response);
             } else {
                 // Kredensial berhasil tetapi status tidak memenuhi syarat
                 Auth::logout();
@@ -177,6 +177,23 @@ class AuthController extends Controller
             // Redirect back to the registration page with SweetAlert response
             return back()->with('response', $response);
         }
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        // Clear the session data
+        $request->session()->flush();
+        $request->session()->regenerate();
+
+        // Sweet Alert dengan pesan logout sukses
+        $response = [
+            'success' => true,
+            'title' => 'Berhasil Logout',
+            'message' => 'Anda telah berhasil logout. Sampai jumpa lagi!',
+        ];
+        return redirect()->route('login')->with('response', $response);       
     }
 
 }
