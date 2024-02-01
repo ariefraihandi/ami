@@ -258,7 +258,7 @@ class MenuController extends Controller
             $userMenu->save();
     
             // Flash success response to the session
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -267,7 +267,7 @@ class MenuController extends Controller
             ]);
         } catch (\Exception $e) {
             // Flash error response to the session
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
@@ -291,7 +291,7 @@ class MenuController extends Controller
     
             $successMessage = 'Submenu Berhasil Dihapus';
     
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -301,7 +301,7 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to delete menu and associated access menu records. ' . $e->getMessage();
     
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
@@ -349,7 +349,7 @@ class MenuController extends Controller
             $userMenu->save();
     
             // Flash success response to the session
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -358,7 +358,7 @@ class MenuController extends Controller
             ]);
         } catch (\Exception $e) {
             // Flash error response to the session
-            return redirect()->route('submenus.index')->with([
+            return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
@@ -458,7 +458,7 @@ class MenuController extends Controller
             $userMenu->save();
     
             // Flash success response to the session
-            return redirect()->route('childsubmenus.index')->with([
+            return redirect()->route('menu.child')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -467,7 +467,7 @@ class MenuController extends Controller
             ]);
         } catch (\Exception $e) {
             // Flash error response to the session
-            return redirect()->route('childsubmenus.index')->with([
+            return redirect()->route('menu.child')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
@@ -491,7 +491,7 @@ class MenuController extends Controller
     
             $successMessage = 'Submenu Berhasil Dihapus';
     
-            return redirect()->route('childsubmenus.index')->with([
+            return redirect()->route('menu.child')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -501,7 +501,7 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to delete menu and associated access menu records. ' . $e->getMessage();
     
-            return redirect()->route('childsubmenus.index')->with([
+            return redirect()->route('menu.child')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',

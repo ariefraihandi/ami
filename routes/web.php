@@ -74,19 +74,19 @@ Route::middleware(['auth'])->group(function () {
 
     //menus
     Route::get('/get-all-menus',        [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
-    Route::get('menu',                  [MenuController::class, 'showMenusIndex'])->name('menus.index');
+    Route::get('menu',                  [MenuController::class, 'showMenusIndex'])->name('menu');
     Route::post('/add-menu',            [MenuController::class, 'addMenu'])->name('add.menu');
     Route::get('/delete-menu',          [MenuController::class, 'deleteMenu'])->name('delete.menu');
 
     //submenus
     Route::get('/get-all-submenus',     [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
-    Route::get('menu/submenu',          [MenuController::class, 'showSubmenusIndex'])->name('submenus.index');
+    Route::get('menu/submenu',          [MenuController::class, 'showSubmenusIndex'])->name('menu.submenu');
     Route::post('/add-submenu',         [MenuController::class, 'addSubmenu'])->name('add.submenu');
     Route::get('/delete-submenu',       [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
 
     //child Submenu
     Route::get('/get-all-child',        [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
-    Route::get('menu/child',            [MenuController::class, 'showChildSubmenusIndex'])->name('childsubmenus.index');
+    Route::get('menu/child',            [MenuController::class, 'showChildSubmenusIndex'])->name('menu.child');
     Route::post('/add-childsubmenu',    [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
     Route::get('/delete-childsubmenu',  [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 
