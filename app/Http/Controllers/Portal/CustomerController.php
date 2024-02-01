@@ -2,25 +2,53 @@
 
 namespace App\Http\Controllers\Portal;
 
+use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\ItemInvoice;
+use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
+use App\Models\Menu;
+use App\Models\MenuSub;
+use App\Models\MenuSubsChild;
+
 use App\Models\FinancialTransaction;
-use Carbon\Carbon;
 
 class CustomerController extends Controller
 {
     public function showCustIndex(Request $request)
-    {       
-        $customers = Customer::all(); 
-      
+    {     
+        $user = Auth::user();
+        if (!$user) {
+            // Handle ketika user tidak ditemukan (sesuai kebutuhan Anda)
+            // Contoh: Redirect ke halaman login
+            return redirect('/login');
+        }
+        // dd($user);
+
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
+        $customers = Customer::all();
         $additionalData = [
             'title'                 => 'Custumer',
             'subtitle'              => 'List',
             'customers'             => $customers,
+            'menus'                 => $menus,
+            'subMenus'              => $subMenus,
+            'childSubMenus'         => $childSubMenus,
             'individualCount'       => Customer::countIndividualCustomers(),
             'individualToday'       => Customer::todayIndividual('individual'),
             'individualPercn'       => Customer::individualPecentage('individual'),
@@ -100,7 +128,7 @@ class CustomerController extends Controller
                     'message' => 'Customer berhasil ditambahkan.'
                 ];              
 
-                return redirect()->route('customer.page')->with('response', $response);
+                return redirect()->route('customer.list')->with('response', $response);
             } else {
                 throw new \Exception('Gagal menambahkan customer.');
             }
@@ -207,14 +235,16 @@ class CustomerController extends Controller
 
             $response = [
                 'success' => true,
+                'title' => "Berhasil",
                 'message' => "Customer '{$customer->name}' deleted successfully.{$successMessage}",
             
             ];
 
-            return redirect()->route('customer.page')->with('response', $response);
+            return redirect()->route('customer.list')->with('response', $response);
         } catch (\Exception $e) {
             $response = [
                 'success' => false,
+                'title' => "Gagal",
                 'message' => $e->getMessage(),
             ];
             return redirect()->back()->with('response', $response);

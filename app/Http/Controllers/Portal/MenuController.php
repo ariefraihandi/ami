@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Portal;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
@@ -36,6 +37,12 @@ class MenuController extends Controller
 
     public function showMenusIndex(Request $request)
     {       
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
@@ -44,10 +51,22 @@ class MenuController extends Controller
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
         $roleCount      = $role->count();
+
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
       
         $additionalData = [
             'title'                 => 'Menu',
             'subtitle'              => 'List',
+            'menus'                 => $menus,
+            'subMenus'              => $subMenus,
+            'childSubMenus'         => $childSubMenus,
             'menu'                  => $menu,
             'menusub'               => $menusub,
             'menuchild'             => $menuchild,
@@ -160,6 +179,12 @@ class MenuController extends Controller
 
     public function showSubmenusIndex(Request $request)
     {       
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
@@ -168,10 +193,22 @@ class MenuController extends Controller
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
         $roleCount      = $role->count();
+
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
       
         $additionalData = [
             'title'                 => 'Submenu',
             'subtitle'              => 'List',
+            'menus'                 => $menus,
+            'subMenus'              => $subMenus,
+            'childSubMenus'         => $childSubMenus,
             'menu'                  => $menu,
             'menusub'               => $menusub,
             'menuchild'             => $menuchild,
@@ -345,6 +382,12 @@ class MenuController extends Controller
     
     public function showChildSubmenusIndex(Request $request)
     {       
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+        
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
@@ -353,10 +396,22 @@ class MenuController extends Controller
         $menusubCount   = $menusub->count();
         $menuchildCount = $menuchild->count();
         $roleCount      = $role->count();
+
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
       
         $additionalData = [
             'title'                 => 'Submenu',
             'subtitle'              => 'List',
+            'menus'                 => $menus,
+            'subMenus'              => $subMenus,
+            'childSubMenus'         => $childSubMenus,
             'menu'                  => $menu,
             'menusub'               => $menusub,
             'menuchild'             => $menuchild,

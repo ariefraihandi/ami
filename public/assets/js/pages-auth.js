@@ -113,3 +113,11 @@ document.addEventListener('DOMContentLoaded', function (e) {
     }
   })();
 });
+
+function showSweetAlert(response) {
+  Swal.fire({
+      icon: response.success ? 'success' : 'error',
+      title: response.title,
+      text: response.message,
+  });
+}

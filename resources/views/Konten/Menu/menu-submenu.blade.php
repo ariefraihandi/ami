@@ -109,7 +109,7 @@
                     <a class="nav-link" href="/menu/child"><i class="bx bx-menu-alt-left me-1"></i>Childs Submenu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/menu/role"><i class="bx bx-menu-alt-left me-1"></i>Role</a>
+                    <a class="nav-link" href="/menu/role"><i class="bx bx-menu-alt-left me-1"></i>Role</a>
                 </li>
             </ul>
 

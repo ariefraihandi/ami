@@ -29,7 +29,7 @@ $(function () {
               var invoiceType = invoice_number.charAt(0).toLowerCase();
               var invoiceLabel = (invoiceType === 's') ? 'Sales' : 'Project';
       
-              var link = '/invoice/item?invoiceNumber=' + invoice_number + '&customerUuid=' + uuid;
+              var link = '/invoice/add?invoiceNumber=' + invoice_number + '&customerUuid=' + uuid;
               var row_output = '<a href="' + link + '" class="invoice-link"><span class="fw-medium">#' + invoice_number + '</span></a>';
               
               return '<div class="text-center">' + invoiceLabel + '<br>' + row_output + '</div>';

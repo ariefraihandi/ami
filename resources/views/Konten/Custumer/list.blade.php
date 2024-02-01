@@ -289,7 +289,7 @@
           <p class="mb-4">Mulai membuat invoice dengan memberikan nama untuk Sales.</p>
           <form id="salesForm" action="{{ route('add.invoice') }}" method="POST">
             @csrf
-            <input type="text" class="form-control" name="type" value="Sales" />
+            <input type="hidden" class="form-control" name="type" value="Sales" />
             <input type="hidden" class="form-control" name="customer_uuid" id="customerUUIDSales" value="" />
             <div class="mb-4">
                 <label for="invoiceName">Invoice Name:</label>
@@ -323,7 +323,7 @@
           <p class="mb-4">Mulai membuat invoice dengan memberikan nama untuk Project.</p>
           <form id="projectForm" action="{{ route('add.invoice') }}" method="POST">
             @csrf
-            <input type="text" class="form-control" name="type" value="Project" />
+            <input type="hidden" class="form-control" name="type" value="Project" />
             <div class="mb-4">
               <label for="invoiceNameProject">Invoice Name:</label>
               <input type="text" class="form-control" name="invoiceName" id="invoiceNameProject" placeholder="Project Tata Ruang Bank Aceh" required>

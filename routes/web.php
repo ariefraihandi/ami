@@ -12,50 +12,60 @@ use App\Http\Controllers\Portal\MenuController;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login.page');
+Route::post('/login',                   [AuthController::class, 'login'])->name('login.post');
+Route::get('/register',                 [AuthController::class, 'showRegisForm'])->name('register');
+Route::post('/register',                [AuthController::class, 'register'])->name('register.post');
 
-Route::get('dashboard',                 [DashboardController::class, 'showPortalPage'])->name('dashboard.page');
+Route::get('dashboard',                 [DashboardController::class, 'showPortalPage'])->name('dashboard');
 
+//custumer fix route
 Route::get('/get-all-customers',        [CustomerController::class, 'getAllCustomers'])->name('getAllCustomers');
-Route::get('custumer',                  [CustomerController::class, 'showCustIndex'])->name('customer.page');
-Route::post('custumer',                 [CustomerController::class, 'addCustomer'])->name('add.customer');
-Route::post('edit/customer',            [CustomerController::class, 'editcustomer'])->name('edit.customer');
+Route::get('customer',                  [CustomerController::class, 'showCustIndex'])->name('customer.list');
 Route::get('/delete-customer',          [CustomerController::class, 'deleteCustomer'])->name('deleteCustomer');
+Route::post('custumer',                 [CustomerController::class, 'addCustomer'])->name('add.customer');
+//!custumer fix route
+
+Route::post('edit/customer',            [CustomerController::class, 'editcustomer'])->name('edit.customer');
 Route::get('/get-customer/{uuid}',      [CustomerController::class, 'getCustomerByUUID'])->name('get-customer');
 
-
+//invoice fix route
 Route::get('/get-all-invoice',          [InvoiceController::class, 'getAllInvoices'])->name('getAllInvoices');
-
-
-Route::get('invoice',                   [InvoiceController::class, 'showInvoiceIndex'])->name('invoices.index');
-Route::post('add-invoice',              [InvoiceController::class, 'store'])->name('add.invoice');
-
-//item
-Route::get('/get-items/{invNumber}',    [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-Route::get('/get-items',                [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-Route::get('/edit-items/{itemId}',      [InvoiceController::class, 'getItemById'])->name('get.items.byId');
-Route::get('invoice/item',              [InvoiceController::class, 'addItem'])->name('addItem.index');
-Route::post('item-invoices',            [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
-Route::get('delete-item/',              [InvoiceController::class, 'deleteItem'])->name('delete.invoice');
-
-Route::post('update-invoice-dates',     [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
-Route::get('itemData/{ItemId}',         [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
-Route::post('updateItem/',              [InvoiceController::class, 'updateItem'])->name('updateItem');
-Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');
+Route::get('invoice/list',              [InvoiceController::class, 'showInvoiceIndex'])->name('invoice.list');
+Route::get('invoice/add',               [InvoiceController::class, 'addItem'])->name('invoice.add');
 Route::get('delete-invoice',            [InvoiceController::class, 'deleteInvoice'])->name('deleteInvoice');
 Route::get('print/{invoiceNumber}',     [InvoiceController::class, 'generatePdf'])->name('generatePdf');
+Route::post('add-invoice',              [InvoiceController::class, 'store'])->name('add.invoice');
+Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');
+// Route::post('update-invoice-dates',     [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
+Route::post('/update-invoice-dates', [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
 
 
-Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('showKeuanganIndex');
+//!!invoice fix route
+
+
+//item fix route
+Route::get('/get-items',                [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+Route::post('item-invoices',            [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
+Route::post('updateItem/',              [InvoiceController::class, 'updateItem'])->name('updateItem'); //NF
+Route::get('/get-items/{invNumber}',    [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+Route::get('delete-item/',              [InvoiceController::class, 'deleteItem'])->name('delete.invoice');
+Route::get('/edit-items/{itemId}',      [InvoiceController::class, 'getItemById'])->name('get.items.byId');
+Route::get('itemData/{ItemId}',         [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
+//!!item fix route
+
+
+Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan');
 Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
 
-Route::get('product',               [ProductController::class, 'index'])->name('indexProduk');
+//Product fix route
+Route::get('product',               [ProductController::class, 'index'])->name('product');
 Route::post('/add-product',         [ProductController::class, 'create'])->name('addProduct');
 Route::get('/get-product/{id}',     [ProductController::class, 'getProduct'])->name('get.product');
 Route::get('/get-products',         [ProductController::class, 'getProducts'])->name('get.products');
 Route::post('/updateproduct',       [ProductController::class, 'updateProduct'])->name('updateProduct');
+// !! Product fix route
 
-
-Route::get('/categories',           [ProductController::class, 'indexCategory'])->name('categoryIndex');
+Route::get('/categories',           [ProductController::class, 'indexCategory'])->name('categories');
 Route::post('/categories',          [ProductController::class, 'storeCategory'])->name('addCategory');
 Route::post('/updateCategory',      [ProductController::class, 'updateCategory'])->name('updateCategory');
 Route::get('/categories/del/{id}',  [ProductController::class, 'deleteCategory'])->name('deleteCategory');

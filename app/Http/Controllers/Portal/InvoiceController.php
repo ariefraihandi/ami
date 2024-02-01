@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers\Portal;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\ItemInvoice;
 use App\Models\FinancialTransaction;
 use App\Models\Product;
+use App\Models\Menu;
+use App\Models\MenuSub;
+use App\Models\MenuSubsChild;
+use App\Models\UserRole;
+use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use PDF;
 
 
@@ -80,7 +88,12 @@ class InvoiceController extends Controller
 
     public function showInvoiceIndex(Request $request)
     {     
-    
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         $invoices               = Invoice::with('customer')->get();
         $invoicesToday          = Invoice::with('customer')->whereDate('created_at', Carbon::today())->get();
         $invoicesYesterday      = Invoice::with('customer')->whereDate('created_at', Carbon::yesterday())->get();
@@ -123,11 +136,21 @@ class InvoiceController extends Controller
             $unTotalPercentage       = (($totalUnAmount - $totalUnAmountYest) / $totalUnAmountYest) * 100;
         }
         
-        // dd($percentageIncrease);
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
             
         $additionalData = [
             'title'                     => 'Invoice List',
             'subtitle'                  => 'Dashboard',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
             'invoices'                  => $invoices,
             'totalInvoices'             => $totalInvoices,
             'totalInvoicesToday'        => $totalInvToday,
@@ -143,82 +166,6 @@ class InvoiceController extends Controller
         ];
     
         return view('Konten/Invoice/invoicelist', $additionalData);
-    }
-    
-    public function addItem(Request $request)
-    {
-        $invoiceNumber  = $request->query('invoiceNumber');
-        $customerUuid   = $request->query('customerUuid');
-        
-        $customer       = Customer::where('uuid', $customerUuid)->first();
-        $invoice        = Invoice::where('invoice_number', $invoiceNumber)->first();       
-        $itemInvoice    = ItemInvoice::where('invoice_id', $invoiceNumber)->get();
-        $invoiceData    = Invoice::where('invoice_number', $invoiceNumber)->get();
-        $transaction    = FinancialTransaction::where('reference_number', $invoiceNumber)->get();
-        $products       = Product::all();
-
-        if (!$customer) {
-            return redirect()->route('invoices.index')->with('response', [
-                'success' => false,
-                'message' => 'Customer tidak ditemukan.',
-            ]);
-        }
-        if (!$invoice) {
-            return redirect()->route('invoices.index')->with('response', [
-                'success' => false,
-                'message' => 'Invoice tidak ditemukan.',
-            ]);
-        }       
-
-        $total_amount       = $invoice->total_amount - $invoice->panjar_amount;
-        $panjar_amount      = $invoice->panjar_amount;
-        $dueDate            = $invoice->due_date;
-        $created_at         = $invoice->created_at;
-
-        $formatDueDate      = Carbon::createFromFormat('Y-m-d H:i:s', $dueDate)->format('Y-m-d');
-        $formatCreated_at   = Carbon::createFromFormat('Y-m-d H:i:s', $created_at)->format('Y-m-d');
-        $format_amount      = "Rp. " . number_format($total_amount, 2);
-        $format_panjar      = "Rp. " . number_format($panjar_amount, 2);
-        $subtotal           = $itemInvoice->sum(function ($item) {return $item->harga_satuan * $item->qty * $item->ukuran;});
-        $discount           = $itemInvoice->sum(function ($item) {return $item->discount;});
-        $format_subtotal    = "Rp. " . number_format($subtotal, 2);
-        $format_discount    = "Rp. " . number_format($discount, 2);
-        $firstItem = ItemInvoice::where('invoice_id', $invoiceNumber)->first();
-
-        if ($firstItem) {
-            $tax = $firstItem->tax . "%";
-        } else {
-            // Handle the case when no item with the given invoice_id is found
-            // You can set a default tax value or handle it based on your requirements
-            $tax = "0%";
-        }
-
-
-        $additionalData = [
-            'title'         => 'Add Item Invoice #' . $invoice->invoice_number,
-            'subtitle'      => 'Invoice',
-            'invoiceNumber' => $invoiceNumber,
-            'customerUuid'  => $customerUuid,
-            'invoiceData'   => $invoice,
-            'invoices'      => $invoiceData,
-            'itemInvoice'   => $itemInvoice,
-            'dueDate'       => $formatDueDate,
-            'transactions'  => $transaction,
-            'created_at'    => $formatCreated_at,
-            'total_amount'  => $format_amount,
-            'customerData'  => $customer,
-            'note'          => $invoice->additional_notes,
-            'products'      => $products,
-            'subtotal'      => $format_subtotal,
-            'discount'      => $format_discount,
-            'panjar'        => $format_panjar,
-            'tax'           => $tax,
-            'message' => 0, // Ubah sesuai dengan kondisi atau logika Anda
-            'messageText' => 'Pesan Anda di sini', // Ubah sesuai dengan pesan yang ingin ditampilkan
-        ];
-
-       
-        return view('Konten/Invoice/addItem', $additionalData);
     }
 
     public function store(Request $request)
@@ -275,7 +222,7 @@ class InvoiceController extends Controller
             ];
     
             return redirect()
-                ->to('invoice/item?invoiceNumber=' . $invoiceNumber . '&customerUuid=' . $customerUuid)
+                ->to('invoice/add?invoiceNumber=' . $invoiceNumber . '&customerUuid=' . $customerUuid)
                 ->with('response', $response);
         } catch (ValidationException $e) {
             // Capture validation error messages
@@ -291,7 +238,102 @@ class InvoiceController extends Controller
             return back()->with('response', $response)->withInput();
         }
     }
+    
+    public function addItem(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
 
+
+        $invoiceNumber  = $request->query('invoiceNumber');
+        $customerUuid   = $request->query('customerUuid');
+        
+        $customer       = Customer::where('uuid', $customerUuid)->first();
+        $invoice        = Invoice::where('invoice_number', $invoiceNumber)->first();       
+        $itemInvoice    = ItemInvoice::where('invoice_id', $invoiceNumber)->get();
+        $invoiceData    = Invoice::where('invoice_number', $invoiceNumber)->get();
+        $transaction    = FinancialTransaction::where('reference_number', $invoiceNumber)->get();
+        $products       = Product::all();
+
+        if (!$customer) {
+            return redirect()->route('invoices.index')->with('response', [
+                'success' => false,
+                'message' => 'Customer tidak ditemukan.',
+            ]);
+        }
+        if (!$invoice) {
+            return redirect()->route('invoices.index')->with('response', [
+                'success' => false,
+                'message' => 'Invoice tidak ditemukan.',
+            ]);
+        }       
+
+        $total_amount       = $invoice->total_amount - $invoice->panjar_amount;
+        $panjar_amount      = $invoice->panjar_amount;
+        $dueDate            = $invoice->due_date;
+        $created_at         = $invoice->created_at;
+
+        $formatDueDate      = Carbon::createFromFormat('Y-m-d H:i:s', $dueDate)->format('Y-m-d');
+        $formatCreated_at   = Carbon::createFromFormat('Y-m-d H:i:s', $created_at)->format('Y-m-d');
+        $format_amount      = "Rp. " . number_format($total_amount, 2);
+        $format_panjar      = "Rp. " . number_format($panjar_amount, 2);
+        $subtotal           = $itemInvoice->sum(function ($item) {return $item->harga_satuan * $item->qty * $item->ukuran;});
+        $discount           = $itemInvoice->sum(function ($item) {return $item->discount;});
+        $format_subtotal    = "Rp. " . number_format($subtotal, 2);
+        $format_discount    = "Rp. " . number_format($discount, 2);
+        $firstItem = ItemInvoice::where('invoice_id', $invoiceNumber)->first();
+
+        if ($firstItem) {
+            $tax = $firstItem->tax . "%";
+        } else {
+            // Handle the case when no item with the given invoice_id is found
+            // You can set a default tax value or handle it based on your requirements
+            $tax = "0%";
+        }
+
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
+        $additionalData = [
+            'title'         => 'Add Item Invoice #' . $invoice->invoice_number,
+            'subtitle'      => 'Invoice',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            'invoiceNumber' => $invoiceNumber,
+            'customerUuid'  => $customerUuid,
+            'invoiceData'   => $invoice,
+            'invoices'      => $invoiceData,
+            'itemInvoice'   => $itemInvoice,
+            'dueDate'       => $formatDueDate,
+            'transactions'  => $transaction,
+            'created_at'    => $formatCreated_at,
+            'total_amount'  => $format_amount,
+            'customerData'  => $customer,
+            'note'          => $invoice->additional_notes,
+            'products'      => $products,
+            'subtotal'      => $format_subtotal,
+            'discount'      => $format_discount,
+            'panjar'        => $format_panjar,
+            'tax'           => $tax,
+            'message' => 0, // Ubah sesuai dengan kondisi atau logika Anda
+            'messageText' => 'Pesan Anda di sini', // Ubah sesuai dengan pesan yang ingin ditampilkan
+        ];
+
+       
+        return view('Konten/Invoice/addItem', $additionalData);
+    }
+
+   
     public function itemStore(Request $request)
     {
         $validatedData = validator($request->all(), [
@@ -379,7 +421,7 @@ class InvoiceController extends Controller
                 $customerUuid = $request->input('uuid');
     
                 // Buat URL dengan parameter invoiceNumber dan customerUuid
-                $url = url("/invoice/item?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid");
+                $url = url("/invoice/add?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid");
     
                 // Redirect dengan menyertakan pesan sukses
                 return redirect($url)->with('response', $response);
@@ -454,7 +496,7 @@ class InvoiceController extends Controller
             'invoice_id' => 'required|exists:invoices,invoice_number',
             'new_date' => 'required|date',
             'date_type' => 'required|in:created_at,due_date',
-        ]);       
+        ]);
 
         // Dapatkan data dari request
         $invoiceId = $request->input('invoice_id');
@@ -473,9 +515,9 @@ class InvoiceController extends Controller
             $invoice->{$dateType} = $newDateTime;
             $invoice->save();
         
-            return response()->json(['success' => true, 'message' => 'Tanggal berhasil diubah']);
+            return response()->json(['success' => true, 'title' => 'Berhasil', 'message' => 'Tanggal berhasil diubah']);
         } else {
-            return response()->json(['success' => false, 'message' => 'Invoice tidak ditemukan']);
+            return response()->json(['success' => false, 'title' => 'Gagal !', 'message' => 'Invoice tidak ditemukan']);
         }
     }
 

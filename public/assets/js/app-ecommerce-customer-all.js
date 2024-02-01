@@ -331,7 +331,7 @@ $(document).on('click', '.btn-open-edit-modal', function () {
 function confirmDelete(deleteUrl, customerName) {
   Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete ${customerName}. Aksi Ini Juga Memicu Penghapusan Data Invoice Dan Transaksi Custumer.`,
+      text: `You are about to delete?. Aksi Ini Juga Memicu Penghapusan Data Invoice Dan Transaksi Custumer.`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',

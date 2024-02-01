@@ -5,19 +5,27 @@ namespace App\Http\Controllers\Portal;
 
 use Carbon\Carbon;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\ItemInvoice;
 use App\Models\FinancialTransaction;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Menu;
+use App\Models\MenuSub;
+use App\Models\MenuSubsChild;
+use App\Models\UserRole;
+use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
 use PDF;
 
 class ProductController extends Controller
@@ -27,6 +35,13 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         if ($request->ajax()) {
             $keuangan = Product::orderBy('created_at', 'desc')->get();
     
@@ -58,10 +73,21 @@ class ProductController extends Controller
         $inProductCount = Product::where('status', '=', 'inactive')->count();
         $categor        = Category::all()->pluck('nama')->toArray();
 
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
     
         $additionalData = [
             'title'         => 'Product & Stock',
             'subtitle'      => 'Index',
+            'menus'         => $menus,
+            'subMenus'      => $subMenus,
+            'childSubMenus' => $childSubMenus,
             'categories'    => $categories, 
             'cateCount'     => $cateCount, 
             'productData'   => $productData,
@@ -183,18 +209,33 @@ class ProductController extends Controller
         ]);
     }
     
-
-
-
-
     public function indexCategory()
     {
+
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         $categories = Category::all();        
 
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
         $additionalData = [
-            'title'      => 'Product & Stock',
-            'subtitle'   => 'Categories',
-            'categories' => $categories, // Perbaikan disini
+            'title'         => 'Product',
+            'subtitle'      => 'Categories',
+            'categories'    => $categories,
+            'menus'         => $menus,
+            'subMenus'      => $subMenus,
+            'childSubMenus' => $childSubMenus,
         ];
     
         return view('Konten/Produk/categoryProduk', $additionalData);

@@ -4,14 +4,22 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\ItemInvoice;
 use App\Models\FinancialTransaction;
+use App\Models\Menu;
+use App\Models\MenuSub;
+use App\Models\MenuSubsChild;
+use App\Models\UserRole;
+use App\Models\AccessMenu;
+use App\Models\AccessSub;
+use App\Models\AccessSubChild;
 use Carbon\Carbon;
 use PDF;
 
@@ -21,6 +29,12 @@ class KeuanganController extends Controller
 
     public function showKeuanganIndex(Request $request)
     {
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+
         if ($request->ajax()) {
             $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
 
@@ -39,7 +53,7 @@ class KeuanganController extends Controller
 
             return response()->json(['data' => $formattedKeuangan]);
         }
-        //QUERY
+       
         $today                  = Carbon::today();
         $yesterday              = Carbon::yesterday();
 
@@ -96,9 +110,21 @@ class KeuanganController extends Controller
             $percentageTotal = (($incomeTotal - $outcomeTotal) / $outcomeTotal) * 100;
         }
 
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
         $additionalData = [
-            'title'                     => 'Manajemen & Bisnis',
+            'title'                     => 'Bisnis',
             'subtitle'                  => 'Keuangan',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
             'totalToday'                => $totalIncomeToday,
             'totalYesterday'            => $totalIncomeYesterday,
             'percentageIncome'          => $percentageIncome,
@@ -117,8 +143,6 @@ class KeuanganController extends Controller
 
         return view('Konten/Keuangan/keuangan', $additionalData);
     }   
-
-   // KeuanganController.php
 
    public function addNewTransaction(Request $request)
    {

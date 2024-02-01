@@ -156,6 +156,7 @@ $(function () {
 });
 
 
+
 function simplifyNumber(value) {
   if (value === 0) {
       return 'Rp. 0';
@@ -332,10 +333,57 @@ function confirmDelete(deleteUrl, barang) {
   return false; // Prevent the default link behavior
 }
 
+
+
+// Membuat fungsi untuk menangani peristiwa perubahan tanggal
+// Membuat fungsi untuk menangani peristiwa perubahan tanggal
+function handleDateChange(dateId, dateType) {
+  var dateElement = document.getElementById(dateId);
+
+  dateElement.addEventListener('change', function () {
+      // Mendapatkan nilai tanggal yang baru
+      var newDate = this.value;
+
+      // Mengatur header CSRF token
+      $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+      });
+
+      // Mengirim data ke controller menggunakan AJAX (jQuery)
+      $.ajax({
+          url: '/update-invoice-dates',
+          type: 'POST',
+          data: {
+              invoice_id: invoiceNumber,
+              new_date: newDate,
+              date_type: dateType
+          },
+          success: function (response) {
+              // Menampilkan SweetAlert jika perubahan tanggal berhasil
+              if (response.success) {
+                  showSweetAlert(response);
+              }
+          },
+          error: function (error) {
+              console.error(error);
+          }
+      });
+  });
+}
+
+// Menangani peristiwa perubahan untuk tanggal created_at
+handleDateChange('created_at', 'created_at');
+
+// Menangani peristiwa perubahan untuk tanggal due_date
+handleDateChange('due_date', 'due_date');
+
+// Menampilkan SweetAlert berdasarkan respons
 function showSweetAlert(response) {
   Swal.fire({
       icon: response.success ? 'success' : 'error',
-      title: response.title,   
+      title: response.title,
       text: response.message,
   });
 }
