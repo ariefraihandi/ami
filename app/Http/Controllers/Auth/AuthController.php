@@ -52,7 +52,7 @@ class AuthController extends Controller
                     'message' => "Hallo, $user->name. Selamat datang! Semangat berkerja.",
                 ];
     
-                return redirect('/custumer')->with('response', $response);
+                return redirect('/customer')->with('response', $response);
             } else {
                 // Kredensial berhasil tetapi status tidak memenuhi syarat
                 Auth::logout();
