@@ -40,7 +40,7 @@ class MenuController extends Controller
         $user = Auth::user();
         if (!$user) {
           
-            return redirect('/login');
+            return redirect('/');
         }
 
         $menu           = Menu::all();
@@ -182,7 +182,7 @@ class MenuController extends Controller
         $user = Auth::user();
         if (!$user) {
           
-            return redirect('/login');
+            return redirect('/');
         }
 
         $menu           = Menu::all();
@@ -385,7 +385,7 @@ class MenuController extends Controller
         $user = Auth::user();
         if (!$user) {
           
-            return redirect('/login');
+            return redirect('/');
         }
         
         $menu           = Menu::all();
@@ -525,6 +525,12 @@ class MenuController extends Controller
     
     public function showRoleIndex(Request $request)
     {       
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/');
+        }
+        
         $menu           = Menu::all();
         $menusub        = MenuSub::all();
         $menuchild      = MenuSubsChild::all();
@@ -534,9 +540,21 @@ class MenuController extends Controller
         $menuchildCount = $menuchild->count();
         $roleCount      = $role->count();
       
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        // Mengambil data berdasarkan hak akses
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
         $additionalData = [
-            'title'                 => 'User Role',
-            'subtitle'              => 'List',
+            'title'                 => 'Menu',
+            'subtitle'              => 'Role',
+            'menus'                 => $menus,
+            'subMenus'              => $subMenus,
+            'childSubMenus'         => $childSubMenus,
             'menu'                  => $menu,
             'menusub'               => $menusub,
             'menuchild'             => $menuchild,

@@ -92,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
 
     //menu role
     Route::get('/get-all-role',         [MenuController::class, 'getAllRole'])->name('getAll.role');
-    Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('role.index');
+    Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('menu.role');
     Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
     Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');
 });
