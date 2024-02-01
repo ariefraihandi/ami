@@ -74,7 +74,7 @@
 
                 <p class="text-center">
                 <span>Already have an account?</span>
-                <a href="{{ route('login.page') }}">
+                <a href="{{ route('login') }}">
                     <span>Sign in instead</span>
                 </a>
                 </p>
