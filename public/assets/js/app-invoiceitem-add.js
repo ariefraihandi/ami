@@ -209,12 +209,14 @@ $(document).ready(function () {
 });
 
 function bulatkanUkuran(ukuran) {
-  // Jika ukuran kurang dari atau sama dengan 100 cm, bulatkan ke 100 cm
-  if (ukuran <= 50) {
-      return 50;
+  // Jika ukuran kurang dari atau sama dengan 0 cm, bulatkan ke 1 cm
+  if (ukuran <= 0) {
+    return 100;
+  } else if (ukuran <= 50) {
+    return 50;
   } else {
-      // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
-      return Math.ceil((ukuran - 5) / 50) * 50;
+    // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
+    return Math.ceil((ukuran - 5) / 50) * 50;
   }
 }
 

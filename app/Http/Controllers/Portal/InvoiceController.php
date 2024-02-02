@@ -445,55 +445,71 @@ class InvoiceController extends Controller
     }
 
     public function deleteItem(Request $request)
-    {
+{
+    try {
         $itemId = $request->input('itemId');
-        
+
         if (!$itemId) {
-            return redirect()->back()->with('error', 'Item not found');
+            throw new \Exception('Item not found');
         }
-        
+
+        DB::beginTransaction(); // Start a database transaction
+
         // Fetch the item using the $itemId
         $item = ItemInvoice::find($itemId);
-        
+
         if (!$item) {
-            return redirect()->back()->with('error', 'Item not found');
+            throw new \Exception('Item not found');
         }
-        
-        // Get necessary information before deletion
-        $totalTransaction = ($item->harga_satuan * $item->qty) - $item->discount * ($item->tax / 100) * $item->ukuran;
-        $invoiceId = $item->invoice_id;
-        
-        // Delete the item invoice
+
+        // Delete the item first
         $item->delete();
-        
-        // Fetch all remaining items associated with the invoice
+
+        // Get the remaining items after deletion
+        $invoiceId = $item->invoice_id;
         $remainingItems = ItemInvoice::where('invoice_id', $invoiceId)->get();
-        
+
         // Recalculate the total amount for the invoice
         $totalAmount = 0;
         foreach ($remainingItems as $remainingItem) {
-            $totalAmount += ($remainingItem->harga_satuan * $remainingItem->qty) - $remainingItem->discount * ($remainingItem->tax / 100) * $remainingItem->ukuran;
+            // Calculate tax component
+            $taxMultiplier = $remainingItem->tax / 100;
+            $taxAmount = ($taxMultiplier != 0) ? $remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran * $taxMultiplier : 0;
+
+            // Calculate subtotal for each item
+            $subtotal = ($remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran) - $remainingItem->discount + $taxAmount;
+
+            $totalAmount += $subtotal;
         }
-        
-        // Find the invoice that has the same invoice_id as the item invoice
+
+        // Update the total amount for the invoice
         $invoice = Invoice::where('invoice_number', $invoiceId)->first();
-        
+
         if (!$invoice) {
-            return redirect()->back()->with('error', 'Invoice not found');
+            throw new \Exception('Invoice not found');
         }
-        
-        // Update the total amount in the invoice
+
         $invoice->total_amount = $totalAmount;
         $invoice->save();
-        
+
+        DB::commit(); // Commit the transaction
+
         $response = [
             'success' => true,
             'title' => 'Berhasil',
             'message' => 'Item Berhasil Dihapus'
         ];
-        
+
         return redirect()->back()->with('response', $response);
-    } 
+    } catch (\Exception $e) {
+        DB::rollBack(); // Rollback the transaction in case of an error
+
+        $errorMessage = $e->getMessage();
+
+        return redirect()->back()->with('error', $errorMessage);
+    }
+}
+
 
     public function updateInvoiceDates(Request $request)
     {
@@ -854,12 +870,15 @@ class InvoiceController extends Controller
         }
 
         // Jika angka kurang dari atau sama dengan 100, bulatkan ke 100
-        if ($ukuran <= 50) {
+        if ($ukuran <= 0) {
+            return 100;
+        } else if ($ukuran <= 50) {
             return 50;
         } else {
             // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
             return ceil(($ukuran - 5) / 50) * 50;
         }
     }
-    
+
+   
 }
