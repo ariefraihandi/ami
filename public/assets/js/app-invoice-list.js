@@ -262,7 +262,7 @@ $(function () {
 
               return (
                   '<div class="d-flex align-items-center">' +
-                  '<a href="' + '/invoice/item?invoiceNumber=' + invoiceNumber + '&customerUuid=' + uuid + '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' +
+                  '<a href="' + '/invoice/add?invoiceNumber=' + invoiceNumber + '&customerUuid=' + uuid + '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' +
                   '<a href="/delete-invoice?invoiceNumber=' + invoiceNumber + '" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="return confirmDelete(\'/delete-invoice?invoiceNumber=' + invoiceNumber + '\')"><i class="bx bx-trash mx-1"></i></a>' +                  
                   '<div class="dropdown">' +
                   '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +

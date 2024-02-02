@@ -854,8 +854,8 @@ class InvoiceController extends Controller
         }
 
         // Jika angka kurang dari atau sama dengan 100, bulatkan ke 100
-        if ($ukuran <= 100) {
-            return 100;
+        if ($ukuran <= 50) {
+            return 50;
         } else {
             // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
             return ceil(($ukuran - 5) / 50) * 50;
