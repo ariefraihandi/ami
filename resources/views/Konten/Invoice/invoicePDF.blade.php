@@ -43,7 +43,7 @@
             <tbody>
               <tr>
                 <td class="pe-3">Total Tagihan:</td>
-                <td class="fw-medium"><strong>Rp. {{number_format($invoice->total_amount)}}</strong></td>
+                <td class="fw-medium"><strong>Rp. {{number_format($invoice->total_amount)}},-</strong></td>
               </tr>
               <tr>
                 <td class="pe-3">Bank:</td>
