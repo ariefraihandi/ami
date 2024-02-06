@@ -617,7 +617,7 @@ class InvoiceController extends Controller
             ];
 
             // return response()->json(['message' => 'Item updated successfully']);
-            $url = url("/invoice/item?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid");
+            $url = url("/invoice/add?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid");
             return redirect($url)->with('response', $response);            
         } catch (\Exception $e) {
             // Log the error for debugging

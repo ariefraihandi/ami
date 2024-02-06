@@ -58,9 +58,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('itemData/{ItemId}',         [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
     //!!item fix route
 
-
+    // fix keuangan
     Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan');
     Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
+    Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
+    // !!fix keuangan
 
     //Product fix route
     Route::get('product',               [ProductController::class, 'index'])->name('product');

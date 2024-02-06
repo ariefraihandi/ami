@@ -46,7 +46,7 @@ class KeuanganController extends Controller
                     'status'                => $transaction->status,
                     'transaction_amount'    => number_format($transaction->transaction_amount),
                     'payment_method'        => $transaction->payment_method,  
-                    'created_at'            => Carbon::parse($transaction->created_at)->isoFormat('D MMM YY'),
+                    'created_at'            => Carbon::parse($transaction->transaction_date)->isoFormat('D MMM YY'),
                     'description'           => $transaction->description,  
                 ];
             });
@@ -61,6 +61,7 @@ class KeuanganController extends Controller
         $qoutcomeTotal          = FinancialTransaction::whereNotIn('status', [1, 2, 3])->get();
         $kasToday               = FinancialTransaction::whereIn('status', [6])->get();
         $totalkas               = $kasToday->sum('transaction_amount');
+        $transaction            = FinancialTransaction::all();
         // dd($kasToday);
         
         $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
@@ -140,8 +141,8 @@ class KeuanganController extends Controller
             'totalIncome'               => $incomeTotal,
             'totalOutcome'              => $outcomeTotal,
             'percentageTotal'           => $percentageTotal,
-            
-            'totalkas'           => $totalkas,
+            'transaction'               => $transaction,
+            'totalkas'                  => $totalkas,
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);
@@ -195,38 +196,34 @@ class KeuanganController extends Controller
        }
    }
 
+   public function editTransaction(Request $request)
+{
+    $request->validate([
+        'transactionDate' => 'required|date',
+        'id' => 'required|exists:financial_transactions,id',
+    ]);
 
-    
-    public function create()
-    {
-        // Tampilkan form untuk membuat data baru
-        return view('create_view');
+    try {
+        // Retrieve the transaction based on the provided ID
+        $transaction = FinancialTransaction::findOrFail($request->input('id'));
+
+        $transaction->update([
+            'transaction_date' => \Carbon\Carbon::parse($request->input('transactionDate'))->format('Y-m-d'),
+        ]);
+
+        return redirect()->back()->with('success', 'Transaction updated successfully');
+    } catch (\Exception $e) {
+        // Handle the exception if the update fails
+        $response = [
+            'success' => false,
+            'title' => 'Error',
+            'message' => $e->getMessage(),
+        ];
+
+        return redirect()->back()->with('response', $response);
     }
+}
 
-
-    public function edit($id)
-    {
-        // Ambil data berdasarkan ID untuk diedit
-        $data = YourModel::findOrFail($id);
-
-        return view('edit_view', compact('data'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        // Validasi data dan update ke database
-        YourModel::findOrFail($id)->update($request->all());
-
-        return redirect()->route('your.index')->with('success', 'Data berhasil diupdate!');
-    }
-
-    public function destroy($id)
-    {
-        // Hapus data dari database
-        YourModel::findOrFail($id)->delete();
-
-        return redirect()->route('your.index')->with('success', 'Data berhasil dihapus!');
-    }
 
     private function getSourceReceiver($status)
     {

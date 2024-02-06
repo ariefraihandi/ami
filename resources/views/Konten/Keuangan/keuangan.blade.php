@@ -197,6 +197,38 @@
   </div>
 </div>
 <!--/ Add New Transaction -->
+
+<!-- Edit Transaction -->
+@foreach($transaction as $item)
+  <div class="modal fade" id="editTransactionModal{{$item->id}}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
+      <div class="modal-content p-3 p-md-5">
+        <div class="modal-body">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="text-center mb-4">
+            <h3>Edit Transaction</h3>
+            <p>Add new transaction details</p>
+          </div>
+          <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
+            @csrf
+            <div class="col-12">
+              <label class="form-label" for="transactionDate">Transaction Date</label>
+              <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="{{ \Carbon\Carbon::parse($item->transaction_date)->format('Y-m-d') }}" />
+            </div>
+          
+            <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id	}}" />
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
+                <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
+
+<!--/ Edit Transaction -->
 @endsection
 
 
@@ -316,18 +348,14 @@
                   var id = full.id;
 
                   return (
-                      '<div class="d-flex align-items-center">' +
-                      '<a href="#" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Edit"><i class="bx bxs-message-square-edit mx-1"></i></a>' +
-                      '<a href="#"  data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="return confirm(\'Are you sure?\')"><i class="bx bx-trash mx-1"></i></a>' +                  
-                      '<div class="dropdown">' +
-                      '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
-                      '<div class="dropdown-menu dropdown-menu-end">' +
-                      '<a href="javascript:;" class="dropdown-item">Download</a>' +
-                      '<a href="app-invoice-edit.html" class="dropdown-item">Send Mail</a>' +
-                      '<a href="javascript:;" class="dropdown-item">Duplicate</a>' +                      
-                      '</div>' +
-                      '</div>' +
-                      '</div>'
+                    '<div class="d-flex align-items-center">' +
+                        '<a href="#" class="text-body" data-bs-toggle="modal" data-bs-target="#editTransactionModal' + id + '">' +
+                            '<i class="bx bxs-message-square-edit mx-1"></i>' +
+                        '</a>' +
+                        '<a href="#" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="return confirm(\'Are you sure?\')">' +
+                            '<i class="bx bx-trash mx-1"></i>' +
+                        '</a>' +
+                    '</div>'
                   );
               }
             },       
@@ -506,4 +534,7 @@
       });
   }
   </script>
+
+
+
 @endpush

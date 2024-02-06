@@ -269,7 +269,7 @@
                     Hapus
                 </span>
             </a>
-              <a href="/invoice" class="btn btn-warning d-grid w-100 mb-3">
+              <a href="{{ route('invoice.list') }}" class="btn btn-warning d-grid w-100 mb-3">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                   <i class="bx bxs-left-arrow-circle bx-xs me-1"></i>
                   Back
