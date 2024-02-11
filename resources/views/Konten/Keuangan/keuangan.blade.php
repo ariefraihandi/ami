@@ -82,7 +82,7 @@
                       @else
                         <span class="badge bg-label-secondary">{{ number_format($percentageMargin, 1) }}% </span>
                       @endif
-                      {{-- <span class="text-muted me-2"> vs. yesterday</span> --}}
+                    
                   </div>
                   <div class="avatar me-sm-4">
                     <span class="avatar-initial rounded bg-label-secondary">
@@ -96,16 +96,8 @@
                   <div>
                     <h6 class="mb-2">Kas</h6>
                     <h4 class="mb-2">Rp.  {{ number_format($totalkas) }}</h4>
-                    <span class="text-muted me-2">Outcome Rp. {{ number_format($totalOutcome) }}</span>
-                    <p class="mb-0">
-                      @if ($percentageTotal < 0)
-                      <span class="badge bg-label-success">{{ number_format($percentageTotal, 1) }}% </span>
-                    @elseif ($percentageTotal > 0)
-                      <span class="badge bg-label-danger">+ {{ number_format($percentageTotal, 1) }}% </span>
-                    @else
-                      <span class="badge bg-label-secondary">{{ number_format($percentageTotal, 1) }}% </span>
-                    @endif                    
-                    </p>
+                    <span class="text-muted me-2">Sisa Rp. {{ number_format($sisaTidakStor) }}</span>
+                    
                   </div>
                   <div class="avatar">
                     <span class="avatar-initial rounded bg-label-secondary">
@@ -114,7 +106,6 @@
                   </div>
                 </div>
               </div>
-              
             </div>
           </div>
         </div>
@@ -215,8 +206,13 @@
               <label class="form-label" for="transactionDate">Transaction Date</label>
               <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="{{ \Carbon\Carbon::parse($item->transaction_date)->format('Y-m-d') }}" />
             </div>
+            <div class="col-12">
+              <label class="form-label" for="amount">Jumlah</label>
+              <input type="text" id="amount" name="amount" class="form-control" value="{{number_format($item->transaction_amount),0}}" />
+            </div>
           
-            <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id	}}" />
+            <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id}}" />
+            <input type="hidden" class="form-control" id="invoice_number" name="invoice_number" value="{{$item->reference_number}}" />
             <div class="col-12 text-center">
                 <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
                 <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
@@ -227,314 +223,47 @@
     </div>
   </div>
 @endforeach
-
 <!--/ Edit Transaction -->
+
+<div class="modal fade" id="sendReportModal" tabindex="-1" aria-labelledby="sendReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sendReportModalLabel">Send Report</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Select report type:</p>
+        <select id="reportType" class="form-select mb-3">
+          <option value="daily">Harian</option>
+          <option value="weekly">Mingguan</option>
+          <option value="monthly">Bulanan</option>
+          <option value="yearly">Tahunan</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="sendReport()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 
 
 @push('footer-script')
 <script src="{{ asset('assets') }}/vendor/libs/moment/moment.js"></script>
 <script src="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
+@endpush
 
-
+@push('footer-Sec-script')
+<script src="{{ asset('assets') }}/js/keuangan.js"></script>
 <script>
-  $(document).ready(function () {
-    var dt_keuangan_table = $('#dataTable').DataTable({
-        ajax: "{{ url()->current() }}",
-        success: function (data) {
-            console.log("Ajax Response:", data);
-
-            // Add additional console logs if needed
-            console.log("Reference Number:", data[0].reference_number);
-            console.log("Source Receiver:", data[0].source_receiver);
-            console.log("Status:", data[0].status); // Add this line to log the 'status'
-        },
-        error: function (xhr, status, error) {
-            console.error("Ajax Error:", status, error);
-        },
-        columns: [
-            {
-              data: null,
-              targets: 0,
-              render: function (data, type, full, meta) {
-                return meta.row + 1;
-              }
-            },
-            {
-                data: 'reference_number',
-                targets: 1,
-                render: function (data, type, full, meta) {
-                    var sourceReceiver = full.source_receiver;
-                    var referenceNumber = full.reference_number;                
-                    // Creates full output for row
-                    return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
-                }
-            },         
-            {
-              data: 'transaction_amount',
-              targets: 2,
-              render: function (data, type, full, meta) {
-                  var transaction_amount = full.transaction_amount;
-                  
-                  // Creates full output for row
-                  return '<div class="text-center">'+ ' Rp. ' + transaction_amount +'</div>';
-              }
-            },    
-            {
-              data: 'status',
-              targets: 3,
-              render: function (data, type, full, meta) {
-                  var status = full.status;
-                  var badgeClass = '';
-
-                  switch (String(status)) {
-                      case '1':
-                      case '2':
-                      case '3':
-                          badgeClass = 'bg-label-primary';
-                          status = 'Invoice';
-                          break;
-                      case '4':
-                          badgeClass = 'bg-label-danger';
-                          status = 'Operational';
-                          break;
-                      case '5':
-                          badgeClass = 'bg-label-warning';
-                          status = 'Ambilan';
-                          break;
-                      case '6':
-                          badgeClass = 'bg-label-secondary';
-                          status = 'Setoran Kas';
-                          break;
-                      case '7':
-                          badgeClass = 'bg-label-success';
-                          status = 'Top Up';
-                          break;
-                      default:
-                          badgeClass = 'bg-label-secondary';
-                          status = status ? status : 'Unknown';
-                  }
-
-                  // Ensure the correct HTML structure
-                  return '<div class="text-center"><span class="badge ' + badgeClass + '">' + status + '</span></div>';
-              }
-            },
-            {
-              data: 'created_at',
-              targets: 5,
-              render: function (data, type, full, meta) {
-                  var created_at = full.created_at;
-                  
-                  // Creates full output for row
-                  return '<div class="text-center">'+ created_at +'</div>';
-              }
-            },    
-            {
-              data: 'description',
-              targets: 6,
-              render: function (data, type, full, meta) {
-                  var description = full.description;
-                  
-                  // Creates full output for row
-                  return '<div class="text-center">'+ description +'</div>';
-              }
-            },    
-            {
-              targets: -1,
-              title: 'Actions',
-              searchable: false,
-              orderable: false,
-              render: function (data, type, full, meta) {
-                  var id = full.id;
-
-                  return (
-                    '<div class="d-flex align-items-center">' +
-                        '<a href="#" class="text-body" data-bs-toggle="modal" data-bs-target="#editTransactionModal' + id + '">' +
-                            '<i class="bx bxs-message-square-edit mx-1"></i>' +
-                        '</a>' +
-                        '<a href="#" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="return confirm(\'Are you sure?\')">' +
-                            '<i class="bx bx-trash mx-1"></i>' +
-                        '</a>' +
-                    '</div>'
-                  );
-              }
-            },       
-        ],
-        order: [[0, 'asc']],       
-      dom:
-      '<"row mx-1"' +
-      '<"col-12 col-md-6 d-flex align-items-center justify-content-center justify-content-md-start gap-3"l<"dt-action-buttons text-xl-end text-lg-start text-md-end text-start mt-md-0 mt-3"B>>' +
-      '<"col-12 col-md-6 d-flex align-items-center justify-content-end flex-column flex-md-row pe-3 gap-md-3"f<"transaction_date_filter mb-3 mb-md-0"><"transaction_status">>' + '>t' + '<"row mx-2"' + '<"col-sm-12 col-md-6"i>' + '<"col-sm-12 col-md-6"p>' + '>',
-
-      language: {
-        sLengthMenu: '_MENU_',
-        search: '',
-        searchPlaceholder: 'Search Invoice'
-      },
-      buttons: [
-          {
-            text: '<i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Add Transaction</span>',
-            className: 'btn btn-primary',
-            action: function (e, dt, button, config) {
-                // Tampilkan Modal
-                $('#addNewTransactionModal').modal('show');
-            }
-          }
-        ],
-            
-        initComplete: function () {
-      var table = this.api();
-
-      table.columns(5).every(function () {
-          var column = this;
-          var select = $('<select id="TransactionDateFilter" class="form-select"><option value="">All Dates</option></select>')
-              .appendTo('.transaction_date_filter')
-              .on('change', function () {
-                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                  // Clear existing filters
-                  $.fn.dataTable.ext.search = [];
-
-                  // Apply the custom filter function
-                  if (val) {
-                      $.fn.dataTable.ext.search.push(dataTableTransactionDateFilter);
-                  }
-
-                  // Redraw the table
-                  table.draw();
-              });
-
-          var dateFilterOptions = [
-              { value: 'today', label: 'Today' },
-              { value: 'this_week', label: 'This Week' },
-              { value: 'this_month', label: 'This Month' },
-              // Add more options if needed
-          ];
-
-          dateFilterOptions.forEach(function (option) {
-              select.append('<option value="' + option.value + '">' + option.label + '</option>');
-          });
-      });
-
-      function dataTableTransactionDateFilter(settings, data, dataIndex) {
-        var currentDate = new Date();
-        var dateParts = data[4].split(' '); // Gunakan indeks 4 karena kolom tanggal berada di indeks 4
-        var day = parseInt(dateParts[0], 10);
-        var month = getMonthIndex(dateParts[1]);
-        var year = 2000 + parseInt(dateParts[2], 10);
-        var transactionDate = new Date(year, month, day);
-
-        var filterType = $('#TransactionDateFilter').val();
-
-        switch (filterType) {
-            case 'today':
-                return transactionDate.toDateString() === currentDate.toDateString();
-            case 'this_week':
-                var oneDay = 24 * 60 * 60 * 1000;
-                var diffDays = Math.round(Math.abs((currentDate - transactionDate) / oneDay));
-                return diffDays <= 7;
-            case 'this_month':
-                return transactionDate.getMonth() === currentDate.getMonth() && transactionDate.getFullYear() === currentDate.getFullYear();
-            default:
-                return true; // No filter
-        }
-      }
-
-      function getMonthIndex(monthAbbreviation) {
-          var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-          return months.indexOf(monthAbbreviation);
-      }
-
-      table.columns(3).every(function () {
-              var column = this;
-              var select = $(
-                  '<select id="StatusFilter" class="form-select"><option value="">Status</option></select>'
-              )
-                  .appendTo('.transaction_status')
-                  .on('change', function () {
-                      var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                      column.search(val ? '^' + val + '$' : '', true, false).draw();
-                  });
-
-              var statusOptions = ['Invoice', 'Operational', 'Ambilan', 'Setoran Kas', 'Top Up'];
-
-              statusOptions.forEach(function (d) {
-                  select.append('<option value="' + d.toLowerCase() + '" class="text-capitalize">' + d + '</option>');
-              });
-          });
-
-      console.log('Init Complete Finished');
-    }
-
-    });
-
-    dt_invoice_table.on('draw.dt', function () {
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl, {
-          boundary: document.body
-        });
-      });
-    });
-
-    // Delete Record
-    $('.invoice-list-table tbody').on('click', '.delete-record', function () {
-      dt_invoice.row($(this).parents('tr')).remove().draw();
-    });
-
-    // Filter form control to default size
-    // ? setTimeout used for multilingual table initialization
-    setTimeout(() => {
-      $('.dataTables_filter .form-control').removeClass('form-control-sm');
-      $('.dataTables_length .form-select').removeClass('form-select-sm');
-    }, 300);
-  });
-</script>
-
-   
-<script>
-  // Function to format currency
-  function formatCurrency(input) {
-      const value = input.value.replace(/[^\d]/g, '');
-
-      // Format the number with currency symbol
-      const formattedValue = new Intl.NumberFormat('id-ID', {
-          style: 'currency',
-          currency: 'IDR',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0,
-      }).format(value);
-
-      // Set the formatted value to the input field
-      input.value = formattedValue.replace('Rp', '');
-  }
-</script>
-
-
-<script>
-  var sweetAlertData = @json(session('response'));
-
-  if (sweetAlertData.success) {
-      Swal.fire({
-          icon: 'success',
-          title: 'Berhasil!',
-          text: sweetAlertData.message,
-      }).then(function() {
-          // Kode tambahan setelah pengguna menutup SweetAlert
-      });
-  } else {
-      Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Terjadi kesalahan. ' + sweetAlertData.message, // Tampilkan pesan kesalahan dari server
-          customClass: {
-              confirmButton: 'btn btn-primary'
-          },
-          buttonsStyling: false
-      });
-  }
-  </script>
-
-
-
+  @if(session('response'))
+      var response = @json(session('response'));
+      showSweetAlert(response);
+  @endif
+</script>  
 @endpush

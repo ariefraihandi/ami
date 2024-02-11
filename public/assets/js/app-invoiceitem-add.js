@@ -24,20 +24,15 @@ $(function () {
         render: function (data, type, full, meta) {
           return '#' + data; // Menambahkan '#' sebelum kode_barang
         }
-      },
-      { 
-        data: 'barang', 
-        name: 'barang',
-        targets: 2
-      },
+      },      
       { 
         data: 'deskripsi', 
         name: 'deskripsi',
-        targets: 3
+        targets: 2,
       },
       {
         data: null,
-        targets: 4,
+        targets: 3,
         title: 'Actions',
         searchable: false,
         orderable: false,
@@ -45,33 +40,53 @@ $(function () {
             var itemId = full['id']; // Ganti 'id' dengan kunci yang sesuai pada data item
             return (
                 '<div class="d-flex align-items-center">' +
-                // '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-item-id="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' + 
+                '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Item" data-item-id="' + itemId + '"><i class="bx bx-edit mx-1"></i></a>' + 
                 '<a href="javascript:;" class="btn-open-delete-confirmation text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus Item" data-uuid="' + itemId + '" onclick="return confirmDelete(\'/delete-item?itemId=' + itemId + '\')"><i class="bx bx-trash mx-1"></i></a>' +
                 '</div>'
             );
         }
       },
-      { 
+      {
         data: null,
         name: 'ukuran',
-        targets: 5,
-        render: function (data, type, full, meta) {
-          return full['ukuran'] + ' m2';
+        targets: 4,
+        render: function(data, type, full, meta) {
+            if (full['ukurana'] == 0 || full['ukuranb'] == 0) {
+                return '-';
+            } else {
+                return full['ukuran'] + ' m2';
+            }
         }
       },
       { 
         data: 'qty', 
         name: 'qty',
-        targets: 6,
+        targets: 5,
       },
       { 
         data: 'harga_satuan', 
         name: 'harga_satuan',
-        targets: 7,
+        targets: 6,
         render: function (data, type, full, meta) {
           return simplifyNumber(data);
         }
       },
+      {
+        data: null,
+        name: 'total',
+        targets: 7,
+        render: function(data, type, full, meta) {
+            var hargaSatuan = full['harga_satuan'];
+            var qty = full['qty'];
+            var ukuran = full['ukuran'];
+            var discount = full['discount'];
+            var tax = full['tax'];
+    
+            var subTotal = (((hargaSatuan * qty * ukuran) - discount) * tax) + (hargaSatuan * qty * ukuran) - discount;
+    
+            return simplifyNumber(subTotal);
+        }
+      },    
       { 
         data: 'discount', 
         name: 'discount',
@@ -83,7 +98,7 @@ $(function () {
       { 
         data: 'tax', 
         name: 'tax',
-        targets: 9
+        targets: 9,
       },
     ],
     order: [[0, 'asc']],
@@ -159,10 +174,11 @@ $(function () {
 
 function simplifyNumber(value) {
   if (value === 0) {
-      return 'Rp. 0';
+    return '0';
   }
-  return 'Rp. ' + value.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
 }
+
 
 $(document).ready(function () {
   // Handle change in the select element
@@ -302,7 +318,13 @@ $(document).on('click', '.btn-open-edit-modal', function () {
       $('#editModal #deskripsi').val(itemData.deskripsi);
       $('#editModal #ukurana').val(itemData.ukurana);
       $('#editModal #ukuranb').val(itemData.ukuranb);
-      $('#editModal #harga_satuan').val(itemData.harga_satuan);
+      var hargaSatuanFormatted = itemData.harga_satuan;
+      if (hargaSatuanFormatted.endsWith('.00')) {
+        hargaSatuanFormatted = hargaSatuanFormatted.replace('.00', '');
+      }
+
+      // Format harga_satuan dengan number_format
+      $('#editModal #harga_satuan').val(number_format(hargaSatuanFormatted));
       $('#editModal #discount').val(itemData.discount);
       $('#editModal #tax').val(itemData.tax);
       $('#editModal #qty').val(itemData.qty);
@@ -316,6 +338,9 @@ $(document).on('click', '.btn-open-edit-modal', function () {
     }
   });
 });
+function number_format(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 function confirmDelete(deleteUrl, barang) {
   Swal.fire({
@@ -334,6 +359,7 @@ function confirmDelete(deleteUrl, barang) {
   });
   return false; // Prevent the default link behavior
 }
+
 
 
 

@@ -26,6 +26,25 @@ use PDF;
 
 class KeuanganController extends Controller
 {
+    public function getAllKeuangan()
+    {
+        $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
+    
+        $formattedKeuangan = $keuangan->map(function ($transaction) {
+            return [
+                'id'                    => $transaction->id,
+                'reference_number'      => $transaction->reference_number,
+                'source_receiver'       => $transaction->source_receiver,
+                'status'                => $transaction->status,
+                'transaction_amount'    => number_format($transaction->transaction_amount),
+                'payment_method'        => $transaction->payment_method,  
+                'created_at'            => Carbon::parse($transaction->transaction_date)->isoFormat('D MMM YY'), // Change 'transaction_date' to 'created_at'
+                'description'           => $transaction->description,  
+            ];
+        });
+    
+        return response()->json(['data' => $formattedKeuangan]);
+    }
 
     public function showKeuanganIndex(Request $request)
     {
@@ -35,24 +54,6 @@ class KeuanganController extends Controller
             return redirect('/login');
         }
 
-        if ($request->ajax()) {
-            $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
-
-            $formattedKeuangan = $keuangan->map(function ($transaction) {
-                return [
-                    'id'                    => $transaction->id,
-                    'reference_number'      => $transaction->reference_number,
-                    'source_receiver'       => $transaction->source_receiver,
-                    'status'                => $transaction->status,
-                    'transaction_amount'    => number_format($transaction->transaction_amount),
-                    'payment_method'        => $transaction->payment_method,  
-                    'created_at'            => Carbon::parse($transaction->transaction_date)->isoFormat('D MMM YY'),
-                    'description'           => $transaction->description,  
-                ];
-            });
-
-            return response()->json(['data' => $formattedKeuangan]);
-        }
        
         $today                  = Carbon::today();
         $yesterday              = Carbon::yesterday();
@@ -60,7 +61,7 @@ class KeuanganController extends Controller
         $qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
         $qoutcomeTotal          = FinancialTransaction::whereNotIn('status', [1, 2, 3])->get();
         $kasToday               = FinancialTransaction::whereIn('status', [6])->get();
-        $totalkas               = $kasToday->sum('transaction_amount');
+        $totalkas               = $kasToday->sum('transaction_amount'); //ini
         $transaction            = FinancialTransaction::all();
         // dd($kasToday);
         
@@ -85,6 +86,7 @@ class KeuanganController extends Controller
         $marginToday            = $totalIncomeToday - $totalOutcomeToday;      
         $marginYesterday        = $totalIncomeYesterday - $totalOutcomeYesterday;      
         
+        $sisaTidakStor          = $marginToday - $totalkas;        
         
         // Pesentage SUM
         $percentageIncome = 0;
@@ -129,6 +131,8 @@ class KeuanganController extends Controller
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,
+            'transaction'               => $transaction,
+
             'totalToday'                => $totalIncomeToday,
             'totalYesterday'            => $totalIncomeYesterday,
             'percentageIncome'          => $percentageIncome,
@@ -141,89 +145,168 @@ class KeuanganController extends Controller
             'totalIncome'               => $incomeTotal,
             'totalOutcome'              => $outcomeTotal,
             'percentageTotal'           => $percentageTotal,
-            'transaction'               => $transaction,
             'totalkas'                  => $totalkas,
+            'sisaTidakStor'             => $sisaTidakStor,
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);
     }   
 
-   public function addNewTransaction(Request $request)
-   {
-       try {
-           // Validasi request sesuai kebutuhan Anda
-           $request->validate([
-               'transactionAmount' => 'required',
-               'description' => 'required|string',
-               'paymentMethod' => 'required|string',
-               'status' => 'required|integer',
-               'transactionDate' => 'required|date',
-           ]);
-   
-           // Membersihkan nilai transactionAmount
-           $cleanedAmount = $this->cleanNumericInput($request->input('transactionAmount'));
-   
-           // Mengatur nilai source_receiver berdasarkan status
-           $sourceReceiver = $this->getSourceReceiver($request->input('status'));
-   
-           // Membuat reference_number dengan 5 karakter random
-           $referenceNumber = Str::random(5);
-   
-           // Lakukan operasi penyimpanan atau manipulasi data sesuai kebutuhan
-   
-           // Contoh menyimpan data ke database
-           $newTransaction = new FinancialTransaction([
-               'transaction_amount' => $cleanedAmount,
-               'description' => $request->input('description'),
-               'payment_method' => $request->input('paymentMethod'),
-               'status' => $request->input('status'),
-               'source_receiver' => $sourceReceiver,
-               'reference_number' => $referenceNumber,
-               'transaction_date' => $request->input('transactionDate'),
-               // Tambahkan field lain sesuai kebutuhan
-           ]);
-   
-           $newTransaction->save();
-           $response = [
-                'success' => true,
-                'message' => 'Transaksi berhasil disimpan.',
-            ];
-            return back()->with('response', $response)->withInput();
-        //    return response()->json(['message' => 'Transaction added successfully'], 200);
-       } catch (\Exception $e) {
-           // Tangani error jika terjadi
-           return response()->json(['error' => $e->getMessage()], 500);
-       }
-   }
+    public function addNewTransaction(Request $request)
+    {
+        try {
+            // Validasi request sesuai kebutuhan Anda
+            $request->validate([
+                'transactionAmount' => 'required',
+                'description' => 'required|string',
+                'paymentMethod' => 'required|string',
+                'status' => 'required|integer',
+                'transactionDate' => 'required|date',
+            ]);
+    
+            // Membersihkan nilai transactionAmount
+            $cleanedAmount = $this->cleanNumericInput($request->input('transactionAmount'));
+    
+            // Mengatur nilai source_receiver berdasarkan status
+            $sourceReceiver = $this->getSourceReceiver($request->input('status'));
+    
+            // Membuat reference_number dengan 5 karakter random
+            $referenceNumber = Str::random(5);
+    
+            // Lakukan operasi penyimpanan atau manipulasi data sesuai kebutuhan
+    
+            // Contoh menyimpan data ke database
+            $newTransaction = new FinancialTransaction([
+                'transaction_amount' => $cleanedAmount,
+                'description' => $request->input('description'),
+                'payment_method' => $request->input('paymentMethod'),
+                'status' => $request->input('status'),
+                'source_receiver' => $sourceReceiver,
+                'reference_number' => $referenceNumber,
+                'transaction_date' => $request->input('transactionDate'),
+                // Tambahkan field lain sesuai kebutuhan
+            ]);
+    
+            $newTransaction->save();
+            $response = [
+                    'success' => true,
+                    'message' => 'Transaksi berhasil disimpan.',
+                ];
+                return back()->with('response', $response)->withInput();
+            //    return response()->json(['message' => 'Transaction added successfully'], 200);
+        } catch (\Exception $e) {
+            // Tangani error jika terjadi
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-   public function editTransaction(Request $request)
-{
-    $request->validate([
-        'transactionDate' => 'required|date',
-        'id' => 'required|exists:financial_transactions,id',
-    ]);
-
-    try {
-        // Retrieve the transaction based on the provided ID
-        $transaction = FinancialTransaction::findOrFail($request->input('id'));
-
-        $transaction->update([
-            'transaction_date' => \Carbon\Carbon::parse($request->input('transactionDate'))->format('Y-m-d'),
+    public function editTransaction(Request $request)
+    {
+        $request->validate([
+            'transactionDate' => 'required|date',
+            'id' => 'required|exists:financial_transactions,id',
         ]);
 
-        return redirect()->back()->with('success', 'Transaction updated successfully');
-    } catch (\Exception $e) {
-        // Handle the exception if the update fails
-        $response = [
-            'success' => false,
-            'title' => 'Error',
-            'message' => $e->getMessage(),
-        ];
+        try {
+            // Retrieve the transaction based on the provided ID
+            $transaction = FinancialTransaction::findOrFail($request->input('id'));
+            $amount = $this->cleanNumericInput($request->input('amount'));
+            $transaction->update([
+                'transaction_date' => $request->input('transactionDate'),
+                'transaction_amount' => $amount,
+            ]);
 
-        return redirect()->back()->with('response', $response);
+            $invoiceId = $request->input('invoice_number');
+            $invoice = Invoice::where('invoice_number', $invoiceId)->first();
+
+            // Update panjar amount only if invoice is found
+            if ($invoice) {
+                $remainingItems = FinancialTransaction::where('reference_number', $invoiceId)->get();
+                $panjarAmount = 0;
+
+                foreach ($remainingItems as $remainingItem) {
+                    // Calculate total amount by summing up transaction amounts
+                    $panjarAmount += $remainingItem->transaction_amount;
+                }
+
+                // Update the total amount for the invoice
+                $invoice->panjar_amount = $panjarAmount;
+                $invoice->save();
+            }
+
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Transaksi Berhasil Diupdate'
+            ];
+
+            return redirect()->back()->with('response', $response);
+        } catch (\Exception $e) {
+            // Handle the exception if the update fails
+            $response = [
+                'success' => false,
+                'title' => 'Error',
+                'message' => $e->getMessage(),
+            ];
+
+            return redirect()->back()->with('response', $response);
+        }
     }
-}
 
+    public function delTrans(Request $request)
+    {
+        $id = $request->query('id');
+    
+        try {
+            // Ambil data transaksi berdasarkan id
+            $transaction = FinancialTransaction::findOrFail($id);
+            
+            // Hapus transaksi
+            $transaction->delete();
+    
+            // Cari faktur terkait
+            $invoice = Invoice::where('invoice_number', $transaction->reference_number)->first();       
+    
+            if ($invoice) {
+                $remainingItems = FinancialTransaction::where('reference_number', $invoice->invoice_number)->get();
+                $panjarAmount = 0;
+
+                foreach ($remainingItems as $remainingItem) {
+                    // Calculate total amount by summing up transaction amounts
+                    $panjarAmount += $remainingItem->transaction_amount;
+                }
+
+                // Update the total amount for the invoice
+                $invoice->panjar_amount = $panjarAmount;
+                $invoice->save();
+            }
+
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Transaksi berhasil dihapus'
+            ];
+    
+            return redirect()->back()->with('response', $response);
+        } catch (\Exception $e) {
+            // Tangani exception jika terjadi kesalahan
+            $response = [
+                'success' => false,
+                'title' => 'Error',
+                'message' => $e->getMessage(),
+            ];
+    
+            return redirect()->back()->with('response', $response);
+        }
+    }
+    
+    public function generatePDF()
+    {
+        
+        $pdf = PDF::loadView('Konten.Keuangan.report');
+
+        return $pdf->download('report.pdf');
+    }
 
     private function getSourceReceiver($status)
     {

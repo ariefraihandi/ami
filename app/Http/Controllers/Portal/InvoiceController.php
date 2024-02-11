@@ -147,8 +147,8 @@ class InvoiceController extends Controller
         $roleData = UserRole::where('id', $user->role)->first();
 
         $additionalData = [
-            'title'                     => 'Invoice List',
-            'subtitle'                  => 'Dashboard',
+            'title'                     => 'Invoice',
+            'subtitle'                  => 'List',
             'user'                      => $user,
             'role'                      => $roleData,
             'menus'                     => $menus,
@@ -259,6 +259,7 @@ class InvoiceController extends Controller
         $itemInvoice    = ItemInvoice::where('invoice_id', $invoiceNumber)->get();
         $invoiceData    = Invoice::where('invoice_number', $invoiceNumber)->get();
         $transaction    = FinancialTransaction::where('reference_number', $invoiceNumber)->get();
+        $transdetil     = FinancialTransaction::all();
         $products       = Product::all();
 
         if (!$customer) {
@@ -291,9 +292,7 @@ class InvoiceController extends Controller
 
         if ($firstItem) {
             $tax = $firstItem->tax . "%";
-        } else {
-            // Handle the case when no item with the given invoice_id is found
-            // You can set a default tax value or handle it based on your requirements
+        } else {         
             $tax = "0%";
         }
 
@@ -322,6 +321,7 @@ class InvoiceController extends Controller
             'itemInvoice'   => $itemInvoice,
             'dueDate'       => $formatDueDate,
             'transactions'  => $transaction,
+            'transdetil'  => $transdetil,
             'created_at'    => $formatCreated_at,
             'total_amount'  => $format_amount,
             'customerData'  => $customer,
@@ -335,7 +335,6 @@ class InvoiceController extends Controller
             'messageText' => 'Pesan Anda di sini', // Ubah sesuai dengan pesan yang ingin ditampilkan
         ];
 
-       
         return view('Konten/Invoice/addItem', $additionalData);
     }
 
@@ -445,70 +444,70 @@ class InvoiceController extends Controller
     }
 
     public function deleteItem(Request $request)
-{
-    try {
-        $itemId = $request->input('itemId');
+    {
+        try {
+            $itemId = $request->input('itemId');
 
-        if (!$itemId) {
-            throw new \Exception('Item not found');
+            if (!$itemId) {
+                throw new \Exception('Item not found');
+            }
+
+            DB::beginTransaction(); // Start a database transaction
+
+            // Fetch the item using the $itemId
+            $item = ItemInvoice::find($itemId);
+
+            if (!$item) {
+                throw new \Exception('Item not found');
+            }
+
+            // Delete the item first
+            $item->delete();
+
+            // Get the remaining items after deletion
+            $invoiceId = $item->invoice_id;
+            $remainingItems = ItemInvoice::where('invoice_id', $invoiceId)->get();
+
+            // Recalculate the total amount for the invoice
+            $totalAmount = 0;
+            foreach ($remainingItems as $remainingItem) {
+                // Calculate tax component
+                $taxMultiplier = $remainingItem->tax / 100;
+                $taxAmount = ($taxMultiplier != 0) ? $remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran * $taxMultiplier : 0;
+
+                // Calculate subtotal for each item
+                $subtotal = ($remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran) - $remainingItem->discount + $taxAmount;
+
+                $totalAmount += $subtotal;
+            }
+
+            // Update the total amount for the invoice
+            $invoice = Invoice::where('invoice_number', $invoiceId)->first();
+
+            if (!$invoice) {
+                throw new \Exception('Invoice not found');
+            }
+
+            $invoice->total_amount = $totalAmount;
+            $invoice->save();
+
+            DB::commit(); // Commit the transaction
+
+            $response = [
+                'success' => true,
+                'title' => 'Berhasil',
+                'message' => 'Item Berhasil Dihapus'
+            ];
+
+            return redirect()->back()->with('response', $response);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction in case of an error
+
+            $errorMessage = $e->getMessage();
+
+            return redirect()->back()->with('error', $errorMessage);
         }
-
-        DB::beginTransaction(); // Start a database transaction
-
-        // Fetch the item using the $itemId
-        $item = ItemInvoice::find($itemId);
-
-        if (!$item) {
-            throw new \Exception('Item not found');
-        }
-
-        // Delete the item first
-        $item->delete();
-
-        // Get the remaining items after deletion
-        $invoiceId = $item->invoice_id;
-        $remainingItems = ItemInvoice::where('invoice_id', $invoiceId)->get();
-
-        // Recalculate the total amount for the invoice
-        $totalAmount = 0;
-        foreach ($remainingItems as $remainingItem) {
-            // Calculate tax component
-            $taxMultiplier = $remainingItem->tax / 100;
-            $taxAmount = ($taxMultiplier != 0) ? $remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran * $taxMultiplier : 0;
-
-            // Calculate subtotal for each item
-            $subtotal = ($remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran) - $remainingItem->discount + $taxAmount;
-
-            $totalAmount += $subtotal;
-        }
-
-        // Update the total amount for the invoice
-        $invoice = Invoice::where('invoice_number', $invoiceId)->first();
-
-        if (!$invoice) {
-            throw new \Exception('Invoice not found');
-        }
-
-        $invoice->total_amount = $totalAmount;
-        $invoice->save();
-
-        DB::commit(); // Commit the transaction
-
-        $response = [
-            'success' => true,
-            'title' => 'Berhasil',
-            'message' => 'Item Berhasil Dihapus'
-        ];
-
-        return redirect()->back()->with('response', $response);
-    } catch (\Exception $e) {
-        DB::rollBack(); // Rollback the transaction in case of an error
-
-        $errorMessage = $e->getMessage();
-
-        return redirect()->back()->with('error', $errorMessage);
     }
-}
 
 
     public function updateInvoiceDates(Request $request)
@@ -568,67 +567,95 @@ class InvoiceController extends Controller
         DB::beginTransaction();
 
         try {
-            $itemId = $request->input('id');
-            $item = ItemInvoice::findOrFail($itemId);
+            // Validasi input
+            $request->validate([
+                'id' => 'required',
+            ]);
 
-            // Save old values for potential rollback
+            // Temukan item yang akan diperbarui
+            $item = ItemInvoice::findOrFail($request->id);
+
+            // Simpan nilai lama untuk rollback
             $oldHargaSatuan = $item->harga_satuan;
             $oldQty = $item->qty;
             $oldDiscount = $item->discount;
             $oldTax = $item->tax;
             $oldInvoiceId = $item->invoice_id;
-        
-            $item->discount = $request->input('discount');
-            $item->tax = $request->input('tax');
 
-            // Update item invoice with new values
-            $item->fill($request->all());
+            // Bersihkan dan format nilai input yang diperlukan
+            $hargaSatuan    = $this->cleanNumericInput($request->input('harga_satuan'));
+            $discount       = $this->cleanNumericInput($request->input('discount'));
+            $tax            = $this->cleanNumericInput($request->input('tax'));
+            $ukuranaInput   = $this->bulatkanUkuran($request->input('ukurana'));
+            $ukuranbInput   = $this->bulatkanUkuran($request->input('ukuranb'));
+
+            $volume = ($ukuranaInput / 100) * ($ukuranbInput / 100);
+            $item->fill([
+                'kode_barang' => $request->input('kode_barang'),
+                'barang' => $request->input('barang'),
+                'deskripsi' => $request->input('deskripsi'),
+                'bulata' => $ukuranaInput,
+                'ukuran' => $volume,
+                'bulatb' =>  $ukuranbInput,
+                'ukurana' => $request->input('ukurana'),
+                'ukuranb' => $request->input('ukuranb'),
+                'qty' => $request->input('qty'),
+                'harga_satuan' => $hargaSatuan,
+                'discount' => $discount,
+                'tax' => $tax,
+            ]);
+
             $item->save();
 
-            // Recalculate total_amount
             $invoiceId = $item->invoice_id;
-            $itemsInInvoice = ItemInvoice::where('invoice_id', $invoiceId)->get();
+            $remainingItems = ItemInvoice::where('invoice_id', $invoiceId)->get();
+            
             $totalAmount = 0;
+            foreach ($remainingItems as $remainingItem) {
+                // Calculate tax component
+                $taxMultiplier = $remainingItem->tax / 100;
+                $taxAmount = ($taxMultiplier != 0) ? $remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran * $taxMultiplier : 0;
 
-            foreach ($itemsInInvoice as $invoiceItem) {
-                $totalAmount += ($invoiceItem->harga_satuan * $invoiceItem->qty) - $invoiceItem->discount + (($invoiceItem->harga_satuan * $invoiceItem->qty) - $invoiceItem->discount) * ($invoiceItem->tax / 100);
+                // Calculate subtotal for each item
+                $subtotal = ($remainingItem->harga_satuan * $remainingItem->qty * $remainingItem->ukuran) - $remainingItem->discount + $taxAmount;
+
+                $totalAmount += $subtotal;
             }
 
-            // Update total_amount in the invoice table
+            // Update the total amount for the invoice
             $invoice = Invoice::where('invoice_number', $invoiceId)->first();
 
             if (!$invoice) {
-                // Handle the case where the invoice is not found
-                DB::rollBack();
-                return response()->json(['error' => 'Invoice not found.'], 404);
+                throw new \Exception('Invoice not found');
             }
 
             $invoice->total_amount = $totalAmount;
             $invoice->save();
-
             DB::commit();
-
-            $invoiceNumber  = $request->input('invoice_id');
-            $customerUuid   = $request->input('uuid');
 
             $response = [
                 'success' => true,
-                'message' => 'Item updated successfully',
+                'title' => 'Berhasil',
+                'message' => 'Item Berhasil Diupdate'
             ];
 
-            // return response()->json(['message' => 'Item updated successfully']);
+            $invoiceNumber  = $request->input('invoice_id');
+            $customerUuid   = $request->input('uuid');
             $url = url("/invoice/add?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid");
-            return redirect($url)->with('response', $response);            
+            return redirect($url)->with('response', $response);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            Log::error('Failed to update item: ' . $e->getMessage());
-
-            // Rollback changes on any exception
+            // Rollback transaksi
             DB::rollBack();
 
-            return response()->json(['error' => 'Failed to update item.'], 500);
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => 'Item Gagal Diupdate'
+            ];
+            return redirect()->back()->with('response', $response);
         }
     }
+
 
     public function deleteInvoice(Request $request)
     {
