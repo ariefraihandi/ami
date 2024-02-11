@@ -301,12 +301,15 @@ class KeuanganController extends Controller
     }
     
     public function generatePDF()
-    {
-        
+{
+    try {
         $pdf = PDF::loadView('Konten.Keuangan.report');
-
         return $pdf->download('report.pdf');
+    } catch (\Exception $e) {
+        // Print error message
+        return response()->json(['error' => $e->getMessage()], 500);
     }
+}
 
     private function getSourceReceiver($status)
     {

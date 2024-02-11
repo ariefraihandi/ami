@@ -29,7 +29,7 @@
     <table class="header-table">
         <tr>
             <td>
-                <img src="{{ public_path('assets/img/icons/brands/ami-logo.png') }}" alt="AMI Logo" class="logo" width="100" height="100">
+                <img src="https://apps.atjehmediatama.co.id/assets/img/icons/brands/ami-logo.png" alt="AMI Logo">
             </td>
             <td>
                 <h1>CV Atjeh Mediatama Indonesia</h1>
@@ -59,6 +59,5 @@
             </tbody>
         </table>
     </div>
-
 </body>
 </html>
