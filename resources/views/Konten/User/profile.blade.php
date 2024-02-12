@@ -118,15 +118,8 @@
         <div class="card-body">
             <ul class="timeline">
                 @php
-                    $latestLogin = null;
+                    $latestLogin = $userActivities->sortByDesc('created_at')->first();
                 @endphp
-                @foreach($userActivities as $activity)
-                    @if ($activity->activity === 'Logged in' && !$latestLogin)
-                        @php
-                            $latestLogin = $activity;
-                        @endphp
-                    @endif
-                @endforeach
                 @if ($latestLogin)
                     <li class="timeline-item timeline-item-transparent">
                         <span class="timeline-point-wrapper">
@@ -155,6 +148,7 @@
             </ul>
         </div>
     </div>
+    
     
     
     
