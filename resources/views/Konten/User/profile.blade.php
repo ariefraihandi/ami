@@ -143,8 +143,8 @@
                             @endphp
                             @if ($deviceInfo[1] == 'Windows')
                                 <i class="bx bx-desktop"></i> <!-- Icon komputer untuk Windows -->
-                            @elseif (in_array($deviceInfo[1], ['iOS', 'Android']))
-                                <i class="bx bx-mobile"></i> <!-- Icon hp untuk iOS dan Android -->
+                            @else
+                                <i class="bx bxs-devices"></i> <!-- Icon hp untuk iOS dan Android -->
                             @endif
                         </div>
                     </li>
