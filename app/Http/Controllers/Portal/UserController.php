@@ -25,6 +25,7 @@ use App\Models\UserRole;
 use App\Models\AccessMenu;
 use App\Models\AccessSub;
 use App\Models\AccessSubChild;
+use App\Models\UserActivity; 
 
 class UserController extends Controller
 {
@@ -33,19 +34,18 @@ class UserController extends Controller
         $user = Auth::user();
         if (!$user) {
           
-            return redirect('/login');
+            return redirect('/');
         }
 
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
-        // dd($accessMenus);
+        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
     
-        // Mengambil data berdasarkan hak akses
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-        $roleData = UserRole::where('id', $user->role)->first();
+        $menus              = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData           = UserRole::where('id', $user->role)->first();
+        $userActivities     = UserActivity::where('user_id', $user->id)->get();
 
         $additionalData = [
             'title'                     => 'User',
@@ -55,6 +55,7 @@ class UserController extends Controller
             'childSubMenus'             => $childSubMenus,
             'user'                      => $user,
             'role'                      => $roleData,
+            'userActivities'            => $userActivities,
         ];
     
         return view('Konten/User/profile', $additionalData);
