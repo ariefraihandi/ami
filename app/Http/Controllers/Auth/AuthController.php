@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Models\Instansi;
 use App\Models\User;
+use App\Models\UserActivity;
+use Jenssegers\Agent\Facades\Agent;
 
 
 class AuthController extends Controller
@@ -43,6 +45,16 @@ class AuthController extends Controller
             $user = Auth::user();
     
             if ($user) {
+                $device = Agent::device();
+                $platform = Agent::platform();
+                $browser = Agent::browser();
+                
+                $userActivity = new UserActivity();
+                $userActivity->user_id = $user->id;
+                $userActivity->activity = 'Logged in';
+                $userActivity->ip_address = $request->ip();
+                $userActivity->device_info = "$device $platform $browser"; // Menggabungkan informasi perangkat dalam satu string
+                $userActivity->save();
                 session(['user_id' => $user->id, 'user_role' => $user->role]);
 
                 // Sweet Alert dengan pesan selamat datang
