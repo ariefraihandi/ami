@@ -86,7 +86,7 @@ class CustomerController extends Controller
                     ->exists();
 
                 $customer->active = $hasOrderLastMonth ? 'Active' : 'Inactive';
-                dd($hasOrderLastMonth);
+                
             });
     
             return response()->json(['data' => $customers]);
