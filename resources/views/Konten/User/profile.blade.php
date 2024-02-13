@@ -49,13 +49,7 @@
                 <span>Join Since</span>
               </div>
             </div>
-            <div class="d-flex align-items-start mt-3 gap-3">
-              <span class="badge bg-label-primary p-2 rounded"><i class="bx bx-customize bx-sm"></i></span>
-              <div>
-                <h5 class="mb-0">568</h5>
-                <span>Projects Done</span>
-              </div>
-            </div>
+            
           </div>
           <h5 class="pb-2 border-bottom mb-4">Details</h5>
           <div class="info-container">

@@ -80,12 +80,13 @@ class CustomerController extends Controller
                 $totalOrders = Invoice::where('customer_uuid', $customer->uuid)->count();
                 $customer->total_orders = $totalOrders;
 
-                $lastMonth = Carbon::now()->subMonth(2);
+                $lastMonth = Carbon::now()->subMonth(1);
                 $hasOrderLastMonth = Invoice::where('customer_uuid', $customer->uuid)
                     ->where('created_at', '>=', $lastMonth)
                     ->exists();
 
                 $customer->active = $hasOrderLastMonth ? 'Active' : 'Inactive';
+                dd($customer->active);
             });
     
             return response()->json(['data' => $customers]);
