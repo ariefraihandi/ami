@@ -110,6 +110,8 @@ Route::middleware(['auth'])->group(function () {
     
     
     // users Administrator
+    Route::get('/get-all-user',         [UserController::class, 'getAllUser'])->name('getAll.User');
     Route::get('/users',                [UserController::class, 'showUserAdminIndex'])->name('users');
+    Route::post('users',                [UserController::class, 'addUsers'])->name('add.users');
     //!! users Administrator
 });

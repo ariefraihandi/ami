@@ -595,7 +595,7 @@ class MenuController extends Controller
             $role->save();
 
             // Flash success response to the session
-            return redirect()->route('role.index')->with([
+            return redirect()->route('menu.role')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -604,7 +604,7 @@ class MenuController extends Controller
             ]);
         } catch (\Exception $e) {
             // Flash error response to the session
-            return redirect()->route('role.index')->with([
+            return redirect()->route('menu.role')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
@@ -627,7 +627,7 @@ class MenuController extends Controller
     
             $successMessage = 'Role Berhasil Dihapus';
     
-            return redirect()->route('role.index')->with([
+            return redirect()->route('menu.role')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
@@ -637,7 +637,7 @@ class MenuController extends Controller
         } catch (\Exception $e) {
             $errorMessage = 'Failed to delete Role records. ' . $e->getMessage();
     
-            return redirect()->route('role.index')->with([
+            return redirect()->route('menu.role')->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
