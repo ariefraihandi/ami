@@ -201,7 +201,6 @@ class MenuController extends Controller
         $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
         $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
     
-        // Mengambil data berdasarkan hak akses
         $menus          = Menu::whereIn('id', $accessMenus)->get();
         $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
@@ -316,59 +315,58 @@ class MenuController extends Controller
             ]);
         }
     }
-
+    
     public function editSubmenu(Request $request)
     {
         try {
-            // Validate the request data for submenu
-            $request->validate([
-                'submenu_name' => 'required|string|max:255',
-                'menu_id' => 'required|exists:menus,id', // Validate if the selected menu exists
+            // Validasi data yang diterima dari formulir
+            $validatedData = $request->validate([
+                'submenu_name' => 'required|string',
+                'menu_id' => 'required|numeric',
                 'url' => 'required|string',
                 'icon' => 'required|string',
+                'itemsub' => 'nullable|boolean',
+                'id' => 'required|numeric'
             ]);
 
-              // Fetch the last order value from the database and increment it
-              $lastOrder = Menu::max('order');
-              $order = $lastOrder + 1;
-    
-            // Create a new submenu
-            $submenu = new MenuSub([
-                'menu_id' => $request->input('menu_id'),
-                'title' => $request->input('submenu_name'),
-                'order' => $order,
-                'url' => $request->input('url'),
-                'icon' => $request->input('icon'),
-                'itemsub' => $request->has('itemsub') ? 1 : 0,
-                'status' => $request->has('status') ? 1 : 0,
-            ]);
-    
-            // Save the submenu
+            // Peroleh data dari formulir
+            $submenuName = $request->input('submenu_name');
+            $menuId = $request->input('menu_id');
+            $url = $request->input('url');
+            $icon = $request->input('icon');
+            $itemsub = $request->input('itemsub', 0); // Jika checkbox tidak dicentang, nilainya akan menjadi 0
+            $id = $request->input('id');
+
+            // Lakukan operasi yang diperlukan untuk mengedit submenu
+            $submenu = MenuSub::find($id);
+            if (!$submenu) {
+                throw new \Exception('Submenu tidak ditemukan');
+            }
+            $submenu->title = $submenuName;
+            $submenu->menu_id = $menuId;
+            $submenu->url = $url;
+            $submenu->icon = $icon;
+            $submenu->itemsub = $itemsub;
             $submenu->save();
 
-            $userMenu = new AccessSub([
-                'role_id' => 1,
-                'submenu_id' => $submenu->id, 
-            ]);
-
-            // Save the user_menu record
-            $userMenu->save();
-    
-            // Flash success response to the session
+            // Redirect ke halaman yang sesuai dengan pesan sukses
             return redirect()->route('menu.submenu')->with([
                 'response' => [
                     'success' => true,
                     'title' => 'Success',
-                    'message' => 'Submenu added successfully',
+                    'message' => 'Submenu berhasil dirubah',
                 ],
             ]);
+        } catch (ValidationException $e) {
+            // Tangani jika validasi gagal
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Flash error response to the session
-            return redirect()->route('menu.submenu')->with([
+            // Tangani jika terjadi kesalahan lain
+            return redirect()->back()->with([
                 'response' => [
                     'success' => false,
                     'title' => 'Error',
-                    'message' => 'Failed to add submenu. ' . $e->getMessage(),
+                    'message' => $e->getMessage(),
                 ],
             ]);
         }

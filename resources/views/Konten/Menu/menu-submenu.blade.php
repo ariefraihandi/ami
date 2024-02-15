@@ -284,6 +284,58 @@
             </div>
         </div>
     </div>
+
+    {{-- Edit Submenu --}}
+        @foreach($menusub as $item)
+            <div class="modal fade" id="modalEditSubmenus{{$item->id}}" tabindex="-1" aria-labelledby="modalEditSubmenusLabel{{$item->id}}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalEditSubmenusLabel{{$item->id}}">Edit Submenu</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editSubmenuForm{{$item->id}}" action="{{ route('edit.submenu') }}" method="post">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="submenuName" class="form-label">Submenu Name</label>
+                                    <input type="text" class="form-control" id="submenuName" name="submenu_name" value="{{$item->title}}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="menuId" class="form-label">Select Menu</label>
+                                    <select class="select2 form-select" id="menuId" name="menu_id" data-allow-clear="true" required>
+                                        <option value="">Select a menu</option>
+                                        @foreach($menu as $menuItem)
+                                            <option value="{{ $menuItem->id }}" @if($menuItem->id == $item->menu_id) selected @endif>{{ ucfirst($menuItem->menu_name) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>                        
+                                <div class="mb-3" style="display:none;">
+                                    <label for="order" class="form-label">Order</label>
+                                    <input type="number" class="form-control" id="order" name="order" value="1" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="url" class="form-label">URL</label>
+                                    <input type="text" class="form-control" id="url" name="url" value="{{$item->url}}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="icon" class="form-label">Icon</label>
+                                    <input type="text" class="form-control" id="icon" name="icon" value="{{$item->icon}}" required>
+                                </div>
+                            
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="itemSub" name="itemsub" value="1" @if($item->itemsub == 1) checked @endif>
+                                    <label class="form-check-label" for="itemSub">Enable Dropdown</label>
+                                </div>                
+                                <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id}}" required>        
+                                <button type="submit" class="btn btn-primary">Add Submenu</button>
+                            </form>
+                        </div>            
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    {{--// Edit Submenu --}}
 @endsection
 
 @push('footer-script')  

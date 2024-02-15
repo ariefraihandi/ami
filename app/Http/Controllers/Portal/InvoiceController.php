@@ -728,6 +728,7 @@ class InvoiceController extends Controller
                     $financialTransaction->payment_method = ($method == 1) ? 'Cash' : 'Transfer';
                     $financialTransaction->reference_number = $invoice->invoice_number;
                     $financialTransaction->status = 1;
+                    $financialTransaction->lunas = 1;
 
                     $financialTransaction->save();
 
@@ -749,6 +750,7 @@ class InvoiceController extends Controller
                     $financialTransaction->payment_method = ($method == 1) ? 'Cash' : 'Transfer';
                     $financialTransaction->reference_number = $invoice->invoice_number;
                     $financialTransaction->status = 2;
+                    $financialTransaction->lunas = 1;
 
                     $financialTransaction->save();
 
@@ -773,6 +775,7 @@ class InvoiceController extends Controller
                 $financialTransaction->payment_method = ($method == 1) ? 'Cash' : 'Transfer';
                 $financialTransaction->reference_number = $invoice->invoice_number;
                 $financialTransaction->status = 3;
+                $financialTransaction->lunas = 1;
 
                 $financialTransaction->save();
 

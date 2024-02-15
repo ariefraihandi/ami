@@ -97,15 +97,15 @@ $(document).ready(function () {
                     render: function (data, type, full, meta) {
                         var id = full.id;
                         var menuName = full.title;
-
+                
                         return (
                             '<div class="d-flex align-items-center">' +
                             '<a href="javascript:;" data-bs-toggle="tooltip" class="text-body" data-bs-placement="top" title="Hapus" onclick="confirmDelete(\'' + id + '\', \'/delete-submenu?id=' + id + '\', \'' + menuName + '\')"><i class="bx bx-trash mx-1"></i></a>' +
-                            '<a href="javascript:;" class="btn-open-edit-modal text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="Dummy Action 3" data-uuid="' + full.uuid + '"><i class="bx bx-edit mx-1"></i></a>' +
+                            '<a href="#modalEditSubmenus' + id + '" class="text-body" data-bs-toggle="modal" data-bs-placement="top" title="Edit"><i class="bx bx-edit mx-1"></i></a>' +
                             '</div>'
                         );
                     }
-                }
+                }               
             ],
             dom:
                 '<"card-header d-flex flex-wrap py-3"' +
