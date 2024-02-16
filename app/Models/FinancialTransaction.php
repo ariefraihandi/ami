@@ -19,5 +19,6 @@ class FinancialTransaction extends Model
         'payment_method',
         'reference_number',
         'status',
+        'lunas',
     ];
 }

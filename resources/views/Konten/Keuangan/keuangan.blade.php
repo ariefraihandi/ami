@@ -6,6 +6,8 @@
   <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+  <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/select2/select2.css" />
+  <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/animate-css/animate.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" />
 @endpush
 
@@ -151,8 +153,7 @@
                 <input type="text" class="form-control" id="transactionAmount" name="transactionAmount" placeholder="Transaction Amount" oninput="formatCurrency(this)" />
                 <span class="input-group-text">.00</span>
             </div>
-        </div>
-             
+          </div>  
           <div class="col-12">
               <label class="form-label" for="description">Description</label>
               <textarea id="description" name="description" class="form-control" placeholder="Description"></textarea>
@@ -165,23 +166,38 @@
               </select>
           </div>
           <div class="col-12">
-              <label class="form-label" for="status">Status</label>
-              <select id="status" name="status" class="form-select">
-                  <option value="4">Operational</option>
-                  <option value="5">Ambilan</option>
-                  <option value="6">Setoran Kas</option>
-                  <option value="7">Top Up</option>
-              </select>
+            <label class="form-label" for="status">Status</label>
+            <select id="status" name="status" class="form-select" onchange="showKaryawanSelect()">
+                <option value="4">Operational</option>
+                <option value="5">Ambilan</option>
+                <option value="8">Bonus</option>
+                <option value="6">Setoran Kas</option>
+                <option value="7">Top Up</option>
+            </select>
           </div>
+          
+          <div id="karyawanSelectDiv" style="display: none;">
+            <label class="form-label" for="karyawan">Karyawan</label>
+            <select id="karyawan" name="karyawan" class="form-select">
+                <?php foreach ($users as $user): ?>
+                    <option value="<?= $user->id ?>"><?= $user->name ?></option>
+                <?php endforeach; ?>
+            </select>
+          </div>
+       
           <div class="col-12">
               <label class="form-label" for="transactionDate">Transaction Date</label>
               <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="<?= date('Y-m-d') ?>" />
           </div>
+          <div class="col-12">            
+            <input type="checkbox" id="lunas" name="lunas" checked>
+            <label for="lunas"> Lunas</label>
+        </div>
           <div class="col-12 text-center">
               <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3" onclick="submitTransaction()">Submit</button>
               <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
           </div>
-      </form>
+        </form>
       
       </div>
     </div>
@@ -255,6 +271,7 @@
 @push('footer-script')
 <script src="{{ asset('assets') }}/vendor/libs/moment/moment.js"></script>
 <script src="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="{{ asset('assets') }}/vendor/libs/select2/select2.js"></script>
 <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
 @endpush
 

@@ -105,11 +105,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
     Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');
 
-    //user role
+    //user
     Route::get('/user/profile',         [UserController::class, 'index'])->name('user.profile');
-    //!!user role
-    
-    
+    Route::get('/user/gaji',            [UserController::class, 'showPayroll'])->name('gaji.profile');
+    //!!user
+
     // users Administrator
     Route::get('/get-all-user',         [UserController::class, 'getAllUser'])->name('getAll.User');
     Route::get('/users',                [UserController::class, 'showUserAdminIndex'])->name('users');

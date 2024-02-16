@@ -66,6 +66,10 @@ $(function () {
                 badgeClass = 'bg-label-success';
                 status = 'Top Up';
                 break;
+              case '8':
+                badgeClass = 'bg-label-info';
+                status = 'Bonus';
+                break;
               default:
                 badgeClass = 'bg-label-secondary';
                 status = status ? status : 'Unknown';
@@ -261,7 +265,34 @@ function confirmDelete(deleteUrl) {
           window.location.href = deleteUrl;
       }
   });
-  return false; // Prevent the default link behavior
+  return false; 
+}
+
+function showKaryawanSelect() {
+  var statusSelect = document.getElementById("status");
+  var karyawanSelectDiv = document.getElementById("karyawanSelectDiv");
+
+  if (statusSelect.value === "5" || statusSelect.value === "8") {
+      karyawanSelectDiv.style.display = "block";
+  } else {
+      karyawanSelectDiv.style.display = "none";
+  }
+}
+
+
+function formatCurrency(input) {
+  const value = input.value.replace(/[^\d]/g, '');
+
+  // Format the number with currency symbol
+  const formattedValue = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+  }).format(value);
+
+  // Set the formatted value to the specified input field
+  $(input).val(formattedValue.replace('Rp', ''));
 }
 
 function showSweetAlert(response) {

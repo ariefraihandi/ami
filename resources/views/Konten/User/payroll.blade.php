@@ -97,10 +97,10 @@
       <!-- User Pills -->
       <ul class="nav nav-pills flex-column flex-md-row mb-3">
         <li class="nav-item">
-          <a class="nav-link active" href="{{ route('user.profile') }}"><i class="bx bx-user me-1"></i>Account</a>
+          <a class="nav-link" href="{{ route('user.profile') }}"><i class="bx bx-user me-1"></i>Account</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('gaji.profile') }}"
+          <a class="nav-link active" href="{{ route('gaji.profile') }}"
             ><i class="bx bxs-wallet me-1"></i>Gaji</a>
         </li>      
         <li class="nav-item">
@@ -115,39 +115,39 @@
       <!--/ User Pills -->
       <!-- Activity Timeline -->
       <div class="card mb-4">
-        <h5 class="card-header">User Activity Timeline</h5>
+        <div class="card-body text-center">
+            <i class="bx bx-money bx-lg"></i>
+            <p>Pembayaran Gaji Selanjutnya:</p>
+            <h3>{{ \Carbon\Carbon::now()->addMonth()->startOfMonth()->format('d-m-Y') }}</h3>
+            <p>Sebesar:</p>
+            <h3>Rp. {{ number_format($user->salary + $totalBonus - $ambilan, 0, ',', '.') }},-</h3>
+        </div>
+    </div>  
+    <div class="card mb-4">
+        <h5 class="card-header">Riwayat Keuangan</h5>
         <div class="card-body">
             <ul class="timeline">
-              
-                @if ($latestLoginActivity)
-                  <li class="timeline-item timeline-item-transparent">
-                      <span class="timeline-point-wrapper">
-                          <span class="timeline-point @if($latestLoginActivity->activity === 'Logged in') timeline-point-success @else timeline-point-primary @endif"></span>
-                      </span>
-                      <div class="timeline-event">
-                          <div class="timeline-header mb-1">
-                              <h6 class="mb-0">{{ $latestLoginActivity->activity }}</h6>
-                              <small class="text-muted">{{ $latestLoginActivity->created_at }}</small>
-                          </div>
-                          <p class="mb-2">{{ $latestLoginActivity->ip_address }}</p>
-                          @php
-                              $deviceInfo = explode(' ', $latestLoginActivity->device_info);
-                          @endphp
-                          @if ($deviceInfo[1] == 'Windows')
-                              <i class="bx bx-desktop"></i>
-                          @else
-                              <i class="bx bxs-devices"></i>
-                          @endif
-                      </div>
-                  </li>
-                @endif
-              <li class="timeline-end-indicator">
-                  <i class="bx bx-check-circle"></i>
-              </li>
+                @foreach($riwayatKeuangan as $transaksi)
+                    <li class="timeline-item timeline-item-transparent">
+                        <span class="timeline-point-wrapper">
+                            <span class="timeline-point @if(strpos($transaksi->reference_number, 'ab') === 0) timeline-point-danger @elseif(strpos($transaksi->reference_number, 'bs') === 0) timeline-point-success @endif"></span>
+                        </span>
+                        <div class="timeline-event">
+                            <div class="timeline-header mb-1">
+                                <h6 class="mb-0">{{ $transaksi->description }}</h6>
+                                <small class="text-muted">{{ $transaksi->created_at->format('d M Y H:i') }}</small>
+                            </div>
+                            <p class="mb-2">Rp. {{ number_format($transaksi->transaction_amount, 0, ',', '.') }},-</p>
+                            <i class='bx bx-money'></i>
+                        </div>
+                    </li>
+                @endforeach
+                <li class="timeline-end-indicator">
+                    <i class="bx bx-check-circle"></i>
+                </li>
             </ul>
         </div>
     </div>
-    
     
     
     

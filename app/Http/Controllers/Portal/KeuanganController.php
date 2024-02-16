@@ -17,6 +17,8 @@ use App\Models\Menu;
 use App\Models\MenuSub;
 use App\Models\MenuSubsChild;
 use App\Models\UserRole;
+use App\Models\User;
+use App\Models\UserActivity;
 use App\Models\AccessMenu;
 use App\Models\AccessSub;
 use App\Models\AccessSubChild;
@@ -63,6 +65,8 @@ class KeuanganController extends Controller
         $kasToday               = FinancialTransaction::whereIn('status', [6])->get();
         $totalkas               = $kasToday->sum('transaction_amount'); //ini
         $transaction            = FinancialTransaction::all();
+        $users                  = User::all();
+        // dd($users);
         // dd($kasToday);
         
         $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
@@ -123,10 +127,13 @@ class KeuanganController extends Controller
         $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
         $roleData = UserRole::where('id', $user->role)->first();
 
+
+
         $additionalData = [
             'title'                     => 'Bisnis',
             'subtitle'                  => 'Keuangan',
             'user'                      => $user,
+            'users'                     => $users,
             'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
@@ -162,19 +169,27 @@ class KeuanganController extends Controller
                 'paymentMethod' => 'required|string',
                 'status' => 'required|integer',
                 'transactionDate' => 'required|date',
+                'lunas' => 'in:on',
             ]);
-    
+
             // Membersihkan nilai transactionAmount
             $cleanedAmount = $this->cleanNumericInput($request->input('transactionAmount'));
-    
+
             // Mengatur nilai source_receiver berdasarkan status
             $sourceReceiver = $this->getSourceReceiver($request->input('status'));
+
     
-            // Membuat reference_number dengan 5 karakter random
-            $referenceNumber = Str::random(5);
-    
+            if ($request->input('status') == 5) {
+                $referenceNumber = 'ab' . $request->input('karyawan') . '_' . Str::random(3); // Menambahkan ID pengguna ke reference number
+            } elseif ($request->input('status') == 8) {
+                $referenceNumber = 'bs' . $request->input('karyawan') . '_' . Str::random(3); // Menambahkan ID pengguna ke reference number
+            } else {
+                $referenceNumber = Str::random(5);
+            }
+
+
             // Lakukan operasi penyimpanan atau manipulasi data sesuai kebutuhan
-    
+
             // Contoh menyimpan data ke database
             $newTransaction = new FinancialTransaction([
                 'transaction_amount' => $cleanedAmount,
@@ -184,21 +199,42 @@ class KeuanganController extends Controller
                 'source_receiver' => $sourceReceiver,
                 'reference_number' => $referenceNumber,
                 'transaction_date' => $request->input('transactionDate'),
-                // Tambahkan field lain sesuai kebutuhan
+                'lunas' => $request->input('lunas') ? 1 : 0,
             ]);
-    
+
             $newTransaction->save();
+
+            // Menambahkan aktivitas pengguna untuk admin yang melakukan approval ambilan
+            $adminActivity = new UserActivity([
+                'user_id' => auth()->id(), // ID admin yang melakukan approval
+                'activity' => 'Approval Ambilan', // Aktivitas approval ambilan
+                'ip_address' => 'Jumlah ambilan ' . $cleanedAmount, // Menyimpan jumlah ambilan
+                'device_info' => 'ab_approval', // Informasi device
+            ]);
+            $adminActivity->save();
+
+            // Menambahkan aktivitas pengguna untuk pengambil ambilan
+            $ambilActivity = new UserActivity([
+                'user_id' => $request->input('karyawan'), // ID pengguna yang mengambil ambilan
+                'activity' => 'Ambilan', // Aktivitas ambilan
+                'ip_address' => 'Jumlah ambilan ' . $cleanedAmount, // Menyimpan jumlah ambilan
+                'device_info' => 'ab_request', // Informasi device
+            ]);
+            $ambilActivity->save();
+
             $response = [
-                    'success' => true,
-                    'message' => 'Transaksi berhasil disimpan.',
-                ];
-                return back()->with('response', $response)->withInput();
+                'title' => 'Berhasil',
+                'success' => true,
+                'message' => 'Transaksi berhasil disimpan.',
+            ];
+            return back()->with('response', $response)->withInput();
             //    return response()->json(['message' => 'Transaction added successfully'], 200);
         } catch (\Exception $e) {
             // Tangani error jika terjadi
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    
 
     public function editTransaction(Request $request)
     {
@@ -322,6 +358,8 @@ class KeuanganController extends Controller
                 return 'Setoran Kas';
             case 7:
                 return 'Top Up';
+            case 8:
+                return 'Bonus';
             default:
                 return '';
         }

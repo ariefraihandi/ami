@@ -48,8 +48,7 @@ class UserController extends Controller
             if (substr($wa, 0, 3) === '8') {
                 $wa = '62' . $wa;
             }
-            
-            // Konversi nilai status menjadi badge HTML yang diinginkan
+                       
             $statusBadge = '';
             switch ($customer->status) {
                 case 1:
@@ -101,6 +100,11 @@ class UserController extends Controller
         $roleData           = UserRole::where('id', $user->role)->first();
         $userActivities     = UserActivity::where('user_id', $user->id)->get();
 
+        $latestLoginActivity = UserActivity::where('user_id', $user->id)
+        ->where('activity', 'Logged in')
+        ->latest()
+        ->first();
+
         $additionalData = [
             'title'                     => 'User',
             'subtitle'                  => 'Profile',
@@ -110,9 +114,64 @@ class UserController extends Controller
             'user'                      => $user,
             'role'                      => $roleData,
             'userActivities'            => $userActivities,
+            'latestLoginActivity'       => $latestLoginActivity,
         ];
     
         return view('Konten/User/profile', $additionalData);
+    }
+   
+    public function showPayroll()
+    {
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/');
+        }
+        $bulanIni           = date('Y-m');
+        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus              = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData           = UserRole::where('id', $user->role)->first();
+
+        $userActivities     = UserActivity::where('user_id', $user->id)->get();
+        
+        $ambilan            = FinancialTransaction::where('source_receiver', 'Ambilan')
+                            ->where('reference_number', 'LIKE', 'ab' . $user->id . '_%')
+                            ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                            ->sum('transaction_amount');
+
+        $totalBonus         = FinancialTransaction::where('source_receiver', 'Bonus')
+                            ->where('reference_number', 'LIKE', 'bs' . $user->id . '_%')
+                            ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                            ->sum('transaction_amount');
+
+        $riwayatKeuangan    = FinancialTransaction::where(function ($query) use ($user) {
+                            $query->where('reference_number', 'LIKE', 'ab' . $user->id . '_%')
+                            ->orWhere('reference_number', 'LIKE', 'bs' . $user->id . '_%');
+                            })
+                            ->orderByDesc('created_at')
+                            ->get();
+                            
+
+        $additionalData = [
+            'title'                     => 'User',
+            'subtitle'                  => 'Profile',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            'user'                      => $user,
+            'role'                      => $roleData,
+            'userActivities'            => $userActivities,
+            'ambilan'                   => $ambilan,
+            'riwayatKeuangan'           => $riwayatKeuangan,
+            'totalBonus'           => $totalBonus,
+        ];
+    
+        return view('Konten/User/payroll', $additionalData);
     }
 
     public function showUserAdminIndex(Request $request)
@@ -149,8 +208,7 @@ class UserController extends Controller
     }     
     
     public function addUsers(Request $request)
-    {
-        // dd($request);
+    {        
         DB::beginTransaction();
 
         try {
@@ -246,9 +304,7 @@ class UserController extends Controller
             ]);
         }    
 
-    }
-
-    
+    }   
 
     private function cleanNumericInput($input)
     {

@@ -787,7 +787,6 @@ class InvoiceController extends Controller
 
             $invoice->save();
 
-            // Commit transaksi jika semua operasi berhasil
             DB::commit();
 
             // Redirect kembali ke halaman sebelumnya
