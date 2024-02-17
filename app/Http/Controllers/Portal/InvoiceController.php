@@ -101,11 +101,17 @@ class InvoiceController extends Controller
         $totalAmountYest        = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->sum('total_amount');
         $invoicesDueToday       = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::today())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
         $invoicesDueYesterday   = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::yesterday())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
-        $totalUnAmount = Invoice::with('customer')
+        $totalUnAmount = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::today())->whereRaw('(total_amount > panjar_amount)')->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
+
+        $dar = Invoice::with('customer')
     ->whereDate('created_at', '<=', Carbon::today())
+    ->where('status', '=', 2)
     ->whereRaw('(total_amount > panjar_amount)') // Memeriksa apakah total_amount lebih besar dari panjar_amount
-    ->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')
-    ->first()->total_unamount;
+    ->get();
+
+$count = $dar->count();
+
+dd($count);
 
         $totalUnAmountYest      = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->where('status', '!=', 2)->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
 
