@@ -104,14 +104,13 @@ class InvoiceController extends Controller
         $totalUnAmount = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::today())->whereRaw('(total_amount > panjar_amount)')->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
 
         $dar = Invoice::with('customer')
-    ->whereDate('created_at', '<=', Carbon::today())
-    ->where('status', '=', 2)
-    ->whereRaw('(total_amount > panjar_amount)') // Memeriksa apakah total_amount lebih besar dari panjar_amount
-    ->get();
-
-$count = $dar->count();
-
-dd($dar->id);
+        ->whereDate('created_at', '<=', Carbon::today())
+        ->where('status', '=', 2)
+        ->whereRaw('(total_amount > panjar_amount)')
+        ->get();
+    
+    dd($dar->toArray());
+    
 
         $totalUnAmountYest      = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->where('status', '!=', 2)->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
 
