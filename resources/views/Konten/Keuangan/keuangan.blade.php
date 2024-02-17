@@ -98,7 +98,7 @@
                   <div>
                     <h6 class="mb-2">Kas</h6>
                     <h4 class="mb-2">Rp.  {{ number_format($totalkas) }}</h4>
-                    <span class="text-muted me-2">Sisa Rp. {{ number_format($sisaTidakStor) }}</span>
+                    <span class="text-muted me-2">Disetor Rp. {{ number_format($sisaTidakStor) }}</span>
                     
                   </div>
                   <div class="avatar">

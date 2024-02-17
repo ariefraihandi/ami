@@ -55,19 +55,30 @@ class KeuanganController extends Controller
           
             return redirect('/login');
         }
-
+        
+        $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus                  = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData               = UserRole::where('id', $user->role)->first();
        
         $today                  = Carbon::today();
         $yesterday              = Carbon::yesterday();
 
         $qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
-        $qoutcomeTotal          = FinancialTransaction::whereNotIn('status', [1, 2, 3])->get();
-        $kasToday               = FinancialTransaction::whereIn('status', [6])->get();
-        $totalkas               = $kasToday->sum('transaction_amount'); //ini
+        $qoutcomeTotal          = FinancialTransaction::whereIn('status', [4, 5])->get();
+        $saldoKas               = FinancialTransaction::whereIn('status', [6])->get();
+        $topupKas               = FinancialTransaction::whereIn('status', [7])->get();
+        $allIncome              = $qincomeTotal->sum('transaction_amount');
+        $totalkas               = $qincomeTotal->sum('transaction_amount') - $qoutcomeTotal->sum('transaction_amount') - $saldoKas->sum('transaction_amount') + $topupKas->sum('transaction_amount') ;     
+        $udahStor               = $saldoKas->sum('transaction_amount') - $topupKas->sum('transaction_amount');
+        
+        // dd($totalkas);
         $transaction            = FinancialTransaction::all();
         $users                  = User::all();
-        // dd($users);
-        // dd($kasToday);
         
         $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
         $incomeYesterday        = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [1, 2, 3])->get();
@@ -76,40 +87,48 @@ class KeuanganController extends Controller
         $outcomeYesterday       = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [4, 5])->get();        
         
         
-        //SUM Amount
-        $totalIncomeToday       = $incomeToday->sum('transaction_amount');
-        $totalIncomeYesterday   = $incomeYesterday->sum('transaction_amount');
+        // Dayli Income Amount
+            $totalIncomeToday       = $incomeToday->sum('transaction_amount');
+            $totalIncomeYesterday   = $incomeYesterday->sum('transaction_amount');
+            $percentageIncome = 0;
+
+            if ($totalIncomeYesterday != 0) {
+                $percentageIncome = (($totalIncomeToday - $totalIncomeYesterday) / $totalIncomeYesterday) * 100;
+            }
+        //Dayli Income Amount
         
-        $totalOutcomeToday      = $outcomeToday->sum('transaction_amount');
-        $totalOutcomeYesterday  = $outcomeYesterday->sum('transaction_amount');
+        //Dayli Outcome Amount
+            $totalOutcomeToday      = $outcomeToday->sum('transaction_amount');
+            $totalOutcomeYesterday  = $outcomeYesterday->sum('transaction_amount');
+            $percentageOutcome = 0;
+            
+            if ($totalOutcomeYesterday != 0) {
+                $percentageOutcome = (($totalOutcomeToday - $totalOutcomeYesterday) / $totalOutcomeYesterday) * 100;
+            }
+        //Dayli Outcome Amount
+
+        //Margin Amount
+            $marginToday            = $totalIncomeToday - $totalOutcomeToday;      
+            $marginYesterday        = $totalIncomeYesterday - $totalOutcomeYesterday;      
+            $percentageMargin = 0;
+            
+            if ($marginYesterday != 0) {
+                $percentageMargin = (($marginToday - $marginYesterday) / $marginYesterday) * 100;
+            }
+        //Margin Amount
         
+
        // Total Income and Total Outcome for all transactions
         $incomeTotal = $qincomeTotal->sum('transaction_amount');
         $outcomeTotal = $qoutcomeTotal->sum('transaction_amount');
         
-        $marginToday            = $totalIncomeToday - $totalOutcomeToday;      
-        $marginYesterday        = $totalIncomeYesterday - $totalOutcomeYesterday;      
-        
         $sisaTidakStor          = $marginToday - $totalkas;        
         
-        // Pesentage SUM
-        $percentageIncome = 0;
+       
 
-        if ($totalIncomeYesterday != 0) {
-            $percentageIncome = (($totalIncomeToday - $totalIncomeYesterday) / $totalIncomeYesterday) * 100;
-        }
-
-        $percentageOutcome = 0;
+       
         
-        if ($totalOutcomeYesterday != 0) {
-            $percentageOutcome = (($totalOutcomeToday - $totalOutcomeYesterday) / $totalOutcomeYesterday) * 100;
-        }
         
-        $percentageMargin = 0;
-        
-        if ($marginYesterday != 0) {
-            $percentageMargin = (($marginToday - $marginYesterday) / $marginYesterday) * 100;
-        }
         
         $percentageTotal = 0;
         
@@ -117,15 +136,7 @@ class KeuanganController extends Controller
             $percentageTotal = (($incomeTotal - $outcomeTotal) / $outcomeTotal) * 100;
         }
 
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
-    
-        // Mengambil data berdasarkan hak akses
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-        $roleData = UserRole::where('id', $user->role)->first();
+        
 
 
 
@@ -153,7 +164,7 @@ class KeuanganController extends Controller
             'totalOutcome'              => $outcomeTotal,
             'percentageTotal'           => $percentageTotal,
             'totalkas'                  => $totalkas,
-            'sisaTidakStor'             => $sisaTidakStor,
+            'sisaTidakStor'             => $udahStor,
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);
@@ -215,11 +226,20 @@ class KeuanganController extends Controller
                 $adminType  = 'bs_approval';                
                 $userType   = 'bs_get';
             } elseif ($request->input('status') == 4) {
-                $adminActv  = 'Inputasi Operasional'; // Perbaikan pada penulisan kata "Inputasi" menjadi "Inputasi"
+                $adminActv  = 'Inputasi Operasional'; 
                 $adminType  = 'op_inputation';   
+                $userActv  = '';   
+                $userType   = ''; // Definisikan $userType di sini
+            } elseif ($request->input('status') == 6) {
+                $adminActv  = 'Inputasi Kas'; 
+                $adminType  = 'kas_inputation';   
+                $userActv  = '';
+                $userType   = ''; // Definisikan $userType di sini
             } elseif ($request->input('status') == 7) {
-                $adminActv  = 'Inputasi TopUp'; // Perbaikan pada penulisan kata "Inputasi" menjadi "Inputasi"
+                $adminActv  = 'Inputasi TopUp'; 
                 $adminType  = 'tu_inputation';   
+                $userActv  = '';
+                $userType   = ''; // Definisikan $userType di sini
             } else {
                 // Tambahkan logika untuk jenis transaksi lainnya jika diperlukan
             }
@@ -242,6 +262,7 @@ class KeuanganController extends Controller
                 ]);
                 $userActivity->save();
             }
+            
             
             $response = [
                 'title' => 'Berhasil',
