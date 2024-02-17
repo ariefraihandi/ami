@@ -98,8 +98,6 @@ class InvoiceController extends Controller
         $invoicesToday          = Invoice::with('customer')->whereDate('created_at', Carbon::today())->get();
         $invoicesYesterday      = Invoice::with('customer')->whereDate('created_at', Carbon::yesterday())->get();
         $totalAmount            = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::today())->sum('total_amount');
-        $panjar_amount            = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::today())->sum('panjar_amount');
-        dd($totalAmount, $panjar_amount);
         $totalAmountYest        = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->sum('total_amount');
         $invoicesDueToday       = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::today())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
         $invoicesDueYesterday   = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::yesterday())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
