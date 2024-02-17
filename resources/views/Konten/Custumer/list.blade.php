@@ -31,7 +31,7 @@
                   <p class="mb-0">
                     <span class="text-muted me-2">Hari Ini {{$individualToday}} Custumer</span>
                     @if ($individualPercn < 0)
-                      <span class="badge bg-label-danger">{{ $individualPercn }}%</span>
+                      <span class="badge bg-label-danger">{{ number_format($individualPercn, 0) }}%</span>
                     @elseif ($individualPercn > 0)
                       <span class="badge bg-label-success">+{{ $individualPercn }}%</span>
                     @else

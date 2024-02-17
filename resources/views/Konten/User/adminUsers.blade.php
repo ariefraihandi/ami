@@ -230,41 +230,95 @@
 </div>
 <!--/ Add New Users -->
 
-{{-- <!-- Edit Transaction -->
-@foreach($transaction as $item)
-  <div class="modal fade" id="editTransactionModal{{$item->id}}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
-      <div class="modal-content p-3 p-md-5">
-        <div class="modal-body">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="text-center mb-4">
-            <h3>Edit Transaction</h3>
-            <p>Add new transaction details</p>
+<!-- Edit user -->
+  @foreach($users as $user)
+    <div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ $user->id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">Edit User</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <form id="editUserForm" action="" method="POST">
+                  @csrf
+                  <div class="modal-body">
+                      <div class="mb-3">
+                          <label for="name" class="form-label">Nama Lengkap</label>
+                          <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ $user->username }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="wa" class="form-label">WhatsApp</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+62</span>
+                            <input type="text" class="form-control" id="wa" name="wa" value="{{ $user->wa }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="role" class="form-label">Role</label>
+                      <select class="form-select" id="role" name="role" required>
+                          <option value="">Select Role</option>
+                          @foreach(App\Models\UserRole::all() as $userRole)
+                              <option value="{{ $userRole->id }}" @if($userRole->id == $user->role) selected @endif>{{ ucwords($userRole->role) }}</option>
+                          @endforeach
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="jabatan" class="form-label">Jabatan</label>
+                      <select class="form-select" id="jabatan" name="jabatan" required>
+                          <option value="">Select Jabatan</option>
+                          <option value="direktur" @if($user->jabatan == 'direktur') selected @endif>Direktur</option>
+                          <option value="supervisor percetakan" @if($user->jabatan == 'supervisor percetakan') selected @endif>SPV Percetakan</option>
+                          <option value="supervisor production" @if($user->jabatan == 'supervisor production') selected @endif>SPV Production</option>
+                          <option value="designer" @if($user->jabatan == 'designer') selected @endif>Design Grafis</option>
+                          <option value="kasir" @if($user->jabatan == 'kasir') selected @endif>Admin / Kasir</option>
+                          <option value="welder" @if($user->jabatan == 'welder') selected @endif>Welder</option>
+                          <option value="driver" @if($user->jabatan == 'driver') selected @endif>Driver</option>
+                          <option value="office support" @if($user->jabatan == 'office support') selected @endif>Office Support</option>
+                          <option value="stickerman" @if($user->jabatan == 'stickerman') selected @endif>Stickerman</option>
+                          <option value="admin" @if($user->jabatan == 'admin') selected @endif>Admin</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="status" class="form-label">Status</label>
+                      <select class="form-select" id="status" name="status" required>
+                          <option value="">Select Status</option>
+                          <option value="1" @if($user->status == 1) selected @endif>Karyawan Tetap</option>
+                          <option value="2" @if($user->status == 2) selected @endif>Karyawan Harian</option>
+                          <option value="0" @if($user->status == 0) selected @endif>Inactive</option>
+                      </select>
+                    </div>                   
+                    <div class="mb-3">
+                      <label for="gaji" class="form-label">Gaji</label>
+                      <div class="input-group">
+                          <span class="input-group-text">Rp.</span>
+                          <input type="text" class="form-control" id="gaji" name="gaji" oninput="formatCurrency(this, 'gaji')" value="{{ number_format($user->salary, 0, ',', '.') }}" required>
+                          <span class="input-group-text">.00</span>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="date_of_birth" class="form-label">Date of Birth</label>
+                      <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{$user->date_of_birth}}">
+                    </div>      
+                  </div>
+                  <input type="hidden" class="form-control" id="id" name="id"  value="{{$user->id}}" required>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Update User</button>
+                  </div>
+              </form>
           </div>
-          <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
-            @csrf
-            <div class="col-12">
-              <label class="form-label" for="transactionDate">Transaction Date</label>
-              <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="{{ \Carbon\Carbon::parse($item->transaction_date)->format('Y-m-d') }}" />
-            </div>
-            <div class="col-12">
-              <label class="form-label" for="amount">Jumlah</label>
-              <input type="text" id="amount" name="amount" class="form-control" value="{{number_format($item->transaction_amount),0}}" />
-            </div>
-          
-            <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id}}" />
-            <input type="hidden" class="form-control" id="invoice_number" name="invoice_number" value="{{$item->reference_number}}" />
-            <div class="col-12 text-center">
-                <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
-                <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-            </div>
-          </form>
-        </div>
       </div>
     </div>
-  </div>
-@endforeach
-<!--/ Edit Transaction --> --}}
+  @endforeach
+<!--/ Edit user -->
 
 @endsection
 

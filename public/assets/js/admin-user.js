@@ -61,9 +61,20 @@ $(function () {
         {
           data: null,
           render: function (data, type, full, meta) {
-            return '<button class="btn btn-sm btn-primary">Edit</button>';
+            var id = full.id;
+            return (
+              '<div class="d-flex align-items-center">' +
+              '<a href="#" class="text-body" data-bs-toggle="modal" data-bs-target="#editUserModal' + id + '">' +
+              '<i class="bx bxs-message-square-edit mx-1"></i>' +
+              '</a>' +
+              '<a href="#" class="text-body" onclick="return confirmDelete(\'/delete/user?id=' + id + '\')">' +
+              '<i class="bx bx-trash mx-1"></i>' +
+              '</a>' +
+              '</div>'
+            );
           }
         }
+        
       ],
       order: [[0, 'asc']],       
       dom:

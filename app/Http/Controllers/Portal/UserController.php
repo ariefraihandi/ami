@@ -182,20 +182,21 @@ class UserController extends Controller
             return redirect('/login');
         }       
 
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
     
-        // Mengambil data berdasarkan hak akses
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-        $roleData = UserRole::where('id', $user->role)->first();
+        $menus              = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData           = UserRole::where('id', $user->role)->first();
+        $users              = User::all();
 
         $additionalData = [
             'title'                     => 'Admin',
             'subtitle'                  => 'Users',
             'user'                      => $user,
+            'users'                     => $users,
             'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
@@ -305,6 +306,47 @@ class UserController extends Controller
         }    
 
     }   
+
+    public function update(Request $request)
+{
+    // Validasi request
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'username' => 'required|string',
+        'wa' => 'nullable|string',
+        'role' => 'required|numeric',
+        'jabatan' => 'required|string',
+        'status' => 'required|numeric',
+        'gaji' => 'required|string',
+        'date_of_birth' => 'nullable|date',
+        'id' => 'required|numeric',
+    ]);
+
+    // Cari user berdasarkan ID
+    $user = User::find($request->id);
+
+    // Jika user tidak ditemukan, kembalikan response dengan pesan error
+    if (!$user) {
+        return redirect()->back()->with('error', 'User not found.');
+    }
+
+    // Update data user
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->username = $request->username;
+    $user->wa = $request->wa;
+    $user->role = $request->role;
+    $user->jabatan = $request->jabatan;
+    $user->status = $request->status;
+    // Format gaji menggunakan metode cleanNumericInput
+    $user->salary = $this->cleanNumericInput($request->gaji);
+    $user->date_of_birth = $request->date_of_birth;
+    $user->save();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'User updated successfully.');
+}
 
     private function cleanNumericInput($input)
     {

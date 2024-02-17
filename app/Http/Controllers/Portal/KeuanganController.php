@@ -204,24 +204,45 @@ class KeuanganController extends Controller
 
             $newTransaction->save();
 
-            // Menambahkan aktivitas pengguna untuk admin yang melakukan approval ambilan
+            if ($request->input('status') == 5) {
+                $adminActv  = 'Approval Ambilan';
+                $userActv   = 'Request Ambilan';
+                $adminType  = 'ab_approval';                
+                $userType   = 'ab_request';
+            } elseif ($request->input('status') == 8) {
+                $adminActv  = 'Approval Bonus';
+                $userActv   = 'Get Bonus';
+                $adminType  = 'bs_approval';                
+                $userType   = 'bs_get';
+            } elseif ($request->input('status') == 4) {
+                $adminActv  = 'Inputasi Operasional'; // Perbaikan pada penulisan kata "Inputasi" menjadi "Inputasi"
+                $adminType  = 'op_inputation';   
+            } elseif ($request->input('status') == 7) {
+                $adminActv  = 'Inputasi TopUp'; // Perbaikan pada penulisan kata "Inputasi" menjadi "Inputasi"
+                $adminType  = 'tu_inputation';   
+            } else {
+                // Tambahkan logika untuk jenis transaksi lainnya jika diperlukan
+            }
+            
+            // Menambahkan aktivitas admin
             $adminActivity = new UserActivity([
-                'user_id' => auth()->id(), // ID admin yang melakukan approval
-                'activity' => 'Approval Ambilan', // Aktivitas approval ambilan
-                'ip_address' => 'Jumlah ambilan ' . $cleanedAmount, // Menyimpan jumlah ambilan
-                'device_info' => 'ab_approval', // Informasi device
+                'user_id' => auth()->id(), // ID admin yang melakukan aktivitas
+                'activity' => $adminActv, // Aktivitas admin
+                'ip_address' => 'Jumlah Rp' . $cleanedAmount . ',-', // Menyimpan jumlah transaksi
+                'device_info' => $adminType, // Informasi perangkat
             ]);
             $adminActivity->save();
-
-            // Menambahkan aktivitas pengguna untuk pengambil ambilan
-            $ambilActivity = new UserActivity([
-                'user_id' => $request->input('karyawan'), // ID pengguna yang mengambil ambilan
-                'activity' => 'Ambilan', // Aktivitas ambilan
-                'ip_address' => 'Jumlah ambilan ' . $cleanedAmount, // Menyimpan jumlah ambilan
-                'device_info' => 'ab_request', // Informasi device
-            ]);
-            $ambilActivity->save();
-
+            
+            if ($userActv !== null) {
+                $userActivity = new UserActivity([
+                    'user_id' => $request->input('karyawan'), // ID pengguna yang melakukan aktivitas
+                    'activity' => $userActv, // Jenis aktivitas pengguna
+                    'ip_address' => 'Jumlah Rp ' . $cleanedAmount . ',-', // Menyimpan jumlah transaksi
+                    'device_info' => $userType, // Informasi perangkat
+                ]);
+                $userActivity->save();
+            }
+            
             $response = [
                 'title' => 'Berhasil',
                 'success' => true,
