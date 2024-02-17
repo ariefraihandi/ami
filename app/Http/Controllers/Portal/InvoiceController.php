@@ -111,7 +111,7 @@ class InvoiceController extends Controller
 
 $count = $dar->count();
 
-dd($count);
+dd($count->id);
 
         $totalUnAmountYest      = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->where('status', '!=', 2)->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
 
