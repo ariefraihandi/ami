@@ -56,10 +56,11 @@ class ReportController extends Controller
     
 
     // Invoice
-    $invoices = Invoice::whereBetween('created_at', [$startDate, $endDate])->get();
-    $unpaidInvoices = $invoices->where('panjar_amount', 0)->count();
-    $partiallyPaidInvoices = $invoices->where('panjar_amount', '>', 0)->where('total_amount', '>', 'panjar_amount')->count();
-    $fullyPaidInvoices = $invoices->where('total_amount', '>=', 'panjar_amount')->count();
+    // $invoices = Invoice::whereBetween('created_at', [$startDate, $endDate])->get();
+    $invoices               = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '!=', 0.00)->get();    
+    $unpaidInvoices         = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '!=', 0.00)->where('panjar_amount', 0.00)->count();  
+    $partiallyPaidInvoices  = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '>', DB::raw('panjar_amount'))->where('panjar_amount', '!=', 0.00)->count();
+    $fullyPaidInvoices      = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '<=', DB::raw('panjar_amount'))->where('panjar_amount', '!=', 0.00)->count();    
     $totalPanjarAmount = $invoices->sum('panjar_amount');
 
     // Keuangan
