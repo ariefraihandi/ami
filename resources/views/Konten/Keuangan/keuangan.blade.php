@@ -241,6 +241,7 @@
 @endforeach
 <!--/ Edit Transaction -->
 
+<!-- Tambahkan ini pada bagian HTML Anda -->
 <div class="modal fade" id="sendReportModal" tabindex="-1" aria-labelledby="sendReportModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -248,19 +249,22 @@
         <h5 class="modal-title" id="sendReportModalLabel">Send Report</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <p>Select report type:</p>
-        <select id="reportType" class="form-select mb-3">
-          <option value="daily">Harian</option>
-          <option value="weekly">Mingguan</option>
-          <option value="monthly">Bulanan</option>
-          <option value="yearly">Tahunan</option>
-        </select>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="sendReport()">Send</button>
-      </div>
+      <form action="{{ route('send.report') }}" method="POST">
+        @csrf <!-- Tambahkan CSRF token untuk keamanan -->
+        <div class="modal-body">
+          <p>Select report type:</p>
+          <select id="reportType" name="reportType" class="form-select mb-3">
+            <option value="daily">Harian</option>
+            <option value="weekly">Mingguan</option>
+            <option value="monthly">Bulanan</option>
+            <option value="yearly">Tahunan</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

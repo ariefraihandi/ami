@@ -277,7 +277,6 @@ class KeuanganController extends Controller
         }
     }
     
-
     public function editTransaction(Request $request)
     {
         $request->validate([
@@ -354,7 +353,14 @@ class KeuanganController extends Controller
                     $panjarAmount += $remainingItem->transaction_amount;
                 }
 
-                // Update the total amount for the invoice
+                if ($panjarAmount == 0) {
+                    // Jika status sebelumnya adalah 2 (lunas) atau 1 (sebagian lunas), ubah menjadi 0 (belum lunas)
+                    $invoice->status = 0;
+                } else {
+                    // Jika masih ada sisa panjar, ubah status menjadi 1 (sebagian lunas)
+                    $invoice->status = 1;
+                }
+                
                 $invoice->panjar_amount = $panjarAmount;
                 $invoice->save();
             }
@@ -377,17 +383,111 @@ class KeuanganController extends Controller
             return redirect()->back()->with('response', $response);
         }
     }
+
+// Laporan
+    public function showLaporan(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect('/login');
+        }
+
+        // Mengambil ID dari menu, submenu, dan sub-child menu yang diakses oleh pengguna
+        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+
+        // Mengambil data menu, submenu, dan sub-child menu berdasarkan ID yang diakses oleh pengguna
+        $menus = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
+
+        // Mendapatkan data peran pengguna
+        $roleData = UserRole::where('id', $user->role)->first();
+
+        $startDate      = $request->input('startDate');
+        $endDate        = $request->input('endDate');
+        $users          = User::all();     
+
+        if (!$startDate || !$endDate) {
+            // Jika salah satu atau kedua parameter kosong, atur tanggal mulai dan akhir menjadi tanggal hari ini
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+        } else {
+            // Jika waktu tidak disertakan dalam URL, tambahkan waktu default
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+
+        // Menentukan Jenis Laporan
+            $diffInDays         = $endDate->diffInDays($startDate);
+            $diffInWeeks        = $endDate->diffInWeeks($startDate);
+            $diffInMonths       = $endDate->diffInMonths($startDate);
+            $diffInYears        = $endDate->diffInYears($startDate);
+
+            if ($diffInDays == 0) {
+                $jenis = 'Harian';
+            } elseif ($diffInDays > 0 && $diffInDays <= 6) {
+                $jenis = 'Mingguan';
+            } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
+                $jenis = 'Bulanan';
+            } elseif ($diffInDays >= 365) {
+                $jenis = 'Tahunan';
+            } else {
+                $jenis = 'Custom';
+            }
+        // !Menentukan Jenis Laporan
     
+        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])->get();     
+        $invoicesBB         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->where('panjar_amount', 0.00)
+                            ->get();  
+        $invoicesPJ         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '>', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+        $invoicesLN         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '<=', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+       
+        $totalInvoices      = $invoices->count();
+        $totalInvoicesBB    = $invoicesBB->count();
+        $totalInvoicesPJ    = $invoicesPJ->count();
+        $invoicesLN         = $invoicesLN->count();
+
+        $additionalData = [
+            'title'             => 'Bisnis',
+            'subtitle'          => 'Keuangan / Laporan',
+            'user'              => $user,
+            'users'             => $users,
+            'role'              => $roleData,
+            'menus'             => $menus,
+            'subMenus'          => $subMenus,
+            'childSubMenus'     => $childSubMenus,
+            'startDate'         => $startDate,
+            'endDate'           => $endDate,
+            'jenis'             => $jenis,
+            'totalInvoices'     => $totalInvoices,
+            'totalInvoicesBB'   => $totalInvoicesBB,
+            'totalInvoicesPJ'   => $totalInvoicesPJ,
+            'invoicesLN'        => $invoicesLN,
+        ];
+
+        return view('Konten/Keuangan/laporan', $additionalData);
+    } 
+//! Laporan
     public function generatePDF()
-{
-    try {
-        $pdf = PDF::loadView('Konten.Keuangan.report');
-        return $pdf->stream('report.pdf');
-    } catch (\Exception $e) {
-        // Print error message
-        return response()->json(['error' => $e->getMessage()], 500);
+    {
+        try {
+            $pdf = PDF::loadView('Konten.Keuangan.report');
+            return $pdf->stream('report.pdf');
+        } catch (\Exception $e) {
+            // Print error message
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
 
     private function getSourceReceiver($status)
     {
@@ -406,6 +506,23 @@ class KeuanganController extends Controller
                 return '';
         }
     }
+
+    private function determineJenisLaporan($startDate, $endDate)
+{
+    $start = Carbon::parse($startDate);
+    $end = Carbon::parse($endDate);
+    $diffDays = $start->diffInDays($end);
+
+    if ($diffDays === 0) {
+        return 'Harian';
+    } else if ($diffDays > 0 && $diffDays <= 7) {
+        return 'Mingguan';
+    } else if ($diffDays > 7 && $diffDays <= 30) {
+        return 'Bulanan';
+    } else {
+        return 'Tahunan';
+    }
+}
 
     private function cleanNumericInput($input)
     {

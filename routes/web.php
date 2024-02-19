@@ -10,6 +10,7 @@ use App\Http\Controllers\Portal\KeuanganController;
 use App\Http\Controllers\Portal\ProductController;
 use App\Http\Controllers\Portal\MenuController;
 use App\Http\Controllers\Portal\UserController;
+use App\Http\Controllers\Portal\ReportController;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
@@ -25,7 +26,7 @@ Route::middleware(['auth'])->group(function () {
 
     //custumer fix route
     Route::get('/get-all-customers',        [CustomerController::class, 'getAllCustomers'])->name('getAllCustomers');
-    Route::get('customer/list',                  [CustomerController::class, 'showCustIndex'])->name('customer.list');
+    Route::get('customer/list',             [CustomerController::class, 'showCustIndex'])->name('customer.list');
     Route::get('/delete-customer',          [CustomerController::class, 'deleteCustomer'])->name('deleteCustomer');
     Route::post('custumer',                 [CustomerController::class, 'addCustomer'])->name('add.customer');
     //!custumer fix route
@@ -65,50 +66,58 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/edit-transaction',        [KeuanganController::class, 'editTransaction'])->name('editTransaction');
     Route::get('/delete/trans',             [KeuanganController::class, 'delTrans'])->name('delTransaction');
     Route::get('/report',                   [KeuanganController::class, 'generatePDF'])->name('generatePDF');
+    
+    Route::get('keuangan/gaji',             [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.gaji');
+
+    Route::get('keuangan/laporan',          [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');
     // !!fix keuangan
 
     //Product fix route
-    Route::get('product',               [ProductController::class, 'index'])->name('product');
-    Route::post('/add-product',         [ProductController::class, 'create'])->name('addProduct');
-    Route::get('/get-product/{id}',     [ProductController::class, 'getProduct'])->name('get.product');
-    Route::get('/get-products',         [ProductController::class, 'getProducts'])->name('get.products');
-    Route::post('/updateproduct',       [ProductController::class, 'updateProduct'])->name('updateProduct');
+    Route::get('product',                   [ProductController::class, 'index'])->name('product');
+    Route::post('/add-product',             [ProductController::class, 'create'])->name('addProduct');
+    Route::get('/get-product/{id}',         [ProductController::class, 'getProduct'])->name('get.product');
+    Route::get('/get-products',             [ProductController::class, 'getProducts'])->name('get.products');
+    Route::post('/updateproduct',           [ProductController::class, 'updateProduct'])->name('updateProduct');
     // !! Product fix route
 
-    Route::get('/categories',           [ProductController::class, 'indexCategory'])->name('categories');
-    Route::post('/categories',          [ProductController::class, 'storeCategory'])->name('addCategory');
-    Route::post('/updateCategory',      [ProductController::class, 'updateCategory'])->name('updateCategory');
-    Route::get('/categories/del/{id}',  [ProductController::class, 'deleteCategory'])->name('deleteCategory');
+    Route::get('/categories',               [ProductController::class, 'indexCategory'])->name('categories');
+    Route::post('/categories',              [ProductController::class, 'storeCategory'])->name('addCategory');
+    Route::post('/updateCategory',          [ProductController::class, 'updateCategory'])->name('updateCategory');
+    Route::get('/categories/del/{id}',      [ProductController::class, 'deleteCategory'])->name('deleteCategory');
 
     //menus
-    Route::get('/get-all-menus',        [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
-    Route::get('menu',                  [MenuController::class, 'showMenusIndex'])->name('menu');
-    Route::post('/add-menu',            [MenuController::class, 'addMenu'])->name('add.menu');
-    Route::get('/delete-menu',          [MenuController::class, 'deleteMenu'])->name('delete.menu');
+    Route::get('/get-all-menus',            [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
+    Route::get('menu',                      [MenuController::class, 'showMenusIndex'])->name('menu');
+    Route::post('/add-menu',                [MenuController::class, 'addMenu'])->name('add.menu');
+    Route::get('/delete-menu',              [MenuController::class, 'deleteMenu'])->name('delete.menu');
 
     //submenus
-    Route::get('/get-all-submenus',     [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
-    Route::get('menu/submenu',          [MenuController::class, 'showSubmenusIndex'])->name('menu.submenu');
-    Route::post('/add-submenu',         [MenuController::class, 'addSubmenu'])->name('add.submenu');
-    Route::post('/edit-submenu',        [MenuController::class, 'editSubmenu'])->name('edit.submenu');
-    Route::get('/delete-submenu',       [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
+    Route::get('/get-all-submenus',         [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
+    Route::get('menu/submenu',              [MenuController::class, 'showSubmenusIndex'])->name('menu.submenu');
+    Route::post('/add-submenu',             [MenuController::class, 'addSubmenu'])->name('add.submenu');
+    Route::post('/edit-submenu',            [MenuController::class, 'editSubmenu'])->name('edit.submenu');
+    Route::get('/delete-submenu',           [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
 
     //child Submenu
-    Route::get('/get-all-child',        [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
-    Route::get('menu/child',            [MenuController::class, 'showChildSubmenusIndex'])->name('menu.child');
-    Route::post('/add-childsubmenu',    [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
-    Route::get('/delete-childsubmenu',  [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
+    Route::get('/get-all-child',            [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
+    Route::get('menu/child',                [MenuController::class, 'showChildSubmenusIndex'])->name('menu.child');
+    Route::post('/add-childsubmenu',        [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
+    Route::get('/delete-childsubmenu',      [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 
     //menu role
-    Route::get('/get-all-role',         [MenuController::class, 'getAllRole'])->name('getAll.role');
-    Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('menu.role');
-    Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
-    Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');
+    Route::get('/get-all-role',             [MenuController::class, 'getAllRole'])->name('getAll.role');
+    Route::get('menu/role',                 [MenuController::class, 'showRoleIndex'])->name('menu.role');
+    Route::post('/add-role',                [MenuController::class, 'addRole'])->name('add.role');
+    Route::get('/delete-role',              [MenuController::class, 'deleteRole'])->name('delete.role');
 
     //user
-    Route::get('/user/profile',         [UserController::class, 'index'])->name('user.profile');
-    Route::get('/user/gaji',            [UserController::class, 'showPayroll'])->name('gaji.profile');
+    Route::get('/user/profile',             [UserController::class, 'index'])->name('user.profile');
+    Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('gaji.profile');
     //!!user
+
+    //Send Report
+    Route::post('send-report',              [ReportController::class, 'sendReport'])->name('send.report');
+    //!Send Report
 
     // users Administrator
     Route::get('/get-all-user',         [UserController::class, 'getAllUser'])->name('getAll.User');

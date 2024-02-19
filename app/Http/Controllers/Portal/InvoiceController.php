@@ -20,6 +20,7 @@ use App\Models\UserRole;
 use App\Models\AccessMenu;
 use App\Models\AccessSub;
 use App\Models\AccessSubChild;
+use App\Models\UserActivity;
 use Carbon\Carbon;
 use PDF;
 
@@ -102,14 +103,6 @@ class InvoiceController extends Controller
         $invoicesDueToday       = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::today())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
         $invoicesDueYesterday   = Invoice::with('customer')->whereDate('due_date', '<=', Carbon::yesterday())->where('status', '!=', 2)->where(function ($query) {$query->where('total_amount', '>', 0)->orWhere('panjar_amount', '>', 0);})->get();
         $totalUnAmount = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::today())->whereRaw('(total_amount > panjar_amount)')->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
-
-    //     $dar = Invoice::with('customer')
-    //     ->whereDate('created_at', '<=', Carbon::today())
-    //     ->where('status', '=', 2)
-    //     ->whereRaw('(total_amount > panjar_amount)')
-    //     ->get();
-    
-    // dd($dar->toArray());
     
 
         $totalUnAmountYest      = Invoice::with('customer')->whereDate('created_at', '<=', Carbon::yesterday())->where('status', '!=', 2)->selectRaw('SUM(total_amount - panjar_amount) as total_unamount')->first()->total_unamount;
@@ -418,11 +411,19 @@ class InvoiceController extends Controller
                 foreach ($items as $item) {
                     $totalAmountWithTax += ($item->harga_satuan * $item->qty * $item->ukuran) - $item->discount + (($item->harga_satuan * $item->qty * $item->ukuran - $item->discount ) * ($item->tax / 100));
                 }
-
-                $invoice->total_amount = $totalAmountWithTax;
-                $invoice->save();
+     
+                if ($invoice->status == 2) {
+                    // Update the invoice status to 1
+                    $invoice->status = 1;
+                    $invoice->total_amount = $totalAmountWithTax;
+                    $invoice->save();
+                } else {
+                    $invoice->total_amount = $totalAmountWithTax;
+                    $invoice->save();
+                }
     
-                // Commit the transaction
+                $this->addUserActivity($request->user()->id, 'Adding Item', 'Adding Item #' . $item->id . ' ke invoice #' . $request->input('invoice_id'), 'add_item');
+                
                 \DB::commit();
     
                 $response = [
@@ -890,17 +891,6 @@ class InvoiceController extends Controller
     }
         
 
-    private function cleanNumericInput($input)
-    {
-        // Menghapus titik (.) dan koma (,)
-        $cleanedInput = str_replace(['.', ','], '', $input);
-
-        // Menghapus dua digit nol di belakang koma
-        $cleanedInput = preg_replace('/,00$/', '', $cleanedInput);
-
-        return $cleanedInput;
-    }
-
     public function bulatkanUkuran($ukuran)
     {
         // Pastikan bahwa $ukuran adalah angka
@@ -919,5 +909,26 @@ class InvoiceController extends Controller
         }
     }
 
+    private function addUserActivity($userId, $activity, $ipAddress, $deviceInfo)
+    {
+        // Buat entri aktivitas pengguna baru
+        $userActivity = new UserActivity();
+        $userActivity->user_id = $userId;
+        $userActivity->activity = $activity;
+        $userActivity->ip_address = $ipAddress;
+        $userActivity->device_info = $deviceInfo;
+        $userActivity->save();
+    }
+
+    private function cleanNumericInput($input)
+    {
+        // Menghapus titik (.) dan koma (,)
+        $cleanedInput = str_replace(['.', ','], '', $input);
+
+        // Menghapus dua digit nol di belakang koma
+        $cleanedInput = preg_replace('/,00$/', '', $cleanedInput);
+
+        return $cleanedInput;
+    }
    
 }

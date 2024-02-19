@@ -328,7 +328,7 @@
                                     <label class="form-check-label" for="itemSub">Enable Dropdown</label>
                                 </div>                
                                 <input type="hidden" class="form-control" id="id" name="id" value="{{$item->id}}" required>        
-                                <button type="submit" class="btn btn-primary">Add Submenu</button>
+                                <button type="submit" class="btn btn-primary">Update</button>
                             </form>
                         </div>            
                     </div>
