@@ -4,9 +4,14 @@ namespace App\Http\Controllers\Portal;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB; // Import kelas DB
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use App\Models\FinancialTransaction;
 use App\Models\Invoice;
-use Illuminate\Support\Facades\Redirect;
 use Carbon\Carbon;
 
 
@@ -61,7 +66,7 @@ class ReportController extends Controller
     $unpaidInvoices         = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '!=', 0.00)->where('panjar_amount', 0.00)->count();  
     $partiallyPaidInvoices  = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '>', DB::raw('panjar_amount'))->where('panjar_amount', '!=', 0.00)->count();
     $fullyPaidInvoices      = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '<=', DB::raw('panjar_amount'))->where('panjar_amount', '!=', 0.00)->count();    
-    $totalPanjarAmount = $invoices->sum('panjar_amount');
+    $totalPanjarAmount      = $invoices->sum('panjar_amount');
 
     // Keuangan
     $totalPanjarAmount  = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])->where('source_receiver', 'Tagihan Invoice')->sum('transaction_amount');
