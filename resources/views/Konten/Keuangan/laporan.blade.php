@@ -414,6 +414,7 @@
                                   <th>No</th>
                                   <th>Transaksi</th>
                                   <th>Deskripsi</th>                                              
+                                  <th>Tanggal</th>                                              
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
                                 </tr>
@@ -429,6 +430,7 @@
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
                                       <td>{{ $item->description }}</td>
+                                      <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
                                     </tr>
@@ -447,7 +449,8 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Transaksi</th>
-                                  <th>Deskripsi</th>                                              
+                                  <th>Deskripsi</th>  
+                                  <th>Tanggal</th>                                                  
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
                                 </tr>
@@ -463,6 +466,7 @@
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
                                       <td>{{ $item->description }}</td>
+                                      <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
                                     </tr>
@@ -481,7 +485,8 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Transaksi</th>
-                                  <th>Deskripsi</th>                                              
+                                  <th>Deskripsi</th> 
+                                  <th>Tanggal</th>                                                   
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
                                 </tr>
@@ -497,6 +502,7 @@
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
                                       <td>{{ $item->description }}</td>
+                                      <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
                                     </tr>
@@ -515,7 +521,8 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Transaksi</th>
-                                  <th>Deskripsi</th>                                              
+                                  <th>Deskripsi</th>   
+                                  <th>Tanggal</th>                                                 
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
                                 </tr>
@@ -531,6 +538,7 @@
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
                                       <td>{{ $item->description }}</td>
+                                      <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
                                     </tr>
@@ -549,7 +557,8 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Transaksi</th>
-                                  <th>Deskripsi</th>                                              
+                                  <th>Deskripsi</th>  
+                                  <th>Tanggal</th>                                                  
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
                                 </tr>
@@ -565,6 +574,7 @@
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
                                       <td>{{ $item->description }}</td>
+                                      <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
                                     </tr>
