@@ -533,10 +533,130 @@ class KeuanganController extends Controller
         return view('Konten/Keuangan/laporan', $additionalData);
     } 
 //! Laporan
-    public function generatePDF()
+
+    public function generatePDF(Request $request)
     {
         try {
-            $pdf = PDF::loadView('Konten.Keuangan.report');
+
+            $startDate      = $request->input('startDate');
+        $endDate        = $request->input('endDate');
+        $users          = User::all();     
+
+        if (!$startDate || !$endDate) {
+            // Jika salah satu atau kedua parameter kosong, atur tanggal mulai dan akhir menjadi tanggal hari ini
+            $startDate = now()->startOfDay();
+            $endDate = now()->endOfDay();
+        } else {
+            // Jika waktu tidak disertakan dalam URL, tambahkan waktu default
+            $startDate = Carbon::parse($startDate)->startOfDay();
+            $endDate = Carbon::parse($endDate)->endOfDay();
+        }
+
+        // Menentukan Jenis Laporan
+            $diffInDays         = $endDate->diffInDays($startDate);
+            $diffInWeeks        = $endDate->diffInWeeks($startDate);
+            $diffInMonths       = $endDate->diffInMonths($startDate);
+            $diffInYears        = $endDate->diffInYears($startDate);
+
+            if ($diffInDays == 0) {
+                $jenis = 'Harian';
+            } elseif ($diffInDays > 0 && $diffInDays <= 6) {
+                $jenis = 'Mingguan';
+            } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
+                $jenis = 'Bulanan';
+            } elseif ($diffInDays >= 365) {
+                $jenis = 'Tahunan';
+            } else {
+                $jenis = 'Custom';
+            }
+        // !Menentukan Jenis Laporan       
+
+        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->get(); 
+
+        $invoicesBB         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->where('panjar_amount', 0.00)
+                            ->get();  
+
+        $invoicesPJ         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '>', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+
+        $invoicesLUN        = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '<=', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+
+        $income             = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [1, 2, 3])
+                            ->get();
+        
+        $outcome            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4,5])
+                            ->get();
+        
+        $tagihan            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4, 5])
+                            ->where('lunas', 0)
+                            ->get();
+                        
+        $setorKas           = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [6])
+                            ->get();
+        
+        $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [7])
+                            ->get();
+                               
+                            
+        $totalInvoices      = $invoices->count();
+        $totalInvoicesBB    = $invoicesBB->count();
+        $totalInvoicesPJ    = $invoicesPJ->count();
+        $invoicesLN         = $invoicesLUN->count();
+        
+        $totalincome        = $income->count();
+        $incomeTotal        = $income->sum('transaction_amount');
+        $totaloutcome       = $outcome->count();
+        $outcomeTotal       = $outcome->sum('transaction_amount');
+        $saldoKas           = $setorKas->sum('transaction_amount');
+        $saldoTopup         = $topup->sum('transaction_amount');
+        $totalTagih         = $tagihan->sum('transaction_amount');
+
+
+        $additionalData = [
+            'title'             => 'Laporan ' . $jenis,            
+            'startDate'         => $startDate,
+            'endDate'           => $endDate,
+            'jenis'             => $jenis,
+            
+            'invoices'          => $invoices,
+            'invoicesBB'        => $invoicesBB,
+            'invoicesPJ'        => $invoicesPJ,
+            'invoicesLUN'       => $invoicesLUN,
+            'invoicesLN'        => $invoicesLN,
+            'totalInvoices'     => $totalInvoices,
+            'totalInvoicesBB'   => $totalInvoicesBB,
+            'totalInvoicesPJ'   => $totalInvoicesPJ,
+            
+            'income'            => $income,
+            'outcome'           => $outcome,
+            'setorKas'          => $setorKas,
+            'tagihan'           => $tagihan,
+            'top'               => $topup,
+            'totalincome'       => $totalincome,
+            'incomeTotal'       => $incomeTotal,
+            'totaloutcome'      => $totaloutcome,
+            'outcomeTotal'      => $outcomeTotal,
+            'saldoKas'          => $saldoKas,
+            'totalTagih'          => $totalTagih,
+            'topup'             => $saldoTopup,
+
+        ];
+
+            $pdf = PDF::loadView('Konten.Keuangan.report', $additionalData);
             return $pdf->stream('report.pdf');
         } catch (\Exception $e) {
             // Print error message
@@ -563,21 +683,21 @@ class KeuanganController extends Controller
     }
 
     private function determineJenisLaporan($startDate, $endDate)
-{
-    $start = Carbon::parse($startDate);
-    $end = Carbon::parse($endDate);
-    $diffDays = $start->diffInDays($end);
+    {
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        $diffDays = $start->diffInDays($end);
 
-    if ($diffDays === 0) {
-        return 'Harian';
-    } else if ($diffDays > 0 && $diffDays <= 7) {
-        return 'Mingguan';
-    } else if ($diffDays > 7 && $diffDays <= 30) {
-        return 'Bulanan';
-    } else {
-        return 'Tahunan';
+        if ($diffDays === 0) {
+            return 'Harian';
+        } else if ($diffDays > 0 && $diffDays <= 7) {
+            return 'Mingguan';
+        } else if ($diffDays > 7 && $diffDays <= 30) {
+            return 'Bulanan';
+        } else {
+            return 'Tahunan';
+        }
     }
-}
 
     private function cleanNumericInput($input)
     {

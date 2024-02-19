@@ -91,8 +91,8 @@ class ReportController extends Controller
         $message           .= 'Pengeluaran: *Rp.' . number_format($totalOutcomeAmount, 0, ',', '.') . ',-*' . "\n";
         $message           .= 'Setoran Kas: *Rp.' . number_format($setoranKas, 0, ',', '.') . ',-*' . "\n";
         $message           .= 'Top Up Kas: *Rp.' . number_format($topupKas, 0, ',', '.') . ',-*' . "\n";
-        $message           .= "\nKlik link dibawah ini untuk melihat detil Laporan:\n";
-        $message           .= "*$baseUrl/keuangan/laporan?startDate=$startDateFormatted&endDate=$endDateFormatted*\n";
+        $message           .= "\nDownload Laporan:\n";
+        $message           .= "*$baseUrl/report/?startDate=$startDateFormatted&endDate=$endDateFormatted*\n";
         $message           .= "\n*Laporan Dikirim Secara Semi Otomatis*\n";
 
         // URL untuk redirect ke wa.me

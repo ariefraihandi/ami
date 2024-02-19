@@ -597,18 +597,12 @@
         <div class="col-lg-3 col-12 invoice-actions">
           <div class="card mb-4">
             <div class="card-body">
-              {{-- <button class="btn btn-primary d-grid w-100 mb-3" data-bs-toggle="modal" data-bs-target="#metodebayar{{$invoiceNumber}}"> --}}
-                <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="bx bx-money bx-xs me-1"></i>
-                  Bayar
-                </span>
-              </button>            
-              {{-- <a href="/print/{{ $invoiceNumber }}" target="_blank" class="btn btn-label-secondary d-grid w-100 mb-3">Download</a> --}}
-              {{-- <a href="{{ route("deleteInvoice") }}?invoiceNumber={{$invoiceNumber}}" class="btn btn-label-danger d-grid w-100 mb-3" onclick="return confirm('Are you sure?')"> --}}
+              <a href="https://apps.atjehmediatama.co.id/report?startDate={{ $startDate }}&endDate={{ $endDate }}" class="btn btn-primary d-grid w-100 mb-3" target="_blank" download>
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
-                    <i class="bx bx-trash bx-xs me-1"></i>
-                    Hapus
+                  <i class="bx bx-download bx-xs me-1"></i>
+                  Download
                 </span>
-            </a>
+              </a>                              
               <a href="{{ route('invoice.list') }}" class="btn btn-warning d-grid w-100 mb-3">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                   <i class="bx bxs-left-arrow-circle bx-xs me-1"></i>
