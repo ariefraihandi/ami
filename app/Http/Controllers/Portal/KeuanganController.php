@@ -436,9 +436,12 @@ class KeuanganController extends Controller
             } else {
                 $jenis = 'Custom';
             }
-        // !Menentukan Jenis Laporan
-    
-        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])->get();     
+        // !Menentukan Jenis Laporan       
+
+        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->get(); 
+
         $invoicesBB         = Invoice::whereBetween('created_at', [$startDate, $endDate])
                             ->where('total_amount', '!=', 0.00)
                             ->where('panjar_amount', 0.00)
@@ -453,29 +456,7 @@ class KeuanganController extends Controller
                             ->get();
        
 
-                            $allInvoiceIds = Invoice::pluck('id')->all();
-
-                            // Ambil ID invoice yang termasuk dalam kategori belum bayar
-                            $invoicesBBIds = $invoicesBB->pluck('id')->all();
                             
-                            // Ambil ID invoice yang termasuk dalam kategori pembayaran sebagian
-                            $invoicesPJIds = $invoicesPJ->pluck('id')->all();
-                            
-                            // Ambil ID invoice yang termasuk dalam kategori lunas
-                            $invoicesLNIds = $invoicesLN->pluck('id')->all();
-                            
-                            // Gabungkan semua ID invoice dari ketiga kategori
-                            $allCategoriesIds = array_merge($invoicesBBIds, $invoicesPJIds, $invoicesLNIds);
-                            
-                            // Ambil ID invoice yang tidak termasuk dalam ketiga kategori
-                            $invoicesNotInCategories = array_diff($allInvoiceIds, $allCategoriesIds);
-                            
-                            // Anda dapat melakukan sesuatu dengan ID invoice yang tidak termasuk dalam ketiga kategori ini
-                            // Misalnya, Anda dapat melihat kembali ke database untuk mendapatkan detail atau melakukan operasi lainnya
-                            
-                            // Contoh: Ambil detail invoice yang tidak termasuk dalam ketiga kategori
-                            $invoicesNotInCategoriesDetails = Invoice::whereIn('id', $invoicesNotInCategories)->get();
-dd( $invoicesNotInCategoriesDetails);
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
         $totalInvoicesPJ    = $invoicesPJ->count();
