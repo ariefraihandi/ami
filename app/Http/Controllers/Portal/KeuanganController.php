@@ -446,21 +446,52 @@ class KeuanganController extends Controller
                             ->where('total_amount', '!=', 0.00)
                             ->where('panjar_amount', 0.00)
                             ->get();  
+
         $invoicesPJ         = Invoice::whereBetween('created_at', [$startDate, $endDate])
                             ->where('total_amount', '>', DB::raw('panjar_amount'))
                             ->where('panjar_amount', '!=', 0.00)
                             ->get();
-        $invoicesLN         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+
+        $invoicesLUN        = Invoice::whereBetween('created_at', [$startDate, $endDate])
                             ->where('total_amount', '<=', DB::raw('panjar_amount'))
                             ->where('panjar_amount', '!=', 0.00)
                             ->get();
-       
 
+        $income             = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [1, 2, 3])
+                            ->get();
+        
+        $outcome            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4,5])
+                            ->get();
+        
+        $tagihan            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4, 5])
+                            ->where('lunas', 0)
+                            ->get();
+                        
+        $setorKas           = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [6])
+                            ->get();
+        
+        $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [7])
+                            ->get();
+                               
                             
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
         $totalInvoicesPJ    = $invoicesPJ->count();
-        $invoicesLN         = $invoicesLN->count();
+        $invoicesLN         = $invoicesLUN->count();
+        
+        $totalincome        = $income->count();
+        $incomeTotal        = $income->sum('transaction_amount');
+        $totaloutcome       = $outcome->count();
+        $outcomeTotal       = $outcome->sum('transaction_amount');
+        $saldoKas           = $setorKas->sum('transaction_amount');
+        $saldoTopup         = $topup->sum('transaction_amount');
+        $totalTagih         = $tagihan->sum('transaction_amount');
+
 
         $additionalData = [
             'title'             => 'Bisnis',
@@ -474,10 +505,29 @@ class KeuanganController extends Controller
             'startDate'         => $startDate,
             'endDate'           => $endDate,
             'jenis'             => $jenis,
+            
+            'invoices'          => $invoices,
+            'invoicesBB'        => $invoicesBB,
+            'invoicesPJ'        => $invoicesPJ,
+            'invoicesLUN'       => $invoicesLUN,
+            'invoicesLN'        => $invoicesLN,
             'totalInvoices'     => $totalInvoices,
             'totalInvoicesBB'   => $totalInvoicesBB,
             'totalInvoicesPJ'   => $totalInvoicesPJ,
-            'invoicesLN'        => $invoicesLN,
+            
+            'income'            => $income,
+            'outcome'           => $outcome,
+            'setorKas'          => $setorKas,
+            'tagihan'           => $tagihan,
+            'top'               => $topup,
+            'totalincome'       => $totalincome,
+            'incomeTotal'       => $incomeTotal,
+            'totaloutcome'      => $totaloutcome,
+            'outcomeTotal'      => $outcomeTotal,
+            'saldoKas'          => $saldoKas,
+            'totalTagih'          => $totalTagih,
+            'topup'             => $saldoTopup,
+
         ];
 
         return view('Konten/Keuangan/laporan', $additionalData);
