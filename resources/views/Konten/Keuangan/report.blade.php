@@ -42,9 +42,30 @@
         margin-bottom: 5px;
         text-align: left;
       }
+      .bg-image {
+        position: fixed;
+        z-index: -1; /* Untuk memastikan gambar di belakang konten */
+        width: 100%; /* Lebar gambar mengikuti lebar halaman */
+        height: 100%; /* Tinggi gambar mengikuti tinggi halaman */
+    }
+    .bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1; /* Untuk memastikan gambar di belakang konten */
+    opacity: 0.5; /* Atur opasitas sesuai kebutuhan (0.5 = 50% opasitas) */
+         width: 100%; /* Lebar gambar mengikuti lebar halaman */
+        height: 100%; /* Tinggi gambar mengikuti tinggi halaman */
+}
+
+
     </style>
 </head>
 <body>
+  <img src="{{ $bgImage }}" alt="Background" class="bg-image">
+  
     <table class="header-table">
         <tr>
             <td>

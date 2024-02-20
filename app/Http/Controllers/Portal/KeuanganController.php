@@ -617,9 +617,11 @@ class KeuanganController extends Controller
         $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
                             ->whereIn('status', [7])
                             ->get();
-                               
+                  
+        $background         = 'bg-report.png';
         $link               = public_path('assets/img/icons/brands/logo-kecil.png');                
         $imagePath          = public_path('assets/img/report/' . $image);   
+        $bgImage            = public_path('assets/img/report/' . $background);        
 
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
@@ -652,7 +654,8 @@ class KeuanganController extends Controller
             
     
             'logoPath'          => $link,
-            'imagePath'         => $imagePath,
+            'imagePath'         => $imagePath,            
+            'bgImage'                => $bgImage,            
 
             'income'            => $income,
             'outcome'           => $outcome,
