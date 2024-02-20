@@ -266,13 +266,13 @@ class InvoiceController extends Controller
         $products       = Product::all();
 
         if (!$customer) {
-            return redirect()->route('invoices.index')->with('response', [
+            return redirect()->route('invoices.list')->with('response', [
                 'success' => false,
                 'message' => 'Customer tidak ditemukan.',
             ]);
         }
         if (!$invoice) {
-            return redirect()->route('invoices.index')->with('response', [
+            return redirect()->route('invoices.list')->with('response', [
                 'success' => false,
                 'message' => 'Invoice tidak ditemukan.',
             ]);
