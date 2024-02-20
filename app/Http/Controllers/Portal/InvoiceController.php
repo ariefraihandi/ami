@@ -265,18 +265,13 @@ class InvoiceController extends Controller
         $transdetil     = FinancialTransaction::all();
         $products       = Product::all();
 
-        if (!$customer) {
+        if (!$customer || !$invoice) {
             return redirect()->route('invoices.list')->with('response', [
                 'success' => false,
-                'message' => 'Customer tidak ditemukan.',
+                'message' => (!$customer ? 'Pelanggan' : 'Faktur') . ' tidak ditemukan.',
             ]);
         }
-        if (!$invoice) {
-            return redirect()->route('invoices.list')->with('response', [
-                'success' => false,
-                'message' => 'Invoice tidak ditemukan.',
-            ]);
-        }       
+           
 
         $total_amount       = $invoice->total_amount - $invoice->panjar_amount;
         $panjar_amount      = $invoice->panjar_amount;
