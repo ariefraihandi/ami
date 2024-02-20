@@ -23,7 +23,9 @@ use App\Models\AccessMenu;
 use App\Models\AccessSub;
 use App\Models\AccessSubChild;
 use Carbon\Carbon;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
+// use Dompdf\Dompdf;
+use Illuminate\Support\Facades\Storage;
 
 
 class KeuanganController extends Controller
@@ -538,7 +540,7 @@ class KeuanganController extends Controller
     {
         try {
 
-            $startDate      = $request->input('startDate');
+        $startDate      = $request->input('startDate');
         $endDate        = $request->input('endDate');
         $users          = User::all();     
 
@@ -560,14 +562,19 @@ class KeuanganController extends Controller
 
             if ($diffInDays == 0) {
                 $jenis = 'Harian';
+                $image = 'lap-harian.png';
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
                 $jenis = 'Mingguan';
+                $image = 'lap-mingguan.png';
             } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
                 $jenis = 'Bulanan';
+                $image = 'lap-bulanan.png';
             } elseif ($diffInDays >= 365) {
                 $jenis = 'Tahunan';
+                $image = 'lap-tahunan.png';
             } else {
                 $jenis = 'Custom';
+                $image = 'lap.png';
             }
         // !Menentukan Jenis Laporan       
 
@@ -611,7 +618,9 @@ class KeuanganController extends Controller
                             ->whereIn('status', [7])
                             ->get();
                                
-                            
+        $link               = public_path('assets/img/icons/brands/logo-kecil.png');                
+        $imagePath          = public_path('assets/img/report/' . $image);   
+
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
         $totalInvoicesPJ    = $invoicesPJ->count();
@@ -641,6 +650,10 @@ class KeuanganController extends Controller
             'totalInvoicesBB'   => $totalInvoicesBB,
             'totalInvoicesPJ'   => $totalInvoicesPJ,
             
+    
+            'logoPath'          => $link,
+            'imagePath'         => $imagePath,
+
             'income'            => $income,
             'outcome'           => $outcome,
             'setorKas'          => $setorKas,

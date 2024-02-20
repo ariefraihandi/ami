@@ -271,7 +271,6 @@ class InvoiceController extends Controller
                 'message' => (!$customer ? 'Pelanggan' : 'Faktur') . ' tidak ditemukan.',
             ]);
         }
-           
 
         $total_amount       = $invoice->total_amount - $invoice->panjar_amount;
         $panjar_amount      = $invoice->panjar_amount;

@@ -20,26 +20,47 @@
         tr:hover {
             background-color: #f5f5f5;
         }
-        .actions button {
-            margin-right: 5px;
+        
+        .page-break {
+          page-break-after: always;
         }
+        .logo-img {
+          float: left; /* Mengatur gambar agar rata kiri */
+          margin-right: 10px; /* Memberi jarak kanan antara gambar dan teks */
+          /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); Menambahkan efek bayangan */
+        }
+
+      .header-table {
+        width: 100%;
+        margin-bottom: 10px; /* Tambahkan margin bawah untuk memberikan ruang di antara elemen */
+      }
+      .image-container {
+        margin-bottom: 10px; 
+      }
+      h3 {
+        margin-top: 50px; 
+        margin-bottom: 5px;
+        text-align: left;
+      }
     </style>
 </head>
 <body>
     <table class="header-table">
         <tr>
             <td>
-                {{-- <img src="https://apps.atjehmediatama.co.id/assets/img/icons/brands/ami-logo.png" alt="AMI Logo"> --}}
+              <img src="{{ $logoPath }}" alt="Logo" width="80" height="80">
             </td>
             <td style="text-align: center;">
                 <h1 style="margin-bottom: 5px;">CV Atjeh Mediatama Indonesia</h1>
                 <p style="margin-top: 5px;">Mns Mee, Muara Dua, Lhokseumawe, Aceh</p>
             </td>            
-        </tr>
+        </tr>imagePath
     </table>
-    <h2 style="margin-bottom: 5px; text-align: center;">Laporan Harian</h2>
+    <div class="image-container">
+      <img src="{{ $imagePath }}" alt="Logo" height="70" class="logo-img">
+    </div>
     <br>
-    <h3 style="margin-bottom: 5px; text-align: left;">Invoice:</h3>
+    <h3>Invoice:</h3>
     <div class="table-responsive">
         <table id="dataTable">
             <thead>
@@ -210,7 +231,7 @@
               </tbody>
         </table>
     </div>
-    <br>
+    <div class="page-break"></div>
     <h3 style="margin-bottom: 5px; text-align: left;">Transaksi</h3>
     <div class="table-responsive">
         <table id="dataTable">
