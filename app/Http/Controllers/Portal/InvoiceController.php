@@ -689,7 +689,7 @@ class InvoiceController extends Controller
                     'title' => 'Success',
                     'message' => $successMessage,
                 ];
-                return redirect()->route('invoices.index')->with('response', $response);
+                return redirect()->route('invoice.list')->with('response', $response);
             } else {
                 throw new \Exception('Failed to delete Invoice & Item');
             }
