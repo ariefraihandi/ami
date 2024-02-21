@@ -35,10 +35,21 @@ class KeuanganController extends Controller
         $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
     
         $formattedKeuangan = $keuangan->map(function ($transaction) {
+
+            $invoice = Invoice::where('invoice_number', $transaction->reference_number)->first();
+
+            // Jika invoice ditemukan, gunakan customer_uuid dari invoice
+            if ($invoice) {
+                $customer = $invoice->customer_uuid;
+            } else {
+                $customer = '';
+            }
+
             return [
                 'id'                    => $transaction->id,
                 'reference_number'      => $transaction->reference_number,
                 'source_receiver'       => $transaction->source_receiver,
+                'customer'              => $customer,
                 'status'                => $transaction->status,
                 'transaction_amount'    => number_format($transaction->transaction_amount),
                 'payment_method'        => $transaction->payment_method,  
@@ -49,7 +60,8 @@ class KeuanganController extends Controller
     
         return response()->json(['data' => $formattedKeuangan]);
     }
-
+    
+//KeuanganIndex
     public function showKeuanganIndex(Request $request)
     {
         $user = Auth::user();
@@ -171,6 +183,7 @@ class KeuanganController extends Controller
 
         return view('Konten/Keuangan/keuangan', $additionalData);
     }   
+//KeuanganIndex
 
     public function addNewTransaction(Request $request)
     {

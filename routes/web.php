@@ -20,6 +20,7 @@ Route::post('/register',                [AuthController::class, 'register'])->na
 Route::get('/logout',                   [AuthController::class, 'logout'])->name('logout');
 
 
+
 Route::middleware(['auth'])->group(function () {
 
     Route::get('dashboard',                 [DashboardController::class, 'showPortalPage'])->name('dashboard');

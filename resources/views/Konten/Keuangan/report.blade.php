@@ -43,21 +43,23 @@
         text-align: left;
       }
       .bg-image {
-        position: fixed;
-        z-index: -1; /* Untuk memastikan gambar di belakang konten */
-        width: 100%; /* Lebar gambar mengikuti lebar halaman */
-        height: 100%; /* Tinggi gambar mengikuti tinggi halaman */
-    }
-    .bg-image {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1; /* Untuk memastikan gambar di belakang konten */
-    opacity: 0.5; /* Atur opasitas sesuai kebutuhan (0.5 = 50% opasitas) */
-         width: 100%; /* Lebar gambar mengikuti lebar halaman */
-        height: 100%; /* Tinggi gambar mengikuti tinggi halaman */
+    width: calc(100vw + 20px); /* Menambahkan ruang tambahan untuk margin negatif */
+    height: calc(100vh + 20px); /* Menambahkan ruang tambahan untuk margin negatif */
+    margin: -45px; /* Margin negatif untuk menggeser background */
+    z-index: -1; /* Atur z-index agar berada di belakang konten */
+    opacity: 0.3;
+    padding: 0;
+    background-size: cover;
+}
+
+
+
+body {
+    margin: 0; /* Mengatur margin body menjadi 0 */
+    padding: 0; /* Mengatur padding body menjadi 0 */
 }
 
 

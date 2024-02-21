@@ -27,9 +27,18 @@ $(function () {
           render: function (data, type, full, meta) {
             var sourceReceiver = full.source_receiver;
             var referenceNumber = full.reference_number;
-            return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
+            var customer = full.customer;
+        
+            // Jika ada data pelanggan, tampilkan link invoice
+            if (customer) {
+              var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer;
+              return '<div class="text-center">' + sourceReceiver + '<br>' + '<a href="' + link + '" class="invoice-link" target="_blank"><span class="fw-medium">#' + referenceNumber + '</span></a></div>';
+            } else {
+              // Jika tidak ada data pelanggan, tampilkan hanya nomor referensi
+              return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
+            }
           }
-        },
+        },        
         {
           data: 'transaction_amount',
           render: function (data, type, full, meta) {
@@ -124,7 +133,7 @@ $(function () {
       },
       buttons: [
         {
-            text: '<i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Add Transaction</span>',
+            text: '<i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah</span>',
             className: 'btn btn-primary',
             action: function (e, dt, button, config) {
                 // Tampilkan Modal
@@ -132,7 +141,7 @@ $(function () {
             }
         },
         {
-            text: '<i class="bx bx-send"></i> Send Report',
+            text: '<i class="bx bx-send"></i> Kirim',
             className: 'btn btn-success',
             action: function (e, dt, button, config) {
                 // Tampilkan Modal Report
