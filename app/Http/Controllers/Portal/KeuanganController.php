@@ -554,8 +554,7 @@ class KeuanganController extends Controller
         try {
 
         $startDate      = $request->input('startDate');
-        $endDate        = $request->input('endDate');
-        $users          = User::all();     
+        $endDate        = $request->input('endDate');        
 
         if (!$startDate || !$endDate) {
             // Jika salah satu atau kedua parameter kosong, atur tanggal mulai dan akhir menjadi tanggal hari ini
