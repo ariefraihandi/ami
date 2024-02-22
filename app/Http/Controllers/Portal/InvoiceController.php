@@ -514,7 +514,6 @@ class InvoiceController extends Controller
         }
     }
 
-
     public function updateInvoiceDates(Request $request)
     {
         // Validasi request sesuai kebutuhan Anda
@@ -720,6 +719,7 @@ class InvoiceController extends Controller
 
             if ($sisa < 0) {
                 if ($invoice->panjar_amount == 0) {
+                    // dd('a');
                     $invoice->status = 1;
                     $invoice->payment_method = $method;
                     $invoice->panjar_amount = $totalAmountInput;
@@ -742,6 +742,7 @@ class InvoiceController extends Controller
                         'message' => 'Pembayaran Panjar Berhasil',
                     ];
                 } else {
+                    // dd('b');
                     $invoice->status = 1;
                     $invoice->payment_method = $method;
                     $invoice->panjar_amount += $totalAmountInput;
@@ -767,9 +768,10 @@ class InvoiceController extends Controller
             } 
             
             if ($sisa >= 0) {
+                // dd('c');
                 $invoice->status = 2;
                 $invoice->payment_method = $method;
-                $invoice->panjar_amount = $totalAmountInput;
+                $invoice->panjar_amount += $totalAmountInput;
 
                 $financialTransaction = new FinancialTransaction();
 
