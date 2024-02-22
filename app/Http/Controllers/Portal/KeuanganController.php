@@ -687,10 +687,17 @@ class KeuanganController extends Controller
         $pdf = PDF::loadView('Konten.Keuangan.report', $additionalData);
         return $pdf->stream('laporan '.$jenis.'.pdf');
         
-        } catch (\Exception $e) {
-            // Print error message
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+    } catch (\Exception $e) {
+        // Return error message as JSON response with additional details
+        return response()->json([
+            'error' => [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTrace()
+            ]
+        ], 500);
+    }
     }
 
     private function getSourceReceiver($status)
