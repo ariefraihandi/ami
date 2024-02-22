@@ -684,8 +684,9 @@ class KeuanganController extends Controller
 
         ];
 
-            $pdf = PDF::loadView('Konten.Keuangan.report', $additionalData);
-            return $pdf->stream('report.pdf');
+        $pdf = PDF::loadView('Konten.Keuangan.report', $additionalData);
+        return $pdf->download('laporan '.$jenis.'.pdf');
+        
         } catch (\Exception $e) {
             // Print error message
             return response()->json(['error' => $e->getMessage()], 500);
