@@ -632,7 +632,7 @@ class KeuanganController extends Controller
                             ->get();
                   
         $background         = 'bg-report.png';
-        $link               = public_path('assets/img/icons/brands/logo-kecil.png');                
+        $link               = public_path('assets/img/report/kop.png');                
         $imagePath          = public_path('assets/img/report/' . $image);   
         $bgImage            = public_path('assets/img/report/' . $background);        
 

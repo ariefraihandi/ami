@@ -1,88 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml"
+      xmlns:v-pre="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{$title}}</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .page-break {
-          page-break-after: always;
-        }
-        .logo-img {
-          float: left; /* Mengatur gambar agar rata kiri */
-          margin-right: 10px; /* Memberi jarak kanan antara gambar dan teks */
-          /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4); Menambahkan efek bayangan */
-        }
-
-      .header-table {
-        width: 100%;
-        margin-bottom: 10px; /* Tambahkan margin bawah untuk memberikan ruang di antara elemen */
-      }
-      .image-container {
-        margin-bottom: 10px; 
-      }
-      h3 {
-        margin-top: 50px; 
-        margin-bottom: 5px;
-        text-align: left;
-      }
-      .bg-image {
-    position: fixed;
+<style>
+  table 
+  {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td 
+  {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
+  th
+  {
+    background-color: #f2f2f2;
+  }
+  tr:hover 
+  {
+    background-color: #f5f5f5;
+  }
+  .page-break {
+    page-break-after: always;
+  }
+  .image-container {
+    margin-top: 45px;
+    margin-bottom: 10px;
+  }
+  body {
+    position: relative;
+  }
+  h3 
+  {
+    margin-top: 50px; 
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .bg-image {
+    position: absolute;
     top: 0;
     left: 0;
-    width: calc(100vw + 20px); /* Menambahkan ruang tambahan untuk margin negatif */
-    height: calc(100vh + 20px); /* Menambahkan ruang tambahan untuk margin negatif */
-    margin: -45px; /* Margin negatif untuk menggeser background */
-    z-index: -1; /* Atur z-index agar berada di belakang konten */
+    /* width: 100%;
+    height: 100%; */
+    z-index: -1;
     opacity: 0.3;
-    padding: 0;
-    background-size: cover;
-}
-
-
-
-body {
-    margin: 0; /* Mengatur margin body menjadi 0 */
-    padding: 0; /* Mengatur padding body menjadi 0 */
-}
-
-
-    </style>
+  }
+</style>
 </head>
-<body>
-  <img src="{{ $bgImage }}" alt="Background" class="bg-image">
-  
-    <table class="header-table">
-        <tr>
-            <td>
-              <img src="{{ $logoPath }}" alt="Logo" width="80" height="80">
-            </td>
-            <td style="text-align: center;">
-                <h1 style="margin-bottom: 5px;">CV Atjeh Mediatama Indonesia</h1>
-                <p style="margin-top: 5px;">Mns Mee, Muara Dua, Lhokseumawe, Aceh</p>
-            </td>            
-        </tr>imagePath
-    </table>
-    <div class="image-container">
-      <img src="{{ $imagePath }}" alt="Logo" height="70" class="logo-img">
+<body style="margin: 0;">  
+  <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 115%;  left: -45px;">
+  <div style="position: relative;">
+    <img src="{{ $logoPath }}" alt="Header Image" style="position: fixed; top: 0; left: -45px; width: 115%; padding: 0;  top: -45px;">
+    <div class="image-container" style="position: absolute; top: 45px;">
+      <img src="{{ $imagePath }}" alt="Logo" height="70" style="position: fixed; top: 60;" class="logo-img">
     </div>
-    <br>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
     <h3>Invoice:</h3>
     <div class="table-responsive">
         <table id="dataTable">
@@ -449,6 +433,5 @@ body {
                 @endif
               </tbody>
         </table>
-    </div>
 </body>
 </html>
