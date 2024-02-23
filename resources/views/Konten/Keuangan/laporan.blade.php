@@ -317,6 +317,8 @@
                                   <div>
                                       <h6 class="mb-2">Pemasukan</h6>
                                       <h5 class="mb-2">{{ number_format($incomeTotal), 0 }},-</h5>       
+                                      <h6 class="mb-2">Bon Konsumen</h6>
+                                      <h5 class="mb-0">{{ number_format($hutangCustumer), 0 }},-</h5>           
                                   </div>
                                   <div class="avatar me-sm-4">
                                       <span class="avatar-initial rounded bg-label-secondary">                                          

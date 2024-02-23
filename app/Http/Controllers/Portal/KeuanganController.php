@@ -506,7 +506,9 @@ class KeuanganController extends Controller
         $saldoKas           = $setorKas->sum('transaction_amount');
         $saldoTopup         = $topup->sum('transaction_amount');
         $totalTagih         = $tagihan->sum('transaction_amount');
-
+        $JumlahBB           = $invoicesBB->sum('total_amount');
+        $jumlahPanjar       = $invoicesPJ->sum('panjar_amount');
+        $hutangCustumer     = $jumlahPanjar + $JumlahBB;
 
         $additionalData = [
             'title'             => 'Bisnis',
@@ -540,6 +542,7 @@ class KeuanganController extends Controller
             'totaloutcome'      => $totaloutcome,
             'outcomeTotal'      => $outcomeTotal,
             'saldoKas'          => $saldoKas,
+            'hutangCustumer'    => $hutangCustumer,
             'totalTagih'          => $totalTagih,
             'topup'             => $saldoTopup,
 
