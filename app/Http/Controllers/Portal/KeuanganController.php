@@ -549,42 +549,91 @@ class KeuanganController extends Controller
     } 
 //! Laporan
 
-public function generatePDF(Request $request)
-{
-    try {
-        // Mendapatkan tanggal mulai dan akhir dari request
-        $startDate = $request->input('startDate');
-        $endDate = $request->input('endDate');
+    public function generatePDF(Request $request)
+    {
+        try {
 
-        // Memvalidasi apakah tanggal mulai dan akhir telah diberikan, jika tidak, atur ke hari ini
+        $startDate      = $request->input('startDate');
+        $endDate        = $request->input('endDate');        
+
         if (!$startDate || !$endDate) {
+            // Jika salah satu atau kedua parameter kosong, atur tanggal mulai dan akhir menjadi tanggal hari ini
             $startDate = now()->startOfDay();
             $endDate = now()->endOfDay();
         } else {
+            // Jika waktu tidak disertakan dalam URL, tambahkan waktu default
             $startDate = Carbon::parse($startDate)->startOfDay();
             $endDate = Carbon::parse($endDate)->endOfDay();
         }
 
-        // Menentukan jenis laporan berdasarkan selisih hari
-        $diffInDays = $endDate->diffInDays($startDate);
-        $jenis = $this->determineReportType($diffInDays);
-        $image = $this->getReportImage($diffInDays);
-        $background         = 'bg-report.png';     
-        $bgImage            = public_path('assets/img/report/' . $background);   
-        $link               = public_path('assets/img/report/kop.png');       
-        $imagePath          = public_path('assets/img/report/' . $image);  
+        // Menentukan Jenis Laporan
+            $diffInDays         = $endDate->diffInDays($startDate);
+            $diffInWeeks        = $endDate->diffInWeeks($startDate);
+            $diffInMonths       = $endDate->diffInMonths($startDate);
+            $diffInYears        = $endDate->diffInYears($startDate);
 
+            if ($diffInDays == 0) {
+                $jenis = 'Harian';
+                $image = 'lap-harian.png';
+            } elseif ($diffInDays > 0 && $diffInDays <= 6) {
+                $jenis = 'Mingguan';
+                $image = 'lap-mingguan.png';
+            } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
+                $jenis = 'Bulanan';
+                $image = 'lap-bulanan.png';
+            } elseif ($diffInDays >= 365) {
+                $jenis = 'Tahunan';
+                $image = 'lap-tahunan.png';
+            } else {
+                $jenis = 'Custom';
+                $image = 'lap.png';
+            }
+        // !Menentukan Jenis Laporan       
 
-        // Mendapatkan data tagihan sesuai rentang tanggal
-        $invoices = $this->getInvoices($startDate, $endDate);
-        $invoicesBB = $this->getInvoicesBB($startDate, $endDate);
-        $invoicesPJ = $this->getInvoicesPJ($startDate, $endDate);
-        $invoicesLUN = $this->getInvoicesLUN($startDate, $endDate);
-        $income = $this->getFinancialTransactions($startDate, $endDate, [1, 2, 3]);
-        $outcome = $this->getFinancialTransactions($startDate, $endDate, [4, 5]);
-        $tagihan = $this->getTagihan($startDate, $endDate);
-        $setorKas = $this->getFinancialTransactions($startDate, $endDate, [6]);
-        $topup = $this->getFinancialTransactions($startDate, $endDate, [7]);
+        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->get(); 
+
+        $invoicesBB         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '!=', 0.00)
+                            ->where('panjar_amount', 0.00)
+                            ->get();  
+
+        $invoicesPJ         = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '>', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+
+        $invoicesLUN        = Invoice::whereBetween('created_at', [$startDate, $endDate])
+                            ->where('total_amount', '<=', DB::raw('panjar_amount'))
+                            ->where('panjar_amount', '!=', 0.00)
+                            ->get();
+
+        $income             = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [1, 2, 3])
+                            ->get();
+        
+        $outcome            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4,5])
+                            ->get();
+        
+        $tagihan            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [4, 5])
+                            ->where('lunas', 0)
+                            ->get();
+                        
+        $setorKas           = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [6])
+                            ->get();
+        
+        $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
+                            ->whereIn('status', [7])
+                            ->get();
+                  
+        $background         = 'bg-report.png';
+        $link               = public_path('assets/img/report/kop.png');                
+        $imagePath          = public_path('assets/img/report/' . $image);   
+        $bgImage            = public_path('assets/img/report/' . $background);        
 
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
@@ -599,7 +648,7 @@ public function generatePDF(Request $request)
         $saldoTopup         = $topup->sum('transaction_amount');
         $totalTagih         = $tagihan->sum('transaction_amount');
 
-        // Data tambahan untuk dikirimkan ke view PDF
+
         $additionalData = [
             'title'             => 'Laporan ' . $jenis,            
             'startDate'         => $startDate,
@@ -631,93 +680,18 @@ public function generatePDF(Request $request)
             'outcomeTotal'      => $outcomeTotal,
             'saldoKas'          => $saldoKas,
             'totalTagih'          => $totalTagih,
-            'topup'             => $saldoTopup,        ];
+            'topup'             => $saldoTopup,
 
-        // Memuat view PDF dengan data tambahan
+        ];
+
         $pdf = PDF::loadView('Konten.Keuangan.report', $additionalData);
-        return $pdf->stream('laporan ' . $jenis . '.pdf');
-
-    } catch (\Exception $e) {
-        // Mengembalikan pesan kesalahan sebagai respons JSON
-        return response()->json(['error' => $e->getMessage()], 500);
+        return $pdf->stream('laporan '.$jenis.'.pdf');
+        
+        } catch (\Exception $e) {
+            // Print error message
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-}
-
-// Metode untuk menentukan jenis laporan berdasarkan selisih hari
-private function determineReportType($diffInDays) {
-    if ($diffInDays == 0) {
-        return 'Harian';
-    } elseif ($diffInDays > 0 && $diffInDays <= 6) {
-        return 'Mingguan';
-    } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
-        return 'Bulanan';
-    } elseif ($diffInDays >= 365) {
-        return 'Tahunan';
-    } else {
-        return 'Custom';
-    }
-}
-
-// Metode untuk mendapatkan gambar laporan berdasarkan selisih hari
-private function getReportImage($diffInDays) {
-    if ($diffInDays == 0) {
-        return 'lap-harian.png';
-    } elseif ($diffInDays > 0 && $diffInDays <= 6) {
-        return 'lap-mingguan.png';
-    } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
-        return 'lap-bulanan.png';
-    } elseif ($diffInDays >= 365) {
-        return 'lap-tahunan.png';
-    } else {
-        return 'lap.png';
-    }
-}
-
-// Metode untuk mendapatkan data tagihan sesuai rentang tanggal
-private function getInvoices($startDate, $endDate) {
-    return Invoice::whereBetween('created_at', [$startDate, $endDate])
-                    ->where('total_amount', '!=', 0.00)
-                    ->get();
-}
-
-// Metode untuk mendapatkan data tagihan BB (belum bayar)
-private function getInvoicesBB($startDate, $endDate) {
-    return Invoice::whereBetween('created_at', [$startDate, $endDate])
-                    ->where('total_amount', '!=', 0.00)
-                    ->where('panjar_amount', 0.00)
-                    ->get();
-}
-
-// Metode untuk mendapatkan data tagihan PJ (panjar)
-private function getInvoicesPJ($startDate, $endDate) {
-    return Invoice::whereBetween('created_at', [$startDate, $endDate])
-                    ->where('total_amount', '>', DB::raw('panjar_amount'))
-                    ->where('panjar_amount', '!=', 0.00)
-                    ->get();
-}
-
-// Metode untuk mendapatkan data tagihan LUN (lunas)
-private function getInvoicesLUN($startDate, $endDate) {
-    return Invoice::whereBetween('created_at', [$startDate, $endDate])
-                    ->where('total_amount', '<=', DB::raw('panjar_amount'))
-                    ->where('panjar_amount', '!=', 0.00)
-                    ->get();
-}
-
-// Metode untuk mendapatkan data transaksi keuangan sesuai rentang tanggal dan status
-private function getFinancialTransactions($startDate, $endDate, $status) {
-    return FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
-                    ->whereIn('status', $status)
-                    ->get();
-}
-
-// Metode untuk mendapatkan data tagihan belum lunas
-private function getTagihan($startDate, $endDate) {
-    return FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
-                    ->whereIn('status', [4, 5])
-                    ->where('lunas', 0)
-                    ->get();
-}
 
     private function getSourceReceiver($status)
     {

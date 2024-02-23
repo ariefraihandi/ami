@@ -316,8 +316,7 @@
                               <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                                   <div>
                                       <h6 class="mb-2">Pemasukan</h6>
-                                      <h4 class="mb-2">{{ $totalincome }}</h4>       
-                                      <p class="mb-0"><span class="text-muted me-2">Rp. {{ number_format($incomeTotal), 0 }},-</span></p>                               
+                                      <h5 class="mb-2">{{ number_format($incomeTotal), 0 }},-</h5>       
                                   </div>
                                   <div class="avatar me-sm-4">
                                       <span class="avatar-initial rounded bg-label-secondary">                                          
@@ -331,8 +330,8 @@
                               <div class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-3 pb-sm-0">
                                   <div>
                                       <h6 class="mb-2">Pengeluaran</h6>
-                                      <h4 class="mb-2">{{ $totaloutcome }}</h4>
-                                      <p class="mb-0"><span class="text-muted me-2">Rp. {{ number_format($outcomeTotal), 0 }},-</span></p>                               
+                                      <h5 class="mb-2">{{ number_format($outcomeTotal), 0 }},-</h5>
+                                      <p class="mb-0"><span class="text-muted me-2">Margin: {{ number_format($incomeTotal - $outcomeTotal), 0 }},-</span></p>                               
                                   </div>
                                   <div class="avatar me-lg-4">
                                       <span class="avatar-initial rounded bg-label-secondary">
@@ -345,9 +344,10 @@
                           <div class="col-sm-6 col-lg-3">
                               <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">
                                   <div>
-                                      <h6 class="mb-2">Margin</h6>
-                                      <h4 class="mb-2">{{ number_format($incomeTotal - $outcomeTotal), 0 }},-</h4>  
-                                      <p class="mb-0"><span class="text-muted me-2">Tagihan {{ number_format($totalTagih), 0 }},-</span></p>                                                                
+                                      <h6 class="mb-2">Setoran Kas</h6>
+                                      <h5 class="mb-2">{{ number_format($saldoKas), 0 }},-</h5>  
+                                      <h6 class="mb-2">Top Up</h6>
+                                      <h5 class="mb-0">{{ number_format($topup), 0 }},-</h5>                                                                
                                   </div>
                                   <div class="avatar me-sm-4">
                                       <span class="avatar-initial rounded bg-label-secondary">
@@ -360,8 +360,7 @@
                               <div class="d-flex justify-content-between align-items-start">
                                   <div>
                                       <h6 class="mb-2">Kas</h6>
-                                      <h4 class="mb-2">{{ number_format($saldoKas - $topup), 0 }},-</h4>      
-                                      <p class="mb-0"><span class="text-muted me-2">Sisa {{ number_format($incomeTotal - $outcomeTotal + $topup - $saldoKas), 0 }},-</span></p>                                                                
+                                      <h4 class="mb-2">{{ number_format($saldoKas - $topup), 0 }},-</h4>                                            
                                   </div>
                                   <div class="avatar">
                                       <span class="avatar-initial rounded bg-label-secondary">
@@ -388,11 +387,11 @@
                                 Pengeluaran
                             </button>
                         </li>
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-tagihan" aria-controls="navs-top-tagihan" aria-selected="false">
                                 Tagihan
                             </button>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-setoran" aria-controls="navs-top-setoran" aria-selected="false">
                                 Setoran Kas
@@ -477,7 +476,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="tab-pane fade" id="navs-top-tagihan" role="tabpanel">
+                      {{-- <div class="tab-pane fade" id="navs-top-tagihan" role="tabpanel">
                         <div class="card">                             
                           <div class="table-responsive text-nowrap">
                             <table class="table">
@@ -512,7 +511,7 @@
                             </table>
                           </div>
                         </div>
-                      </div>
+                      </div> --}}
                       <div class="tab-pane fade" id="navs-top-setoran" role="tabpanel">
                         <div class="card">                              
                           <div class="table-responsive text-nowrap">

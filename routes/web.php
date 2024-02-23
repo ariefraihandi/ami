@@ -70,7 +70,7 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('keuangan/gaji',             [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.gaji');
 
-    Route::get('keuangan/laporan',          [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');
+    Route::get('keuangan/laporan',          [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');    
     // !!fix keuangan
 
     //Product fix route
