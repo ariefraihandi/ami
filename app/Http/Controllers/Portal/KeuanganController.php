@@ -508,7 +508,9 @@ class KeuanganController extends Controller
         $totalTagih         = $tagihan->sum('transaction_amount');
         $JumlahBB           = $invoicesBB->sum('total_amount');
         $jumlahPanjar       = $invoicesPJ->sum('panjar_amount');
-        $hutangCustumer     = $jumlahPanjar + $JumlahBB;
+        $sisaPanjar         = $invoicesPJ->sum('total_amount');
+        $sis     = $sisaPanjar - $jumlahPanjar;
+        $hutangCustumer     = $jumlahPanjar + $sis;
 
         $additionalData = [
             'title'             => 'Bisnis',
