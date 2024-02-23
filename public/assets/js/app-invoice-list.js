@@ -178,10 +178,10 @@ $(function () {
           }
         },
         {
-          data: 'due_date',
+          data: 'created_at',
           targets: 5,
           render: function (data, type, full, meta) {
-            var $due_date = moment(full['due_date']);
+            var $due_date = moment(full['created_at']);
             
             // Creates full output for row
             var $row_output =

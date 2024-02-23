@@ -47,6 +47,7 @@ class InvoiceController extends Controller
                     'total_amount' => $invoice->total_amount,
                     'panjar_amount' => $invoice->panjar_amount,
                     'due_date' => $invoice->due_date,
+                    'created_at' => $invoice->created_at,
                     'customer_uuid' => $invoice->customer_uuid,
                     'additional_notes' => $invoice->additional_notes,
                 ];
