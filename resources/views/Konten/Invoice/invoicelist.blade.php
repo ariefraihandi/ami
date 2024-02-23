@@ -130,7 +130,7 @@
                 <th><i class="bx bx-trending-up"></i></th>
                 <th>Client</th>
                 <th>Total</th>
-                <th class="text-truncate">Issued Date</th>
+                <th class="text-truncate">Tanggal Inv</th>
                 <th>Invoice Status</th>
                 <th class="cell-fit">Actions</th>
               </tr>
