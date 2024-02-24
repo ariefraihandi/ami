@@ -49,12 +49,12 @@
     /* width: 100%;
     height: 100%; */
     z-index: -1;
-    opacity: 0.3;
+    /* opacity: 0.5; */
   }
 </style>
 </head>
 <body style="margin: 0;">  
-  <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 115%;  left: -45px;">
+  <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 110%;  left: -45px;">
   <div style="position: relative;">
     <img src="{{ $logoPath }}" alt="Header Image" style="position: fixed; top: 0; left: -45px; width: 115%; padding: 0;  top: -45px;">
     <div class="image-container" style="position: absolute; top: 45px;">

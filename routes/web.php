@@ -124,6 +124,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-all-user',         [UserController::class, 'getAllUser'])->name('getAll.User');
     Route::get('/users',                [UserController::class, 'showUserAdminIndex'])->name('users');
     Route::post('users',                [UserController::class, 'addUsers'])->name('add.users');
+    Route::get('/delete/user',          [UserController::class, 'deleteUser'])->name('delete.user');
     Route::post('/update/user',         [UserController::class, 'update'])->name('update.user');
     //!! users Administrator
 });

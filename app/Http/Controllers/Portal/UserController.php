@@ -28,6 +28,7 @@ use App\Models\AccessSub;
 use App\Models\AccessSubChild;
 use App\Models\UserActivity; 
 use App\Models\User;
+use App\Models\Tagihan;
 
 class UserController extends Controller
 {
@@ -261,6 +262,17 @@ class UserController extends Controller
 
             $user = User::create($data);
 
+            Tagihan::create([
+                'id_tagih' => $user->id,
+                'nama_tagihan' => $user->name,
+                'jenis_tagihan' => '1', // Gaji
+                'jumlah_tagihan' => $user->salary,
+                'start_tagihan' => Carbon::create(2024, 1, 1)->toDateString(),
+                'status' => '0', // Status awal
+                'tagihan_ke' => null,
+                'sampai_ke' => null,
+            ]);
+
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
@@ -304,7 +316,6 @@ class UserController extends Controller
                 ],
             ]);
         }    
-
     }   
 
     public function update(Request $request)
@@ -347,6 +358,39 @@ class UserController extends Controller
     // Redirect kembali dengan pesan sukses
     return redirect()->back()->with('success', 'User updated successfully.');
 }
+
+public function deleteUser(Request $request)
+    {
+        try {
+            // Retrieve the ID from the query parameters
+            $id = $request->input('id');
+    
+            // Delete the menu with the specified ID
+            User::where('id', $id)->delete();
+    
+            // Delete the associated access menu records          
+    
+            $successMessage = 'Karyawan Berhasil Dihapus';
+    
+            return redirect()->route('users')->with([
+                'response' => [
+                    'success' => true,
+                    'title' => 'Success',
+                    'message' => $successMessage,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $errorMessage = 'Failed to delete Role records. ' . $e->getMessage();
+    
+            return redirect()->route('users')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => $errorMessage,
+                ],
+            ]);
+        }
+    }
 
     private function cleanNumericInput($input)
     {
