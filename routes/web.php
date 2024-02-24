@@ -68,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/delete/trans',             [KeuanganController::class, 'delTrans'])->name('delTransaction');
     Route::get('/report',                   [KeuanganController::class, 'generatePDF'])->name('generatePDF');
     
-    Route::get('keuangan/gaji',             [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.gaji');
+    Route::get('keuangan/tagihan',          [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.tagihan');
 
     Route::get('keuangan/laporan',          [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');    
     // !!fix keuangan
