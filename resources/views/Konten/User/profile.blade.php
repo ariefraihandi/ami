@@ -100,7 +100,7 @@
           <a class="nav-link active" href="{{ route('user.profile') }}"><i class="bx bx-user me-1"></i>Account</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('gaji.profile') }}"
+          <a class="nav-link" href="{{ route('user.gaji') }}"
             ><i class="bx bxs-wallet me-1"></i>Gaji</a>
         </li>      
         <li class="nav-item">

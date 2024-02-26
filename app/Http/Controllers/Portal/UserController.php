@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use App\Models\Invoice;
@@ -84,8 +85,81 @@ class UserController extends Controller
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
+        //Check Access
+            $requestedUrl   = $request->path();      
+            $urlParts       = explode('/', $requestedUrl);
+            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+            $menuSub        = MenuSub::where('url', $urlPart)->first();
+            
+            if ($menuSub) {
+            
+                $menuSubId = $menuSub->id;
+                $userRole = session('user_role');
+                $accessSub = AccessSub::where('role_id', $userRole)
+                                    ->where('submenu_id', $menuSubId)
+                                    ->first();
+                if (!$accessSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }                  
+            } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'URL tidak ditemukan!',
+                    ],
+                ]);
+            }
+        //!Check Access
+        // Check Subs Child Access
+            $requestedUrl = $request->path();       
+            $routes = Route::getRoutes();
+            $matchedRouteName = null;
+                    
+            foreach ($routes as $route) {
+                if ($route->uri() == $requestedUrl) {
+                    // Jika cocok, simpan nama rute dan keluar dari loop
+                    $matchedRouteName = $route->getName();
+                    break;
+                }
+            }
+
+            if ($matchedRouteName) {
+            $url            = $matchedRouteName;
+            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+            $userRole       = session('user_role');
+            $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                            ->where('childsubmenu_id', $menuChildSub->id)
+                            ->first();
+
+            if (!$accChildSub) {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+            }       
+            } else {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Anda Tidak Memiliki Akses!',
+                ],
+            ]);
+            }
+        //! Check Subs Child Access
+
         $user = Auth::user();
         if (!$user) {
           
@@ -122,8 +196,82 @@ class UserController extends Controller
         return view('Konten/User/profile', $additionalData);
     }
    
-    public function showPayroll()
+    public function showPayroll(Request $request)
     {
+
+    //Check Access
+        $requestedUrl   = $request->path();      
+        $urlParts       = explode('/', $requestedUrl);
+        $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+        $menuSub        = MenuSub::where('url', $urlPart)->first();
+        
+        if ($menuSub) {
+        
+            $menuSubId = $menuSub->id;
+            $userRole = session('user_role');
+            $accessSub = AccessSub::where('role_id', $userRole)
+                                ->where('submenu_id', $menuSubId)
+                                ->first();
+            if (!$accessSub) {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+            }                  
+        } else {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'URL tidak ditemukan!',
+                ],
+            ]);
+        }
+    //!Check Access
+    // Check Subs Child Access
+        $requestedUrl = $request->path();       
+        $routes = Route::getRoutes();
+        $matchedRouteName = null;
+                
+        foreach ($routes as $route) {
+            if ($route->uri() == $requestedUrl) {
+                // Jika cocok, simpan nama rute dan keluar dari loop
+                $matchedRouteName = $route->getName();
+                break;
+            }
+        }
+
+        if ($matchedRouteName) {
+        $url            = $matchedRouteName;
+        $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+        $userRole       = session('user_role');
+        $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                        ->where('childsubmenu_id', $menuChildSub->id)
+                        ->first();
+
+        if (!$accChildSub) {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Anda Tidak Memiliki Akses!',
+                ],
+            ]);
+        }       
+        } else {
+        return redirect()->route('user.profile')->with([
+            'response' => [
+                'success' => false,
+                'title' => 'Eror',
+                'message' => 'Anda Tidak Memiliki Akses!',
+            ],
+        ]);
+        }
+    //! Check Subs Child Access
+
         $user = Auth::user();
         if (!$user) {
           

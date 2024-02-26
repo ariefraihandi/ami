@@ -117,7 +117,7 @@ Route::middleware(['auth'])->group(function () {
 
     //user
     Route::get('/user/profile',             [UserController::class, 'index'])->name('user.profile');
-    Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('gaji.profile');
+    Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('user.gaji');
     //!!user
 
     //Send Report
