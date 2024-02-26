@@ -105,12 +105,12 @@
         <table id="dataTable" style="border-collapse: collapse; width: 100%; border: 1px solid black;">
             <thead style="background-color: #BA0000; color: #E8B014;">
                 <tr>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 5%;">NO</th>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 30%;">DESKRIPSI</th>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 15%;">SATUAN</th>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 15%;">UKURAN</th>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 10%;">JUMLAH</th>
-                    <th style="border: 1px solid black; text-align: center; font-size: 14px; width: 25%;">SUBTOTAL</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 5%;">NO</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 30%;">DESKRIPSI</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 15%;">SATUAN</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 15%;">UKURAN</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 10%;">JUMLAH</th>
+                    <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 25%;">SUBTOTAL</th>
                 </tr>
             </thead>             
                 </tr>
@@ -158,10 +158,36 @@
                     <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #E8B014; font-size: 16px;">{{$total}}</td>
                 </tr>
             </tfoot>
-
         </table>
+        *Mohon diperhatikan, kami tidak menyediakan layanan tukar atau pengembalian. Kami berharap produk ini memenuhi harapan Anda. Selamat menikmati pembelian Anda!
+    </div>
+    <div class="table-responsive">
+        <table id="dataTable" style="border: none; width: 100%;">
+            <thead>
+                <tr>
+                    
+                    <td style="width: 33.33%;"></td>
+                    <td style="width: 33.33%;"></td>
+                    <!-- Kolom ketiga -->
+                    <td style="width: 33.33%; font-size: 14px; text-align: center;">
+                        Lhokseumawe<br><strong>Aceh Mediatama Indonesia</strong><br><br><br><br>
+                        <span style="text-decoration: underline;">Nishra ilkhalissia</span><br>Kasir
+                    </td>
+                    
+                </tr>
+            </thead>
+            <!-- Isi tabel -->
+            <tbody>
+                <!-- Isi tabel di sini -->
+            </tbody>
+            <!-- Footer tabel -->
+            <tfoot>
+                <!-- Footer tabel di sini -->
+            </tfoot>
+        </table>
+        
     </div>
     
-    
+   
 </body>
 </html>
