@@ -263,7 +263,12 @@ $(document).ready(function() {
                 $.each(response.data, function(index, tagihan) {
                     // Periksa apakah ID tagihan terdapat dalam daftar ID tagihan yang dipilih
                     if (selectedTagihanIds.includes(tagihan.id_tagih)) {                     
-                        // Konversi string menjadi tipe data numerik
+                        
+                        console.log("ID Tagihan:", tagihan.id_tagih);
+                        console.log("Salary:", tagihan.salary);
+                        console.log("Bonus:", tagihan.bonus);
+                        console.log("Ambilan:", tagihan.ambilan);
+
                         var salary = parseFloat(tagihan.salary);
                         var bonus = parseFloat(tagihan.bonus);
                         var ambilan = parseFloat(tagihan.ambilan);
