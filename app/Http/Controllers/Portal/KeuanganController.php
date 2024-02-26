@@ -878,7 +878,7 @@ class KeuanganController extends Controller
     
             // Mendapatkan data dari permintaan
             $data_pembayaran = $request->input('data_pembayaran');
-            $jumlah_data_kirim = count($data_pembayaran); // Hitung jumlah data yang dikirim    
+            $jumlah_data_kirim = count($data_pembayaran);  
             foreach ($data_pembayaran as $data) {
                 $id_tagih = $data['id_tagih'];
                 $bonus = $data['bonus'];

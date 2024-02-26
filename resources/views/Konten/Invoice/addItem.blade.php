@@ -262,7 +262,12 @@
                   Bayar
                 </span>
               </button>            
-              <a href="/print/{{ $invoiceNumber }}" target="_blank" class="btn btn-label-secondary d-grid w-100 mb-3">Download</a>
+              <a href="/print/{{ $invoiceNumber }}" target="_blank" class="btn btn-label-secondary d-grid w-100 mb-3">
+                <span class="d-flex align-items-center justify-content-center text-nowrap">
+                    <i class="bx bx-download bx-xs me-1"></i> <!-- Tambahkan ikon download -->
+                    Download
+                </span>
+            </a>
               <a href="{{ route("deleteInvoice") }}?invoiceNumber={{$invoiceNumber}}" class="btn btn-label-danger d-grid w-100 mb-3" onclick="return confirm('Are you sure?')">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                     <i class="bx bx-trash bx-xs me-1"></i>

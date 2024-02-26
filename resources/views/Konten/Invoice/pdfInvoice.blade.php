@@ -84,10 +84,10 @@
                 <tr>
                     <td colspan="2" style="width: 50%; vertical-align: top;"> <!-- Bagian kiri untuk Invoice To -->
                         <strong>Invoice To:</strong><br>
-                        ILHAM FIRDAUS SE<br>
-                        0808080808<br>
-                        ilham@gmail.com<br>
-                        Lhokseumawe
+                        {{$customer->name}}<br>
+                        {{$customer->phone}}<br>
+                        {{$customer->email}}<br>
+                        {{$customer->address}}                      
                     </td>
                     <td colspan="2" style="width: 50%; vertical-align: top;"> <!-- Bagian kanan untuk Tagihan -->
                         <strong>Tagihan:</strong><br>
