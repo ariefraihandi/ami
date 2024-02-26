@@ -123,6 +123,7 @@ $(document).ready(function () {
                         }
                     }
                 },
+                
                 {
                     data: null,
                     targets: 7, // Sesuaikan dengan indeks kolom yang sesuai
@@ -144,7 +145,28 @@ $(document).ready(function () {
                         // Tampilkan gaji bersih dalam format mata uang Rupiah
                         return 'Rp. ' + netSalary.toLocaleString('id-ID') + ',-';
                     }
-                },                
+                },    
+                {
+                    data: null,
+                    render: function (data, type, full, meta) {
+                        // Mengonversi string angka menjadi number
+                        var start_tagihan = new Date(full.start_tagihan);
+                        
+                        // Array dengan nama bulan dalam Bahasa Indonesia
+                        var namaBulan = [
+                            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                        ];
+                        
+                        // Mendapatkan tahun dan bulan dari tanggal
+                        var tahun = start_tagihan.getFullYear();
+                        var bulanIndex = start_tagihan.getMonth();
+                        var bulan = namaBulan[bulanIndex];
+                        
+                        // Mengembalikan format yang diinginkan
+                        return bulan + ', ' + tahun;
+                    }
+                },                    
                 {
                     data: null,
                     render: function (data, type, full, meta) {
@@ -228,8 +250,7 @@ $(document).ready(function() {
             selectedTagihanIds.push(idTagih); // Tambahkan ID tagihan ke dalam array selectedTagihanIds
         });
 
-        // Kirim data tagihan yang dipilih ke URL /get-tagih menggunakan AJAX
-        // Kirim data tagihan yang dipilih ke URL /get-tagih menggunakan AJAX
+        // Kirim data tagihan yang dipilih ke URL /get-tagih menggunakan AJAX        
         $.ajax({
             url: '/get-tagih',
             method: 'GET',
@@ -237,16 +258,11 @@ $(document).ready(function() {
             success: function(response) {
                 // Tangani respons dari server
                 console.log(response.data); // Tampilkan data tagihan dari server dalam konsol
-
+                var dataPembayaran = [];
                 // Iterasi melalui data tagihan dari respons
                 $.each(response.data, function(index, tagihan) {
                     // Periksa apakah ID tagihan terdapat dalam daftar ID tagihan yang dipilih
-                    if (selectedTagihanIds.includes(tagihan.id_tagih)) {
-                        console.log("ID Tagihan:", tagihan.id_tagih);
-                        console.log("Salary:", tagihan.salary);
-                        console.log("Bonus:", tagihan.bonus);
-                        console.log("Ambilan:", tagihan.ambilan);
-                
+                    if (selectedTagihanIds.includes(tagihan.id_tagih)) {                     
                         // Konversi string menjadi tipe data numerik
                         var salary = parseFloat(tagihan.salary);
                         var bonus = parseFloat(tagihan.bonus);
@@ -261,35 +277,71 @@ $(document).ready(function() {
                             total = (salary + bonus - ambilan) * tagihan.masa_kerja;
                             console.log("Total:", total);
                         }
-
-                        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-                        // Kirim data id_tagih dan total ke controller menggunakan AJAX POST
-                        $.ajax({
-                            url: '/bayar-gaji',
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken // Sertakan token CSRF dalam header
-                            },
-                            data: {
-                                id_tagih: tagihan.id_tagih,
-                                bonus: tagihan.bonus,
-                                ambilan: tagihan.ambilan,
-                                total: total
-                            },
-                            
+                        dataPembayaran.push({
+                            id_tagih: tagihan.id_tagih,
+                            bonus: tagihan.bonus,
+                            ambilan: tagihan.ambilan,
+                            total: total
                         });
                     }
                 });
-                
+                // Setelah mengumpulkan semua data pembayaran, kirim ke server dalam satu permintaan AJAX
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                $.ajax({
+                    url: '/bayar-gaji',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken // Sertakan token CSRF dalam header
+                    },
+                    data: {
+                        data_pembayaran: dataPembayaran // Kirim seluruh data pembayaran sebagai array
+                    },
+                    success: function(response) {
+                        // Handle respon dari server
+                        if (response.success) {
+                            // Tampilkan Sweet Alert untuk memberi tahu bahwa semua data berhasil diproses
+                            showSweetAlert({
+                                success: true,
+                                title: "Sukses!",
+                                message: "Semua pembayaran berhasil diproses"
+                            });
+                        } else {
+                            // Tampilkan Sweet Alert dengan pesan error jika terjadi kesalahan saat memproses pembayaran
+                            showSweetAlert({
+                                success: false,
+                                title: "Error!",
+                                message: response.message
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle kesalahan jika terjadi kesalahan saat melakukan permintaan AJAX
+                        console.error(xhr.responseText);
+                        showSweetAlert({
+                            success: false,
+                            title: "Error!",
+                            message: "Terjadi kesalahan saat melakukan permintaan."
+                        });
+                    }
+                });
             },
             error: function(xhr, status, error) {
-                // Tangani kesalahan jika terjadi
-                console.error(error); // Tampilkan pesan kesalahan dalam konsol
+                // Tangani kesalahan jika terjadi saat mengambil data tagihan
+                console.error(xhr.responseText);
             }
         });
-
     });
 });
 
-
+function showSweetAlert(response) {
+    Swal.fire({
+        icon: response.success ? 'success' : 'error',
+        title: response.title,   
+        text: response.message
+    }).then((result) => {
+        // Jika Sweet Alert ditutup dan respons sukses, reload halaman
+        if (result.isConfirmed && response.success) {
+            location.reload();
+        }
+    });
+}

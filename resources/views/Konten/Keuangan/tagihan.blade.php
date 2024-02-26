@@ -127,6 +127,7 @@
                   <th class="text-center">Bonus</th>
                   <th class="text-center">Ambilan</th>
                   <th class="text-center">Gaji Bersih</th>
+                  <th class="text-center">Periode</th>
                   <th class="text-center cell-fit">Actions</th>
               </tr>
           </thead>          

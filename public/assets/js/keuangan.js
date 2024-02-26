@@ -79,6 +79,10 @@ $(function () {
                 badgeClass = 'bg-label-info';
                 status = 'Bonus';
                 break;
+              case '9':
+                badgeClass = 'bg-label-warning';
+                status = 'Gaji';
+                break;
               default:
                 badgeClass = 'bg-label-secondary';
                 status = status ? status : 'Unknown';
@@ -224,7 +228,7 @@ $(function () {
                       column.search(val ? '^' + val + '$' : '', true, false).draw();
                   });
 
-              var statusOptions = ['Invoice', 'Operational', 'Ambilan', 'Setoran Kas', 'Top Up'];
+              var statusOptions = ['Invoice', 'Operational', 'Ambilan', 'Bonus', 'Gaji', 'Setoran Kas', 'Top Up'];
 
               statusOptions.forEach(function (d) {
                   select.append('<option value="' + d.toLowerCase() + '" class="text-capitalize">' + d + '</option>');
