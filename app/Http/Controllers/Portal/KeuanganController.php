@@ -867,27 +867,30 @@ class KeuanganController extends Controller
     }
 //!Tagihan
 
-    public function bayarGaji(Request $request)
-    {
-        $jumlah_berhasil = 0;
-        $jumlah_gagal = 0;
-    
-        try {
-            // Memulai transaksi database
-            DB::beginTransaction();
-    
-            // Mendapatkan data dari permintaan
-            $data_pembayaran = $request->input('data_pembayaran');
-            $jumlah_data_kirim = count($data_pembayaran);  
+public function bayarGaji(Request $request)
+{
+    $jumlah_berhasil = 0;
+    $jumlah_gagal = 0;
+
+    try {
+        // Memulai transaksi database
+        DB::beginTransaction();
+
+        // Mendapatkan data dari permintaan
+        $data_pembayaran = $request->input('data_pembayaran');
+
+        // Cek apakah $data_pembayaran bukan null dan merupakan array
+        if (!is_null($data_pembayaran) && is_array($data_pembayaran)) {
+            // Iterasi melalui data_pembayaran
             foreach ($data_pembayaran as $data) {
                 $id_tagih = $data['id_tagih'];
                 $bonus = $data['bonus'];
                 $ambilan = $data['ambilan'];
                 $total = $data['total'];
-    
+
                 // Memeriksa data dengan id_tagih yang diterima
                 $tagihan = Tagihan::where('id_tagih', $id_tagih)->where('status', 0)->first();
-    
+
                 // Jika data tagihan ditemukan
                 if ($tagihan) {
                     // Buat data baru untuk bulan berikutnya
@@ -902,13 +905,13 @@ class KeuanganController extends Controller
                     $newTagihan->tagihan_ke = $tagihan->tagihan_ke;
                     $newTagihan->sampai_ke = $tagihan->sampai_ke;
                     $newTagihan->status = 0;
-    
+
                     $newTagihan->save();
-    
+
                     // Update status tagihan yang lama
                     $tagihan->status = 1;
                     $tagihan->save();
-    
+
                     // Simpan transaksi keuangan
                     $transaction = new FinancialTransaction();
                     $transaction->transaction_date = now(); // Gunakan waktu saat ini
@@ -920,7 +923,7 @@ class KeuanganController extends Controller
                     $transaction->status = 9;
                     $transaction->lunas = 1;
                     $transaction->save();
-    
+
                     // Catat aktivitas pengguna
                     $userActivity = new UserActivity();
                     $userActivity->user_id = auth()->id(); // ID admin yang melakukan aktivitas
@@ -928,43 +931,43 @@ class KeuanganController extends Controller
                     $userActivity->ip_address = $request->ip(); // Alamat IP pengguna
                     $userActivity->device_info = 'gj_inputation'; // Informasi perangkat (jika diperlukan)
                     $userActivity->save();
-    
+
                     // Tambahkan jumlah pembayaran yang berhasil
                     $jumlah_berhasil++;
                 }
             }
-    
+
             // Commit transaksi database jika semua data berhasil diproses
             DB::commit();
-    
-            // Kirim respons JSON jika jumlah data yang berhasil sama dengan jumlah data yang dikirim
-            if ($jumlah_berhasil == $jumlah_data_kirim) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Semua pembayaran berhasil diproses',
-                    'jumlah_berhasil' => $jumlah_berhasil,
-                    'jumlah_gagal' => $jumlah_gagal
-                ]);
-            } else {
-                // Jika tidak semua data berhasil diproses, kirim pesan yang sesuai
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tidak semua pembayaran berhasil diproses. Silakan cek kembali data Anda.',
-                    'jumlah_berhasil' => $jumlah_berhasil,
-                    'jumlah_gagal' => $jumlah_gagal
-                ]);
-            }
-        } catch (\Exception $e) {
-            // Tangani kesalahan jika terjadi
-            DB::rollBack();
-    
-            // Kirim respons JSON dengan pesan kesalahan jika terjadi kesalahan
+
+            // Kirim respons JSON jika semua data berhasil diproses
+            return response()->json([
+                'success' => true,
+                'message' => 'Semua pembayaran berhasil diproses',
+                'jumlah_berhasil' => $jumlah_berhasil,
+                'jumlah_gagal' => $jumlah_gagal
+            ]);
+        } else {
+            // Jika $data_pembayaran null atau bukan array, kirim pesan yang sesuai
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage()
-            ], 500); // Kode status 500 untuk kesalahan server
+                'message' => 'Data pembayaran tidak valid atau tidak ada',
+                'jumlah_berhasil' => $jumlah_berhasil,
+                'jumlah_gagal' => $jumlah_gagal
+            ]);
         }
+    } catch (\Exception $e) {
+        // Tangani kesalahan jika terjadi
+        DB::rollBack();
+
+        // Kirim respons JSON dengan pesan kesalahan jika terjadi kesalahan
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage()
+        ], 500); // Kode status 500 untuk kesalahan server
     }
+}
+
     
     public function editMasaKerja(Request $request)
     {
