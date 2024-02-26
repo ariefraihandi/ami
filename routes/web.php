@@ -68,7 +68,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/delete/trans',             [KeuanganController::class, 'delTrans'])->name('delTransaction');
     Route::get('/report',                   [KeuanganController::class, 'generatePDF'])->name('generatePDF');
     
-    Route::get('keuangan/tagihan',          [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.tagihan');
+    
+    Route::get('get-tagih',                 [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
+    Route::get('keuangan/tagihan',          [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');
+    Route::post('/bayar-gaji',              [KeuanganController ::class, 'bayarGaji'])->name('bayarGaji');
+    Route::post('/edit-masa-kerja',         [KeuanganController::class, 'editMasaKerja'])->name('editMasaKerja');
 
     Route::get('keuangan/laporan',          [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');    
     // !!fix keuangan

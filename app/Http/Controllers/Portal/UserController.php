@@ -83,6 +83,7 @@ class UserController extends Controller
         return response()->json(['data' => $formattedCustomers]);
     }
 
+
     public function index()
     {
         $user = Auth::user();
@@ -265,10 +266,11 @@ class UserController extends Controller
             Tagihan::create([
                 'id_tagih' => $user->id,
                 'nama_tagihan' => $user->name,
-                'jenis_tagihan' => '1', // Gaji
+                'jenis_tagihan' => '1',
                 'jumlah_tagihan' => $user->salary,
                 'start_tagihan' => Carbon::create(2024, 1, 1)->toDateString(),
-                'status' => '0', // Status awal
+                'status' => '0', 
+                'masa_kerja' => '0', 
                 'tagihan_ke' => null,
                 'sampai_ke' => null,
             ]);

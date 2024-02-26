@@ -10,6 +10,7 @@ class AddIdTagihToTagihanTable extends Migration
     {
         Schema::table('tagihan', function (Blueprint $table) {
             $table->unsignedBigInteger('id_tagih')->after('id');
+            $table->string('masa_kerja')->after('jumlah_tagihan');
             $table->string('status')->after('sampai_ke');
         });
     }

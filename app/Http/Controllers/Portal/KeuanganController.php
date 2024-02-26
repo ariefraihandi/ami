@@ -24,7 +24,7 @@ use App\Models\AccessSub;
 use App\Models\AccessSubChild;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
-// use Dompdf\Dompdf;
+use App\Models\Tagihan;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -60,6 +60,47 @@ class KeuanganController extends Controller
     
         return response()->json(['data' => $formattedKeuangan]);
     }
+
+    public function getAlltagihans()
+{
+    try {
+        // Ambil data tagihan beserta data pengguna yang sesuai
+        $tagihans = DB::table('tagihan')
+            ->join('users', 'tagihan.id_tagih', '=', 'users.id')
+            ->select('tagihan.*', 'users.*')
+            ->where('tagihan.status', '=', 0) // Klausa WHERE untuk status tagihan sama dengan 0
+            ->where('users.status', '!=', 0) // Klausa WHERE untuk status pengguna tidak sama dengan 0
+            ->get();
+
+        // Loop melalui setiap tagihan untuk menambahkan data bonus dan ambilan
+        foreach ($tagihans as $tagihan) {
+            // Ambil bulan dari start_tagihan
+            $bulanIni = Carbon::parse($tagihan->start_tagihan)->format('Y-m');
+
+            // Hitung total bonus untuk tagihan saat ini
+            $totalBonus = FinancialTransaction::where('source_receiver', 'Bonus')
+                            ->where('reference_number', 'LIKE', 'bs' . $tagihan->id . '_%')
+                            ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                            ->sum('transaction_amount');
+
+            // Hitung total ambilan untuk tagihan saat ini
+            $totalAmbilan = FinancialTransaction::where('source_receiver', 'Ambilan')
+                            ->where('reference_number', 'LIKE', 'ab' . $tagihan->id . '_%')
+                            ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                            ->sum('transaction_amount');
+
+            // Tambahkan data bonus dan ambilan ke objek tagihan
+            $tagihan->bonus = $totalBonus;
+            $tagihan->ambilan = $totalAmbilan;
+        }
+
+        return response()->json(['data' => $tagihans]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
+}
+
+
     
 //KeuanganIndex
     public function showKeuanganIndex(Request $request)
@@ -69,7 +110,7 @@ class KeuanganController extends Controller
           
             return redirect('/login');
         }
-        
+        $users                  = User::all();
         $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
         $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
@@ -136,23 +177,13 @@ class KeuanganController extends Controller
         $incomeTotal = $qincomeTotal->sum('transaction_amount');
         $outcomeTotal = $qoutcomeTotal->sum('transaction_amount');
         
-        $sisaTidakStor          = $marginToday - $totalkas;        
-        
-       
-
-       
-        
-        
+        $sisaTidakStor          = $marginToday - $totalkas;          
         
         $percentageTotal = 0;
         
         if ($outcomeTotal != 0) {
             $percentageTotal = (($incomeTotal - $outcomeTotal) / $outcomeTotal) * 100;
         }
-
-        
-
-
 
         $additionalData = [
             'title'                     => 'Bisnis',
@@ -553,6 +584,198 @@ class KeuanganController extends Controller
         return view('Konten/Keuangan/laporan', $additionalData);
     } 
 //! Laporan
+
+
+//Tagihan
+    public function showTagihanIndex(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/login');
+        }
+        $users                  = User::all();
+        $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus                  = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData               = UserRole::where('id', $user->role)->first();
+        $tagihan                = Tagihan::where('status', 0)->get();
+
+        foreach ($tagihan as $item) {            
+            $bulanIni = Carbon::parse($item->start_tagihan)->format('Y-m');
+            // Mengambil ambilan untuk tagihan ini
+            $ambilan = FinancialTransaction::where('source_receiver', 'Ambilan')
+                ->where('reference_number', 'LIKE', 'ab' . $item->id_tagih . '_%')
+                ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                ->sum('transaction_amount');   
+            // Mengambil total bonus untuk tagihan ini
+            $totalBonus = FinancialTransaction::where('source_receiver', 'Bonus')
+                ->where('reference_number', 'LIKE', 'bs' . $item->id_tagih . '_%')
+                ->whereRaw("DATE_FORMAT(transaction_date, '%Y-%m') = ?", [$bulanIni])
+                ->sum('transaction_amount');
+        
+            // Menghitung jumlah tagihan dengan menambahkan bonus dan mengurangkan ambilan
+            $jumlahTagihan = $item->jumlah_tagihan + $totalBonus - $ambilan;
+        
+            // Menetapkan nilai baru untuk jumlah tagihan setelah menambahkan bonus dan mengurangkan ambilan
+            $item->jumlah_tagihan = $jumlahTagihan;
+        }
+
+        $additionalData = [
+            'title'                     => 'Bisnis',
+            'subtitle'                  => 'Tagihan',
+            'user'                      => $user,
+            'users'                     => $users,
+            'role'                      => $roleData,
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            'tagihan'                   => $tagihan,
+            
+        ];
+
+        return view('Konten/Keuangan/tagihan', $additionalData);
+    }
+//!Tagihan
+
+public function bayarGaji(Request $request)
+{
+    $jumlah_berhasil = 0;
+    $jumlah_gagal = 0;
+
+    try {
+        // Mendapatkan data dari permintaan
+        $id_tagih = $request->input('id_tagih');
+        $bonus = $request->input('bonus');
+        $ambilan = $request->input('ambilan');
+        $total = $request->input('total');
+        // Memulai transaksi database
+        DB::beginTransaction();
+
+        // Memeriksa data dengan id_tagih yang diterima
+        $tagihan = Tagihan::where('id_tagih', $id_tagih)->where('status', 0)->first();
+        // Jika data tagihan ditemukan
+        if ($tagihan) {
+            // Buat data baru untuk bulan berikutnya
+            $nextMonth = date('Y-m-d', strtotime('+1 month', strtotime($tagihan->start_tagihan)));
+            $newTagihan = new Tagihan();
+            $newTagihan->id_tagih =  $tagihan->id_tagih;
+            $newTagihan->start_tagihan = $nextMonth;
+            $newTagihan->nama_tagihan = $tagihan->nama_tagihan;
+            $newTagihan->jenis_tagihan = $tagihan->jenis_tagihan;
+            $newTagihan->jumlah_tagihan = $tagihan->jumlah_tagihan;
+            $newTagihan->masa_kerja = '0';
+            $newTagihan->tagihan_ke = $tagihan->tagihan_ke;
+            $newTagihan->sampai_ke = $tagihan->sampai_ke;
+            $newTagihan->status = 0;
+
+            $newTagihan->save();
+
+            // Update status tagihan yang lama
+            $tagihan->status = 1;
+            $tagihan->save();
+
+            // Simpan transaksi keuangan
+            $transaction = new FinancialTransaction();
+            $transaction->transaction_date = now(); // Gunakan waktu saat ini
+            $transaction->source_receiver = 'Gaji';
+            $transaction->description = 'Membayar Gaji ' . $tagihan->nama_tagihan . '. Detil: Gaji Pokok Sebesar: ' . $tagihan->jumlah_tagihan . '. Bonus Sebesar: ' . $bonus . '. Ambilan Sebesar: '. $ambilan . '.';
+            $transaction->transaction_amount = $total;
+            $transaction->payment_method = 'Transfer';
+            $transaction->reference_number = 'gj.' . $id_tagih . '.' . Str::random(3); // Menggunakan Str::random untuk mendapatkan 3 karakter acak
+            $transaction->status = 9;
+            $transaction->lunas = 1;
+            $transaction->save();
+
+            // Catat aktivitas pengguna
+            $userActivity = new UserActivity();
+            $userActivity->user_id = auth()->id(); // ID admin yang melakukan aktivitas
+            $userActivity->activity = 'Membayar Gaji ' . $tagihan->nama_tagihan; // Aktivitas admin
+            $userActivity->ip_address = $request->ip(); // Alamat IP pengguna
+            $userActivity->device_info = 'gj_inputation'; // Informasi perangkat (jika diperlukan)
+            $userActivity->save();
+            
+            // Tambahkan jumlah pembayaran yang berhasil
+            $jumlah_berhasil++;
+
+            DB::commit();
+        }
+    } catch (\Exception $e) {
+        // Tambahkan jumlah pembayaran yang gagal
+        $jumlah_gagal++;
+
+        // Rollback transaksi jika terjadi kesalahan
+        DB::rollBack();
+
+        // Mengembalikan respons JSON dengan pesan kesalahan
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+        ], 500); // Kode status 500 untuk kesalahan server
+    }
+
+    // Mengembalikan respons JSON hanya sekali
+    return response()->json([
+        'success' => true,
+        'message' => 'Data diterima dan diproses!',
+        'jumlah_berhasil' => $jumlah_berhasil,
+        'jumlah_gagal' => $jumlah_gagal
+    ]);
+}
+
+
+    public function editMasaKerja(Request $request)
+    {
+        try {
+            // Validasi input jika diperlukan
+            $request->validate([
+                'masa_kerja' => 'required', 
+                'id' => 'required|integer', 
+            ]);
+
+            // Ambil data dari formulir
+            $masa_kerja = $request->masa_kerja;
+            $id = $request->id;
+
+            // Lakukan operasi pengeditan pada model Anda
+            $tagihan = Tagihan::find($id);
+            if ($tagihan) {
+                $tagihan->masa_kerja = $masa_kerja;
+                $tagihan->save();
+
+                $response = [
+                    'success' => true,
+                    'title' => 'Berhasil',
+                    'message' => 'Masa Kerja Berhasil Diupdate'
+                ];
+
+                return redirect()->back()->with('response', $response);
+            } else {
+                // Jika tidak ditemukan, kembalikan dengan pesan error
+                $response = [
+                    'success' => false,
+                    'title' => 'Error',
+                    'message' => 'Data tidak ditemukan',
+                ];
+
+                return redirect()->back()->with('response', $response);
+            }
+        } catch (\Exception $e) {
+            // Tangani error
+            $response = [
+                'success' => false,
+                'title' => 'Error',
+                'message' => $e->getMessage(),
+            ];
+
+            return redirect()->back()->with('response', $response);
+        }
+    }
+
 
     public function generatePDF(Request $request)
     {
