@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+<link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/select2/select2.css" />
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/animate-css/animate.css" />
 <link rel="stylesheet" href="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.css" />
 @endpush
@@ -142,12 +143,54 @@
     </div>       
   </div>
 </div>
+
+<div class="modal fade" id="createInvoiceModal" tabindex="-1" aria-labelledby="createInvoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="createInvoiceModalLabel">Create Invoice</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form untuk membuat invoice -->
+        <form id="createInvoiceForm" action="{{ route('add.invoice') }}" method="POST">
+          @csrf
+          <div class="mb-3">
+            <label for="customer_uuid" class="form-label">Customer Name</label>
+            <select id="customer_uuid" name="customer_uuid" class="select2 form-select" data-allow-clear="true">              
+              @foreach($customers as $customer)
+                <option value="{{ $customer->uuid }}">{{ $customer->name }}</option>
+              @endforeach
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="invoiceName" class="form-label">Invoice Name</label>
+            <input type="text" class="form-control" id="invoiceName" name="invoiceName" placeholder="Enter Invoice Name" required>
+          </div>
+          <div class="mb-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" name="type" required>
+              <option value="Sales">Sales</option>
+              <option value="Project">Project</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 @endsection
 
 
 @push('footer-script')
 <script src="{{ asset('assets') }}/vendor/libs/moment/moment.js"></script>
 <script src="{{ asset('assets') }}/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+<script src="{{ asset('assets') }}/vendor/libs/select2/select2.js"></script>
 <script src="{{ asset('assets') }}/vendor/libs/sweetalert2/sweetalert2.js"></script>
 @endpush
 
@@ -159,4 +202,5 @@
       showSweetAlert(response);
   @endif
 </script>  
+
 @endpush

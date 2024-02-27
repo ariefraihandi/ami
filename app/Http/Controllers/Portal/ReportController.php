@@ -57,10 +57,7 @@ class ReportController extends Controller
                 // Jika jenis laporan tidak valid, kembalikan respon error
                 return response()->json(['error' => 'Invalid report type.'], 400);
         }
-
-        
-
-        // Invoice
+     
         // $invoices = Invoice::whereBetween('created_at', [$startDate, $endDate])->get();
         $invoices               = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '!=', 0.00)->get();    
         $unpaidInvoices         = Invoice::whereBetween('created_at', [$startDate, $endDate])->where('total_amount', '!=', 0.00)->where('panjar_amount', 0.00)->count();  

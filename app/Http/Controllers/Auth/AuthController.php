@@ -18,6 +18,12 @@ class AuthController extends Controller
 {
     public function showLoginPage()
     {
+        // Memeriksa apakah pengguna sudah masuk
+        if (session()->has('user_id')) {
+            // Jika sudah masuk, langsung alihkan ke halaman profil
+            return redirect('/user/profile');
+        }
+
         $data = [
             'title' => "Login",
             'subtitle' => "Portal Atjeh Mediatama Indonesia",
@@ -25,6 +31,7 @@ class AuthController extends Controller
 
         return view('Konten.Auth.login', $data);
     }
+
 
     public function login(Request $request)
     {

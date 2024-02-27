@@ -11,6 +11,7 @@ use App\Http\Controllers\Portal\ProductController;
 use App\Http\Controllers\Portal\MenuController;
 use App\Http\Controllers\Portal\UserController;
 use App\Http\Controllers\Portal\ReportController;
+use App\Http\Controllers\Portal\DownloadController;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
@@ -18,6 +19,7 @@ Route::post('/login',                   [AuthController::class, 'login'])->name(
 Route::get('/register',                 [AuthController::class, 'showRegisForm'])->name('register');
 Route::post('/register',                [AuthController::class, 'register'])->name('register.post');
 Route::get('/logout',                   [AuthController::class, 'logout'])->name('logout');
+Route::get('/unduh/invoice',            [DownloadController::class, 'unduhInvoice'])->name('unduh.Invoice');
 
 
 
@@ -40,14 +42,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('invoice/list',              [InvoiceController::class, 'showInvoiceIndex'])->name('invoice.list');
     Route::get('invoice/add',               [InvoiceController::class, 'addItem'])->name('invoice.add');
     Route::get('delete-invoice',            [InvoiceController::class, 'deleteInvoice'])->name('deleteInvoice');
-    Route::get('print/{invoiceNumber}',     [InvoiceController::class, 'generatePdf'])->name('generatePdf');
+    Route::get('print/{invoiceNumber}',     [InvoiceController::class, 'printInvoice'])->name('generatePdf');
     Route::post('add-invoice',              [InvoiceController::class, 'store'])->name('add.invoice');
-    Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');
-    // Route::post('update-invoice-dates',     [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
+    Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');    
     Route::get('/send-invoice',             [InvoiceController::class, 'sendInvoice'])->name('send.Invoice');
     Route::post('/update-invoice-dates',    [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
-
-
     //!!invoice fix route
 
 

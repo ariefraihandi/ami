@@ -867,106 +867,106 @@ class KeuanganController extends Controller
     }
 //!Tagihan
 
-public function bayarGaji(Request $request)
-{
-    $jumlah_berhasil = 0;
-    $jumlah_gagal = 0;
+    public function bayarGaji(Request $request)
+    {
+        $jumlah_berhasil = 0;
+        $jumlah_gagal = 0;
 
-    try {
-        // Memulai transaksi database
-        DB::beginTransaction();
+        try {
+            // Memulai transaksi database
+            DB::beginTransaction();
 
-        // Mendapatkan data dari permintaan
-        $data_pembayaran = $request->input('data_pembayaran');
+            // Mendapatkan data dari permintaan
+            $data_pembayaran = $request->input('data_pembayaran');
 
-        // Cek apakah $data_pembayaran bukan null dan merupakan array
-        if (!is_null($data_pembayaran) && is_array($data_pembayaran)) {
-            // Iterasi melalui data_pembayaran
-            foreach ($data_pembayaran as $data) {
-                $id_tagih = $data['id_tagih'];
-                $bonus = $data['bonus'];
-                $ambilan = $data['ambilan'];
-                $total = $data['total'];
+            // Cek apakah $data_pembayaran bukan null dan merupakan array
+            if (!is_null($data_pembayaran) && is_array($data_pembayaran)) {
+                // Iterasi melalui data_pembayaran
+                foreach ($data_pembayaran as $data) {
+                    $id_tagih = $data['id_tagih'];
+                    $bonus = $data['bonus'];
+                    $ambilan = $data['ambilan'];
+                    $total = $data['total'];
 
-                // Memeriksa data dengan id_tagih yang diterima
-                $tagihan = Tagihan::where('id_tagih', $id_tagih)->where('status', 0)->first();
+                    // Memeriksa data dengan id_tagih yang diterima
+                    $tagihan = Tagihan::where('id_tagih', $id_tagih)->where('status', 0)->first();
 
-                // Jika data tagihan ditemukan
-                if ($tagihan) {
-                    // Buat data baru untuk bulan berikutnya
-                    $nextMonth = date('Y-m-d', strtotime('+1 month', strtotime($tagihan->start_tagihan)));
-                    $newTagihan = new Tagihan();
-                    $newTagihan->id_tagih =  $tagihan->id_tagih;
-                    $newTagihan->start_tagihan = $nextMonth;
-                    $newTagihan->nama_tagihan = $tagihan->nama_tagihan;
-                    $newTagihan->jenis_tagihan = $tagihan->jenis_tagihan;
-                    $newTagihan->jumlah_tagihan = $tagihan->jumlah_tagihan;
-                    $newTagihan->masa_kerja = '0';
-                    $newTagihan->tagihan_ke = $tagihan->tagihan_ke;
-                    $newTagihan->sampai_ke = $tagihan->sampai_ke;
-                    $newTagihan->status = 0;
+                    // Jika data tagihan ditemukan
+                    if ($tagihan) {
+                        // Buat data baru untuk bulan berikutnya
+                        $nextMonth = date('Y-m-d', strtotime('+1 month', strtotime($tagihan->start_tagihan)));
+                        $newTagihan = new Tagihan();
+                        $newTagihan->id_tagih =  $tagihan->id_tagih;
+                        $newTagihan->start_tagihan = $nextMonth;
+                        $newTagihan->nama_tagihan = $tagihan->nama_tagihan;
+                        $newTagihan->jenis_tagihan = $tagihan->jenis_tagihan;
+                        $newTagihan->jumlah_tagihan = $tagihan->jumlah_tagihan;
+                        $newTagihan->masa_kerja = '0';
+                        $newTagihan->tagihan_ke = $tagihan->tagihan_ke;
+                        $newTagihan->sampai_ke = $tagihan->sampai_ke;
+                        $newTagihan->status = 0;
 
-                    $newTagihan->save();
+                        $newTagihan->save();
 
-                    // Update status tagihan yang lama
-                    $tagihan->status = 1;
-                    $tagihan->save();
+                        // Update status tagihan yang lama
+                        $tagihan->status = 1;
+                        $tagihan->save();
 
-                    // Simpan transaksi keuangan
-                    $transaction = new FinancialTransaction();
-                    $transaction->transaction_date = now(); // Gunakan waktu saat ini
-                    $transaction->source_receiver = 'Gaji';
-                    $transaction->description = 'Membayar Gaji ' . $tagihan->nama_tagihan . '. Sebesar: Rp.' . number_format($total, 0) . ',- || ' . 'Detil: Gaji Pokok Sebesar: Rp' . number_format($tagihan->jumlah_tagihan, 0) . ',- | ' . ' Bonus Sebesar: Rp.' . number_format($bonus, 0) . ',- | ' . ' Ambilan Sebesar: Rp.'. number_format($ambilan, 0) . ',- .';
-                    $transaction->transaction_amount = $total;
-                    $transaction->payment_method = 'Transfer';
-                    $transaction->reference_number = 'gj' . $id_tagih . '_' . Str::random(3); // Menggunakan Str::random untuk mendapatkan 3 karakter acak
-                    $transaction->status = 9;
-                    $transaction->lunas = 1;
-                    $transaction->save();
+                        // Simpan transaksi keuangan
+                        $transaction = new FinancialTransaction();
+                        $transaction->transaction_date = now(); // Gunakan waktu saat ini
+                        $transaction->source_receiver = 'Gaji';
+                        $transaction->description = 'Membayar Gaji ' . $tagihan->nama_tagihan . '. Sebesar: Rp.' . number_format($total, 0) . ',- || ' . 'Detil: Gaji Pokok Sebesar: Rp' . number_format($tagihan->jumlah_tagihan, 0) . ',- | ' . ' Bonus Sebesar: Rp.' . number_format($bonus, 0) . ',- | ' . ' Ambilan Sebesar: Rp.'. number_format($ambilan, 0) . ',- .';
+                        $transaction->transaction_amount = $total;
+                        $transaction->payment_method = 'Transfer';
+                        $transaction->reference_number = 'gj' . $id_tagih . '_' . Str::random(3); // Menggunakan Str::random untuk mendapatkan 3 karakter acak
+                        $transaction->status = 9;
+                        $transaction->lunas = 1;
+                        $transaction->save();
 
-                    // Catat aktivitas pengguna
-                    $userActivity = new UserActivity();
-                    $userActivity->user_id = auth()->id(); // ID admin yang melakukan aktivitas
-                    $userActivity->activity = 'Membayar Gaji ' . $tagihan->nama_tagihan; // Aktivitas admin
-                    $userActivity->ip_address = $request->ip(); // Alamat IP pengguna
-                    $userActivity->device_info = 'gj_inputation'; // Informasi perangkat (jika diperlukan)
-                    $userActivity->save();
+                        // Catat aktivitas pengguna
+                        $userActivity = new UserActivity();
+                        $userActivity->user_id = auth()->id(); // ID admin yang melakukan aktivitas
+                        $userActivity->activity = 'Membayar Gaji ' . $tagihan->nama_tagihan; // Aktivitas admin
+                        $userActivity->ip_address = $request->ip(); // Alamat IP pengguna
+                        $userActivity->device_info = 'gj_inputation'; // Informasi perangkat (jika diperlukan)
+                        $userActivity->save();
 
-                    // Tambahkan jumlah pembayaran yang berhasil
-                    $jumlah_berhasil++;
+                        // Tambahkan jumlah pembayaran yang berhasil
+                        $jumlah_berhasil++;
+                    }
                 }
+
+                // Commit transaksi database jika semua data berhasil diproses
+                DB::commit();
+
+                // Kirim respons JSON jika semua data berhasil diproses
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Semua pembayaran berhasil diproses',
+                    'jumlah_berhasil' => $jumlah_berhasil,
+                    'jumlah_gagal' => $jumlah_gagal
+                ]);
+            } else {
+                // Jika $data_pembayaran null atau bukan array, kirim pesan yang sesuai
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pembayaran tidak valid atau tidak ada',
+                    'jumlah_berhasil' => $jumlah_berhasil,
+                    'jumlah_gagal' => $jumlah_gagal
+                ]);
             }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            DB::rollBack();
 
-            // Commit transaksi database jika semua data berhasil diproses
-            DB::commit();
-
-            // Kirim respons JSON jika semua data berhasil diproses
-            return response()->json([
-                'success' => true,
-                'message' => 'Semua pembayaran berhasil diproses',
-                'jumlah_berhasil' => $jumlah_berhasil,
-                'jumlah_gagal' => $jumlah_gagal
-            ]);
-        } else {
-            // Jika $data_pembayaran null atau bukan array, kirim pesan yang sesuai
+            // Kirim respons JSON dengan pesan kesalahan jika terjadi kesalahan
             return response()->json([
                 'success' => false,
-                'message' => 'Data pembayaran tidak valid atau tidak ada',
-                'jumlah_berhasil' => $jumlah_berhasil,
-                'jumlah_gagal' => $jumlah_gagal
-            ]);
+                'message' => 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage()
+            ], 500); // Kode status 500 untuk kesalahan server
         }
-    } catch (\Exception $e) {
-        // Tangani kesalahan jika terjadi
-        DB::rollBack();
-
-        // Kirim respons JSON dengan pesan kesalahan jika terjadi kesalahan
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan saat memproses pembayaran: ' . $e->getMessage()
-        ], 500); // Kode status 500 untuk kesalahan server
     }
-}
 
     
     public function editMasaKerja(Request $request)

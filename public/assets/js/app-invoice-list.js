@@ -268,8 +268,7 @@ $(function () {
                   '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
                   '<div class="dropdown-menu dropdown-menu-end">' +
                   '<a href="/print/' + invoiceNumber +'" class="dropdown-item" target="_blank">Download</a>' +
-                  '<a href="' + '/send-invoice?invoiceNumber=' + invoiceNumber + '&customerUuid=' + uuid + '" class="dropdown-item">Kirim Invoice</a>' +
-                  '<a href="javascript:;" class="dropdown-item">Duplicate</a>' +                                  
+                  '<a href="' + '/send-invoice?invoiceNumber=' + invoiceNumber + '&customerUuid=' + uuid + '" class="dropdown-item">Kirim Invoice</a>' +                                
                   '</div>' +
                   '</div>' +
                   '</div>'
@@ -331,6 +330,7 @@ $(function () {
           }
         }
       },
+
       initComplete: function () {
         var table = this.api();
 
@@ -376,7 +376,6 @@ $(function () {
                 select.append('<option value="' + d.toLowerCase() + '" class="text-capitalize">' + d + '</option>');
             });
         });
-
           console.log('Init Complete Finished');
       }    
     });
@@ -422,6 +421,7 @@ function confirmDelete(deleteUrl) {
   });
   return false; // Prevent the default link behavior
 }
+
 
 function showSweetAlert(response) {
   Swal.fire({
