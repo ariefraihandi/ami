@@ -24,7 +24,6 @@ use App\Models\UserActivity;
 use Carbon\Carbon;
 use PDF;
 
-
 class InvoiceController extends Controller
 {
 

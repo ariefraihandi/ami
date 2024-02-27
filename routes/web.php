@@ -44,7 +44,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('add-invoice',              [InvoiceController::class, 'store'])->name('add.invoice');
     Route::post('bayarInvoice',             [InvoiceController::class, 'bayarInvoice'])->name('bayarInvoice');
     // Route::post('update-invoice-dates',     [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
-    Route::post('/update-invoice-dates', [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
+    Route::get('/send-invoice',             [InvoiceController::class, 'sendInvoice'])->name('send.Invoice');
+    Route::post('/update-invoice-dates',    [InvoiceController::class, 'updateInvoiceDates'])->name('updateInvoiceDates');
 
 
     //!!invoice fix route

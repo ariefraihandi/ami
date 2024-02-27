@@ -267,10 +267,9 @@ $(function () {
                   '<div class="dropdown">' +
                   '<a href="javascript:;" class="btn dropdown-toggle hide-arrow text-body p-0" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></a>' +
                   '<div class="dropdown-menu dropdown-menu-end">' +
-                  '<a href="/print/' + invoiceNumber +'" class="dropdown-item">Download</a>' +
-                  '<a href="app-invoice-edit.html" class="dropdown-item">Send Mail</a>' +
-                  '<a href="javascript:;" class="dropdown-item">Duplicate</a>' +
-                  '<div class="dropdown-divider"></div>' +                  
+                  '<a href="/print/' + invoiceNumber +'" class="dropdown-item" target="_blank">Download</a>' +
+                  '<a href="' + '/send-invoice?invoiceNumber=' + invoiceNumber + '&customerUuid=' + uuid + '" class="dropdown-item">Kirim Invoice</a>' +
+                  '<a href="javascript:;" class="dropdown-item">Duplicate</a>' +                                  
                   '</div>' +
                   '</div>' +
                   '</div>'

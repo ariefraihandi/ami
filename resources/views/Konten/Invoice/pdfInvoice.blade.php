@@ -44,14 +44,14 @@
     /* width: 100%;
     height: 100%; */
     z-index: -1;
-    opacity: 0.8;
+    opacity: 1;
   }
 </style>
 </head>
 <body style="margin: 0;">  
-    <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 110%;  left: -45px;">
+    <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 114%; left: -45px; top: -45px;">
     <div style="position: relative;">
-    <img src="{{ $logoPath }}" alt="Header Image" style="position: fixed; top: 0; left: -45px; width: 115%; padding: 0;  top: -45px;">
+    {{-- <img src="{{ $logoPath }}" alt="Header Image" style="position: fixed; top: 0; left: -45px; width: 115%; padding: 0;  top: -45px;"> --}}
     {{-- <div class="image-container" style="position: absolute; top: 45px;">
         <img src="{{ $imagePath }}" alt="Logo" height="70" style="position: fixed; top: 60;" class="logo-img">
     </div> --}}
@@ -60,34 +60,29 @@
     <br>  
     <br>
     <br>
+    <br>
+        <br>
+        <br>
+    <br>
     <h3>INVOICE</h3>
     <div class="table-responsive">
         <table id="dataTable" style="border: none; width: 100%;">
-            <thead>
-                <tr>                
-                    <td rowspan="2" style="vertical-align: middle; text-align: center;">
-                        <img src="{{ $logo }}" style="width: 50px; height: 50px;">                      
-                    </td>                
-                    <td rowspan="2" style="text-align: left;">
-                        <span style="font-size: 20px; width: 100%;"><strong>Aceh Mediatama Indonesia</strong></span>
-                    </td>
-                    <td></td> <!-- Kolom kosong -->
-                    <th style="text-align: left;">Invoice #{{$invoice->invoice_number}}</th>                
+            <tbody>
+                <tr>
+                    <td style="width: 30%;"></td> <!-- Kolom kosong -->
+                    <td style="text-align: left; width: 20%;"></td>
+                    <td style="text-align: left; width: 50%;"><strong>Invoice #{{$invoice->invoice_number}}<br>Tanggal : {{$formattedDate}}</strong></td>
                 </tr>
                 <tr>
-                    <td></td> <!-- Kolom kosong -->
-                    <th style="text-align: left;">Tanggal : {{$formattedDate}}</th>                    
+                    <td colspan="4" style="width: 100%;"></td> <!-- Kolom kosong untuk memberikan ruang -->
                 </tr>
-                <tr>
-                    <td colspan="4">Jl. Medan-B.Aceh, Mns. Mee Kandang, Kec. Muara Dua<br>Lhokseumawe, Aceh, 24351, Indonesia<br>+62 (811) 6856 6605</td>
-                <tr>
                 <tr>
                     <td colspan="2" style="width: 50%; vertical-align: top;"> <!-- Bagian kiri untuk Invoice To -->
                         <strong>Invoice To:</strong><br>
                         {{$customer->name}}<br>
                         {{$customer->phone}}<br>
                         {{$customer->email}}<br>
-                        {{$customer->address}}                      
+                        {{$customer->address}}
                     </td>
                     <td colspan="2" style="width: 50%; vertical-align: top;"> <!-- Bagian kanan untuk Tagihan -->
                         <strong>Tagihan:</strong><br>
@@ -97,9 +92,10 @@
                         No Rek: 7222377848
                     </td>
                 </tr>
-            </thead>
-        </table>        
+            </tbody>
+        </table>
     </div>
+    
     <br>    
     <div>
         <table id="dataTable" style="border-collapse: collapse; width: 100%; border: 1px solid black;">
