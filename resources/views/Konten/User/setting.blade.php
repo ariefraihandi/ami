@@ -20,7 +20,7 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-  <h4 class="py-3 mb-4"><span class="text-muted fw-light">{{$title}} / {{$subtitle}} /</span> Account</h4>
+  <h4 class="py-3 mb-4"><span class="text-muted fw-light">{{$title}} / {{$subtitle}} /</span> Setting</h4>
   <div class="row">
     <!-- User Sidebar -->
     <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
@@ -100,10 +100,10 @@
                         <a class="nav-link" href="' . route('user.profile') . '"><i class="bx bx-user me-1"></i>Account</a>
                       </li>';
         $variabel2 = '<li class="nav-item">
-                        <a class="nav-link active" href="' . route('user.gaji') . '"><i class="bx bxs-wallet me-1"></i>Gaji</a>
+                        <a class="nav-link" href="' . route('user.gaji') . '"><i class="bx bxs-wallet me-1"></i>Gaji</a>
                       </li>';
         $variabel3 = '<li class="nav-item">
-                        <a class="nav-link" href="' . route('user.setting') . '"><i class="bx bx-cog me-1"></i>Setting</a>
+                        <a class="nav-link active" href="' . route('user.setting') . '"><i class="bx bx-cog me-1"></i>Setting</a>
                       </li>';
         $variabel4 = '<li class="nav-item">
                         <a class="nav-link" href="' . route('user.security') . '"><i class="bx bx-lock-alt me-1"></i>Security</a>
@@ -141,7 +141,40 @@
                 </div>
             </div>
         </form>
-    </div>
+      </div>
+      <div class="card mb-4">      
+        <form id="editForm" action="{{ route('update.user') }}" method="POST">
+            @csrf
+            <div class="card-body">
+                <div class="form-group mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ $usersData->username }}" disabled>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ $usersData->email }}" disabled>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ $usersData->name }}" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" value="{{ $user->address }}">
+                </div>
+                <div class="form-group mb-3">
+                    <label for="wa">WhatsApp</label>
+                    <input type="text" class="form-control" id="wa" name="wa" value="{{ $user->wa }}">
+                  </div>
+                  <input type="hidden" id="id" name="id" value="{{ $user->id }}">
+                <!-- Add more fields for editing user data as needed -->
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+      </div>
+    
     
     {{-- <div class="card mb-4">
         <h5 class="card-header">Riwayat Keuangan</h5>

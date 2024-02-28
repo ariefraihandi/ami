@@ -119,22 +119,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile',             [UserController::class, 'index'])->name('user.profile');
     Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('user.gaji');
     Route::get('/user/setting',             [UserController::class, 'showSetting'])->name('user.setting');
-    Route::get('/user/gai',                 [UserController::class, 'showPayroll'])->name('user.security');
+    Route::get('/user/security',            [UserController::class, 'showSecurity'])->name('user.security');
     Route::post('/upload-avatar',           [UserController::class, 'uploadAvatar'])->name('upload.avatar');
-
+    Route::post('/change-password',         [UserController::class, 'changePassword'])->name('change.password');
     //!!user
 
     //Send Report
-    Route::post('send-report',          [ReportController::class, 'sendReport'])->name('send.report');
+    Route::post('send-report',              [ReportController::class, 'sendReport'])->name('send.report');
     //!Send Report
 
     // users Administrator
-    Route::get('/get-all-user',         [UserController::class, 'getAllUser'])->name('getAll.User');
-    Route::get('/users',                [UserController::class, 'showUserAdminIndex'])->name('users');
-    Route::post('users',                [UserController::class, 'addUsers'])->name('add.users');
-    Route::get('/delete/user',          [UserController::class, 'deleteUser'])->name('delete.user');
-    Route::post('/update/user',         [UserController::class, 'update'])->name('update.user');
+    Route::get('/get-all-user',             [UserController::class, 'getAllUser'])->name('getAll.User');
+    Route::get('/users',                    [UserController::class, 'showUserAdminIndex'])->name('users');
+    Route::post('users',                    [UserController::class, 'addUsers'])->name('add.users');
+    Route::get('/delete/user',              [UserController::class, 'deleteUser'])->name('delete.user');
+    Route::post('/update/user',             [UserController::class, 'update'])->name('update.user');
     //!! users Administrator
 
-    Route::get('/users/access',         [UserController::class, 'showRoleList'])->name('users.access');
+    Route::get('/users/access',             [UserController::class, 'showRoleList'])->name('users.access');
 });

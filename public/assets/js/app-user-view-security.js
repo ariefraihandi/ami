@@ -1,9 +1,3 @@
-/**
- * App User View - Security
- */
-
-'use strict';
-
 (function () {
   const formChangePass = document.querySelector('#formChangePassword');
 
@@ -11,31 +5,38 @@
   if (formChangePass) {
     const fv = FormValidation.formValidation(formChangePass, {
       fields: {
+        oldPassword: {
+          validators: {
+            notEmpty: {
+              message: 'Please enter your old password'
+            }
+          }
+        },
         newPassword: {
           validators: {
             notEmpty: {
               message: 'Please enter new password'
             },
             stringLength: {
-              min: 8,
-              message: 'Password must be more than 8 characters'
+              min: 6,
+              message: 'Password must be at least 6 characters long'
             }
           }
         },
         confirmPassword: {
           validators: {
             notEmpty: {
-              message: 'Please confirm new password'
+              message: 'Please confirm your new password'
             },
             identical: {
               compare: function () {
                 return formChangePass.querySelector('[name="newPassword"]').value;
               },
-              message: 'The password and its confirm are not the same'
+              message: 'Passwords do not match'
             },
             stringLength: {
-              min: 8,
-              message: 'Password must be more than 8 characters'
+              min: 6,
+              message: 'Password must be at least 6 characters long'
             }
           }
         }
@@ -46,9 +47,6 @@
           eleValidClass: '',
           rowSelector: '.form-password-toggle'
         }),
-        submitButton: new FormValidation.plugins.SubmitButton(),
-        // Submit the form when all fields are valid
-        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
         autoFocus: new FormValidation.plugins.AutoFocus()
       },
       init: instance => {
@@ -61,3 +59,11 @@
     });
   }
 })();
+
+function showSweetAlert(response) {
+  Swal.fire({
+      icon: response.success ? 'success' : 'error',
+      title: response.title,   
+      text: response.message,
+  });
+}

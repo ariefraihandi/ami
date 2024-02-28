@@ -418,7 +418,8 @@ class UserController extends Controller
         $roleData           = UserRole::where('id', $user->role)->first();
 
         $userActivities     = UserActivity::where('user_id', $user->id)->get();
-        
+        $user_id            = session('user_id');
+        $usersData          = User::find($user_id);
         
                             
 
@@ -429,11 +430,122 @@ class UserController extends Controller
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,
             'user'                      => $user,
+            'usersData'                      => $usersData,
             'role'                      => $roleData,
             'userActivities'            => $userActivities,
         ];
     
         return view('Konten/User/setting', $additionalData);
+    }
+    
+    public function showSecurity(Request $request)
+    {
+
+        //Check Access
+            $requestedUrl   = $request->path();      
+            $urlParts       = explode('/', $requestedUrl);
+            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+            $menuSub        = MenuSub::where('url', $urlPart)->first();
+            
+            if ($menuSub) {
+            
+                $menuSubId = $menuSub->id;
+                $userRole = session('user_role');
+                $accessSub = AccessSub::where('role_id', $userRole)
+                                    ->where('submenu_id', $menuSubId)
+                                    ->first();
+                if (!$accessSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }                  
+            } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'URL tidak ditemukan!',
+                    ],
+                ]);
+            }
+        //!Check Access
+        // Check Subs Child Access
+            $requestedUrl = $request->path();       
+            $routes = Route::getRoutes();
+            $matchedRouteName = null;
+                    
+            foreach ($routes as $route) {
+                if ($route->uri() == $requestedUrl) {
+                    // Jika cocok, simpan nama rute dan keluar dari loop
+                    $matchedRouteName = $route->getName();
+                    break;
+                }
+            }
+
+            if ($matchedRouteName) {
+            $url            = $matchedRouteName;
+            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+            $userRole       = session('user_role');
+            $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                            ->where('childsubmenu_id', $menuChildSub->id)
+                            ->first();
+
+            if (!$accChildSub) {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+            }       
+            } else {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Anda Tidak Memiliki Akses!',
+                ],
+            ]);
+            }
+        //! Check Subs Child Access
+
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/');
+        }
+        $bulanIni           = date('Y-m');
+        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus              = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData           = UserRole::where('id', $user->role)->first();
+
+        $userActivities     = UserActivity::where('user_id', $user->id)->get();
+        $user_id            = session('user_id');
+        $usersData          = User::find($user_id);
+
+        $additionalData = [
+            'title'                     => 'User',
+            'subtitle'                  => 'Profile',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            'user'                      => $user,
+            'usersData'                 => $usersData,
+            'role'                      => $roleData,
+            'userActivities'            => $userActivities,
+        ];
+    
+        return view('Konten/User/security', $additionalData);
     }
 
     //Admin
@@ -768,71 +880,61 @@ class UserController extends Controller
     }   
 
     public function uploadAvatar(Request $request)
-{
-    // Validasi permintaan
-    $request->validate([
-        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:800',
-    ]);
+    {
+        // Validasi permintaan
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:800',
+        ]);
 
-    $device = Agent::device();
-    $platform = Agent::platform();
-    $browser = Agent::browser();
+        $device = Agent::device();
+        $platform = Agent::platform();
+        $browser = Agent::browser();
 
-    $avatar = $request->file('avatar');
-    $imageName = $avatar->getClientOriginalName(); // Gunakan nama file asli untuk menyimpan
+        $avatar = $request->file('avatar');
+        $imageName = $avatar->getClientOriginalName(); // Gunakan nama file asli untuk menyimpan
 
-    // Periksa apakah gambar pengguna saat ini adalah gambar default
-    $user = auth()->user();
-    if ($user->image !== 'default.webp') {
-        // Jika bukan gambar default, hapus gambar lama sebelum menyimpan yang baru
-        $oldImagePath = public_path('assets/img/staff') . '/' . $user->image;
-        if (file_exists($oldImagePath)) {
-            unlink($oldImagePath); // Hapus gambar lama
+        // Periksa apakah gambar pengguna saat ini adalah gambar default
+        $user = auth()->user();
+        if ($user->image !== 'default.webp') {
+            // Jika bukan gambar default, hapus gambar lama sebelum menyimpan yang baru
+            $oldImagePath = public_path('assets/img/staff') . '/' . $user->image;
+            if (file_exists($oldImagePath)) {
+                unlink($oldImagePath); // Hapus gambar lama
+            }
         }
+
+        // Simpan file ke direktori yang sesuai (misalnya, public/img/staff)
+        $avatar->move(public_path('assets/img/staff'), $imageName);
+
+        $user->image = $imageName;
+        $user->save();
+
+        // Buat objek UserActivity baru
+        $adminActivity = new UserActivity([
+            'user_id' => auth()->id(),
+            'activity' => 'Change image',
+            'ip_address' => 'Mengganti foto profile',
+            'device_info' => "$device $platform $browser",
+        ]);
+
+        // Simpan aktivitas
+        $adminActivity->save();
+
+        $successMessage = 'Foto Profil Berhasil Diperbaharui';
+
+        return redirect()->route('user.setting')->with([
+            'response' => [
+                'success' => true,
+                'title' => 'Success',
+                'message' => $successMessage,
+            ],
+        ]);
     }
-
-    // Simpan file ke direktori yang sesuai (misalnya, public/img/staff)
-    $avatar->move(public_path('assets/img/staff'), $imageName);
-
-    $user->image = $imageName;
-    $user->save();
-
-    // Buat objek UserActivity baru
-    $adminActivity = new UserActivity([
-        'user_id' => auth()->id(),
-        'activity' => 'Change image',
-        'ip_address' => 'Mengganti foto profile',
-        'device_info' => "$device $platform $browser",
-    ]);
-
-    // Simpan aktivitas
-    $adminActivity->save();
-
-    $successMessage = 'Foto Profil Berhasil Diperbaharui';
-
-    return redirect()->route('user.setting')->with([
-        'response' => [
-            'success' => true,
-            'title' => 'Success',
-            'message' => $successMessage,
-        ],
-    ]);
-}
-
 
     public function update(Request $request)
     {
         // Validasi request
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'username' => 'required|string',
-            'wa' => 'nullable|string',
-            'role' => 'required|numeric',
-            'jabatan' => 'required|string',
-            'status' => 'required|numeric',
-            'gaji' => 'required|string',
-            'date_of_birth' => 'nullable|date',
             'id' => 'required|numeric',
         ]);
 
@@ -845,21 +947,86 @@ class UserController extends Controller
         }
 
         // Update data user
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->username = $request->username;
-        $user->wa = $request->wa;
-        $user->role = $request->role;
-        $user->jabatan = $request->jabatan;
-        $user->status = $request->status;
-        // Format gaji menggunakan metode cleanNumericInput
-        $user->salary = $this->cleanNumericInput($request->gaji);
-        $user->date_of_birth = $request->date_of_birth;
+        if (!empty($request->name)) {
+            $user->name = $request->name;
+        }
+        if (!empty($request->email)) {
+            $user->email = $request->email;
+        }
+        if (!empty($request->username)) {
+            $user->username = $request->username;
+        }
+        if (!empty($request->wa)) {
+            $user->wa = $request->wa;
+        }
+        if (!empty($request->role)) {
+            $user->role = $request->role;
+        }
+        if (!empty($request->jabatan)) {
+            $user->jabatan = $request->jabatan;
+        }
+        if (!empty($request->status)) {
+            $user->status = $request->status;
+        }
+        if (!empty($request->gaji)) {
+            $user->salary = $this->cleanNumericInput($request->gaji);
+        }
+        if (!empty($request->date_of_birth)) {
+            $user->date_of_birth = $request->date_of_birth;
+        }
+
         $user->save();
 
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'User updated successfully.');
     }
+
+    public function changePassword(Request $request)
+    {
+        // Validate the request data
+        $request->validate([
+            'oldPassword' => 'required',
+            'newPassword' => 'required|min:6',
+            'confirmPassword' => 'required|same:newPassword',
+        ]);
+    
+        // Retrieve the authenticated user
+        $user = Auth::user();
+    
+        // Check if the provided old password matches the user's current password
+        if (!\Hash::check($request->oldPassword, $user->password)) {           
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => "Password Lama Tidak Cocok.",
+            ];
+
+            return redirect()->route('user.security')->with('response', $response);
+        }
+    
+        // Check if the new password and confirm password match
+        if ($request->newPassword !== $request->confirmPassword) {
+            $response = [
+                'success' => false,
+                'title' => 'Gagal',
+                'message' => "Password Tidak Cocok.",
+            ];
+
+            return redirect()->route('user.security')->with('response', $response);
+        }
+    
+        // Update the user's password
+        $user->password = \Hash::make($request->newPassword);
+        $user->save();
+        $response = [
+            'success' => true, // Atau false tergantung dari keberhasilan operasi
+            'title' => 'Success', // Judul pesan SweetAlert
+            'message' => 'Data berhasil disimpan.', // Pesan yang ingin ditampilkan
+        ];
+        return redirect()->route('user.security')->with('response', $response);
+    }
+    
+    
 
     public function deleteUser(Request $request)
     {
