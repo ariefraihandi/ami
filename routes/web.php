@@ -110,16 +110,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/delete-childsubmenu',      [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 
     //menu role
-    Route::get('/get-all-role',         [MenuController::class, 'getAllRole'])->name('getAll.role');
-    Route::get('menu/role',             [MenuController::class, 'showRoleIndex'])->name('menu.role');
-    Route::post('/add-role',            [MenuController::class, 'addRole'])->name('add.role');
-    Route::get('/delete-role',          [MenuController::class, 'deleteRole'])->name('delete.role');
+    Route::get('/get-all-role',             [MenuController::class, 'getAllRole'])->name('getAll.role');
+    Route::get('menu/role',                 [MenuController::class, 'showRoleIndex'])->name('menu.role');
+    Route::post('/add-role',                [MenuController::class, 'addRole'])->name('add.role');
+    Route::get('/delete-role',              [MenuController::class, 'deleteRole'])->name('delete.role');
 
     //user
-    Route::get('/user/profile',         [UserController::class, 'index'])->name('user.profile');
-    Route::get('/user/gaji',            [UserController::class, 'showPayroll'])->name('user.gaji');
-    Route::get('/user/gaj',             [UserController::class, 'showPayroll'])->name('user.setting');
-    Route::get('/user/gai',             [UserController::class, 'showPayroll'])->name('user.security');
+    Route::get('/user/profile',             [UserController::class, 'index'])->name('user.profile');
+    Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('user.gaji');
+    Route::get('/user/setting',             [UserController::class, 'showSetting'])->name('user.setting');
+    Route::get('/user/gai',                 [UserController::class, 'showPayroll'])->name('user.security');
+    Route::post('/upload-avatar',           [UserController::class, 'uploadAvatar'])->name('upload.avatar');
+
     //!!user
 
     //Send Report

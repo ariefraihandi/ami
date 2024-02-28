@@ -324,6 +324,116 @@ class UserController extends Controller
     
         return view('Konten/User/payroll', $additionalData);
     }
+   
+    public function showSetting(Request $request)
+    {
+
+        //Check Access
+            $requestedUrl   = $request->path();      
+            $urlParts       = explode('/', $requestedUrl);
+            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+            $menuSub        = MenuSub::where('url', $urlPart)->first();
+            
+            if ($menuSub) {
+            
+                $menuSubId = $menuSub->id;
+                $userRole = session('user_role');
+                $accessSub = AccessSub::where('role_id', $userRole)
+                                    ->where('submenu_id', $menuSubId)
+                                    ->first();
+                if (!$accessSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }                  
+            } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'URL tidak ditemukan!',
+                    ],
+                ]);
+            }
+        //!Check Access
+        // Check Subs Child Access
+            $requestedUrl = $request->path();       
+            $routes = Route::getRoutes();
+            $matchedRouteName = null;
+                    
+            foreach ($routes as $route) {
+                if ($route->uri() == $requestedUrl) {
+                    // Jika cocok, simpan nama rute dan keluar dari loop
+                    $matchedRouteName = $route->getName();
+                    break;
+                }
+            }
+
+            if ($matchedRouteName) {
+            $url            = $matchedRouteName;
+            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+            $userRole       = session('user_role');
+            $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                            ->where('childsubmenu_id', $menuChildSub->id)
+                            ->first();
+
+            if (!$accChildSub) {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+            }       
+            } else {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Anda Tidak Memiliki Akses!',
+                ],
+            ]);
+            }
+        //! Check Subs Child Access
+
+        $user = Auth::user();
+        if (!$user) {
+          
+            return redirect('/');
+        }
+        $bulanIni           = date('Y-m');
+        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus              = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData           = UserRole::where('id', $user->role)->first();
+
+        $userActivities     = UserActivity::where('user_id', $user->id)->get();
+        
+        
+                            
+
+        $additionalData = [
+            'title'                     => 'User',
+            'subtitle'                  => 'Profile',
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            'user'                      => $user,
+            'role'                      => $roleData,
+            'userActivities'            => $userActivities,
+        ];
+    
+        return view('Konten/User/setting', $additionalData);
+    }
 
     //Admin
         public function showUserAdminIndex(Request $request)
@@ -655,6 +765,29 @@ class UserController extends Controller
             ]);
         }    
     }   
+
+    public function uploadAvatar(Request $request)
+    {
+        // Validasi permintaan
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:800',
+        ]);
+    
+        // Simpan file yang diunggah
+        $avatar = $request->file('avatar');
+        $imageName = $avatar->getClientOriginalName(); // Gunakan nama file asli untuk menyimpan
+    
+        // Simpan file ke direktori yang sesuai (misalnya, public/img/staff)
+        $avatar->move(public_path('img/staff'), $imageName);
+    
+        // Ubah nama file dalam database untuk user tertentu
+        $user = auth()->user();
+        $user->image = $imageName;
+        $user->save();
+    
+        // Redirect atau berikan respons yang sesuai
+        return redirect()->back()->with('success', 'Avatar updated successfully.');
+    }
 
     public function update(Request $request)
     {
