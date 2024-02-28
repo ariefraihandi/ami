@@ -24,9 +24,13 @@ class AuthController extends Controller
             return redirect('/user/profile');
         }
 
+        // Simpan URL sebelumnya di dalam sesi
+        session()->put('previous_url', url()->previous());
+
         $data = [
             'title' => "Login",
             'subtitle' => "Portal Atjeh Mediatama Indonesia",
+            'previous_url' => session('previous_url'), // Mengirimkan URL sebelumnya ke view
         ];
 
         return view('Konten.Auth.login', $data);
@@ -39,17 +43,17 @@ class AuthController extends Controller
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
-    
+
         $credentials = [
             'email' => $request->input('username'),
             'password' => $request->input('password'),
         ];
-    
+
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']]) ||
             Auth::attempt(['username' => $credentials['email'], 'password' => $credentials['password']])) {
-    
+
             $user = Auth::user();
-    
+
             if ($user) {
                 $device = Agent::device();
                 $platform = Agent::platform();
@@ -63,14 +67,9 @@ class AuthController extends Controller
                 $userActivity->save();
                 session(['user_id' => $user->id, 'user_role' => $user->role]);
 
-                // Sweet Alert dengan pesan selamat datang
-                $response = [
-                    'success' => true,
-                    'title' => 'Selamat Datang',
-                    'message' => "Hallo, $user->name. Selamat datang! Semangat berkerja.",
-                ];
-    
-                return redirect('/user/profile')->with('response', $response);
+                // Mengarahkan pengguna ke URL sebelumnya jika ada
+                $previousUrl = session()->pull('previous_url', '/user/profile'); // Jika tidak ada URL sebelumnya, arahkan ke halaman utama
+                return redirect($previousUrl);
             } else {
                 // Kredensial berhasil tetapi status tidak memenuhi syarat
                 Auth::logout();
@@ -90,6 +89,7 @@ class AuthController extends Controller
             return back()->with('response', $response);
         }
     }
+
 
     public function showRegisForm()
     {                

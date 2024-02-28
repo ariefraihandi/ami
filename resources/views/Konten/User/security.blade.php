@@ -73,20 +73,14 @@
               </li>
             </ul>
             <div class="d-flex justify-content-center pt-3">
-              <a
-                href="javascript:;"
-                class="btn btn-primary me-3"
-                data-bs-target="#editUser"
-                data-bs-toggle="modal"
-                >Edit</a
-              >
-              <a href="javascript:;" class="btn btn-label-danger suspend-user">Suspended</a>
+                <a href="{{ route('user.security') }}" class="btn btn-primary me-3">Edit</a>
+            </div>            
             </div>
           </div>
         </div>
       </div>
       <!-- /User Card -->
-    </div>
+    
     <!--/ User Sidebar -->
 
     <!-- User Content -->
@@ -175,6 +169,7 @@
     </div>
     <!--/ User Content -->
   </div>
+
 </div>
 <!-- / Content -->
   

@@ -70,11 +70,13 @@ $(function () {
               '<a href="#" class="text-body" onclick="return confirmDelete(\'/delete/user?id=' + id + '\')">' +
               '<i class="bx bx-trash mx-1"></i>' +
               '</a>' +
+              '<a href="/send-message?id=' + id + '&type=user" class="text-body" target="_blank">' +
+              '<i class="bx bxs-message mx-1"></i>' +
+              '</a>' +
               '</div>'
             );
           }
-        }
-        
+        }       
       ],
       order: [[0, 'asc']],       
       dom:

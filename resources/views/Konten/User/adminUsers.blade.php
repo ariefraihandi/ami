@@ -239,7 +239,7 @@
                     <h5 class="modal-title" id="editUserModalLabel{{ $user->id }}">Edit User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="editUserForm" action="" method="POST">
+                <form id="editUserForm" action="{{ route('update.user') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -307,6 +307,11 @@
                         <label for="date_of_birth" class="form-label">Date of Birth</label>
                         <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{$user->date_of_birth}}">
                       </div>      
+                      <div class="mb-3">
+                        <label for="created_at" class="form-label">Join Since</label>
+                        <input type="date" class="form-control" id="created_at" name="created_at" value="{{ date('Y-m-d', strtotime($user->created_at)) }}">
+                    </div>
+                     
                     </div>
                     <input type="hidden" class="form-control" id="id" name="id"  value="{{$user->id}}" required>
                     <div class="modal-footer">

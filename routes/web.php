@@ -12,6 +12,7 @@ use App\Http\Controllers\Portal\MenuController;
 use App\Http\Controllers\Portal\UserController;
 use App\Http\Controllers\Portal\ReportController;
 use App\Http\Controllers\Portal\DownloadController;
+use App\Http\Controllers\Portal\kirimWhatsapp;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
@@ -135,6 +136,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/delete/user',              [UserController::class, 'deleteUser'])->name('delete.user');
     Route::post('/update/user',             [UserController::class, 'update'])->name('update.user');
     //!! users Administrator
+
+    Route::get('/send-message',             [kirimWhatsapp::class, 'kirimPesan'])->name('kirim.Pesan');
 
     Route::get('/users/access',             [UserController::class, 'showRoleList'])->name('users.access');
 });

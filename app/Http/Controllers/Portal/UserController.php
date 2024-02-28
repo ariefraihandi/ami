@@ -974,11 +974,19 @@ class UserController extends Controller
         if (!empty($request->date_of_birth)) {
             $user->date_of_birth = $request->date_of_birth;
         }
+        if (!empty($request->created_at)) {
+            $user->created_at = $request->created_at;
+        }
 
         $user->save();
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'User updated successfully.');
+        $response = [
+            'success' => true,
+            'title' => 'Berhasil',
+            'message' => "Data Berhasil Dirubah.",
+        ];
+        
+        return redirect()->back()->with('response', $response);
     }
 
     public function changePassword(Request $request)
