@@ -239,42 +239,96 @@ class MenuController extends Controller
         }
     }
 
-    public function changeMenuAccess(Request $request)
+    public function changeAccess(Request $request)
     {
         // Ambil data dari permintaan
         $roleId = $request->input('roleId');
         $menuId = $request->input('menuId');        
+        $type   = $request->input('type');     
 
         // Cari nama peran berdasarkan ID
         $roleName = UserRole::find($roleId)->role;
 
-        // Cari nama menu berdasarkan ID
-        $menuName = Menu::find($menuId)->menu_name;
+        if ($type == 'menu') { 
+            $menuName = Menu::find($menuId)->menu_name;
 
-        // Cek apakah akses menu sudah ada dalam database
-        $existingAccess = AccessMenu::where('user_id', $roleId)->where('menu_id', $menuId)->first();
-              
-        $response = '';
+            // Cek apakah akses menu sudah ada dalam database
+            $existingAccess = AccessMenu::where('user_id', $roleId)->where('menu_id', $menuId)->first();
 
-        if ($existingAccess) {
-            // Jika akses menu sudah ada, hapus
-            $existingAccess->delete();
-            $response = 'delete';
-        } else {
-            // Jika akses menu belum ada, tambahkan
-            $newAccess = new AccessMenu();
-            $newAccess->user_id = $roleId;
-            $newAccess->menu_id = $menuId;
-            $newAccess->save();
-            $response = 'adding';
+            $response = '';
+
+            if ($existingAccess) {
+                // Jika akses menu sudah ada, hapus
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {
+                // Jika akses menu belum ada, tambahkan
+                $newAccess = new AccessMenu();
+                $newAccess->user_id = $roleId;
+                $newAccess->menu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $menuName
+            ]);
+        } elseif ($type === 'submenu') {
+            $submenuName = MenuSub::find($menuId)->title;
+
+            // Cek apakah akses menu sudah ada dalam database
+            $existingAccess = AccessSub::where('role_id', $roleId)->where('submenu_id', $menuId)->first();
+
+            $response = '';
+
+            if ($existingAccess) {
+                // Jika akses menu sudah ada, hapus
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {
+                // Jika akses menu belum ada, tambahkan
+                $newAccess = new AccessSub();
+                $newAccess->role_id = $roleId;
+                $newAccess->submenu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $submenuName
+            ]);
+
+        } elseif ($type === 'childsubmenu') {
+            $childSubName = MenuSubsChild::find($menuId)->title;
+         
+            $existingAccess = AccessSubChild::where('role_id', $roleId)->where('childsubmenu_id', $menuId)->first();
+
+            $response = '';
+
+            if ($existingAccess) {             
+                $existingAccess->delete();
+                $response = 'delete';
+            } else {    
+                $newAccess = new AccessSubChild();
+                $newAccess->role_id = $roleId;
+                $newAccess->childsubmenu_id = $menuId;
+                $newAccess->save();
+                $response = 'adding';
+            }
+        
+            // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+            return response()->json([
+                'response' => $response,
+                'roleName' => $roleName,
+                'menuName' => $childSubName
+            ]);
         }
-       
-        // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
-        return response()->json([
-            'response' => $response,
-            'roleName' => $roleName,
-            'menuName' => $menuName
-        ]);
     }
 
     // Submenus

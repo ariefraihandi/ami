@@ -86,7 +86,6 @@
         </div>
         
         <div class="col-12">
-            <!-- Role Table -->
             <div class="card">
                 <h5 class="card-header">Table Role Access Menus</h5>
                 <div class="table-responsive text-nowrap">
@@ -110,7 +109,7 @@
                                                 $AccessMenu = \App\Models\AccessMenu::all();
                                                 $hasAccess = $AccessMenu->where('user_id', $role->id)->where('menu_id', $menu->id)->isNotEmpty();
                                             @endphp
-                                           <input class="form-check-input" data-role-id="{{ $role->id }}" type="checkbox" value="{{ $menu->id }}" id="menu_{{ $menu->id }}" @if($hasAccess) checked @endif />
+                                           <input class="form-check-input" data-role-id="{{ $role->id }}" data-type="menu" type="checkbox" value="{{ $menu->id }}" id="menu_{{ $menu->id }}" @if($hasAccess) checked @endif />
                                         </div>
                                     </td>
                                 @endforeach
@@ -120,10 +119,89 @@
                     </table>
                 </div>
             </div>            
-            <!--/ Role Table -->
         </div>
+        <div class="divider">
+            <div class="divider-text">
+                <i class="bx bx-star"></i>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">Table Role Access Submenus</h5>
+                <div class="table-responsive text-nowrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Submenu</th>
+                                @foreach($allRole->whereNotIn('role', ['administrator']) as $role)
+                                    <th>{{ ucfirst($role->role) }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($allMenuSub as $submenu)
+                                <tr>
+                                    <td>{{ ucfirst($submenu->title) }}</td>
+                                    @foreach($allRole->whereNotIn('role', ['administrator']) as $role)
+                                        <td>
+                                            <div class="form-check mt-3">
+                                                @php
+                                                    $AccessSubmenu = \App\Models\AccessSub::all();
+                                                    $hasAccessSub  = $AccessSubmenu->where('role_id', $role->id)->where('submenu_id', $submenu->id)->isNotEmpty();
+                                                @endphp                                           
+                                                <input class="form-check-input" data-role-id="{{ $role->id }}" data-type="submenu" type="checkbox" value="{{ $submenu->id }}" id="menu_{{ $submenu->id }}" @if($hasAccessSub) checked @endif />
+                                            </div>
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>                    
+                </div>
+            </div>            
+        </div>
+        <div class="divider">
+            <div class="divider-text">
+                <i class="bx bx-star"></i>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <h5 class="card-header">Table Role Access ChildSubmenu</h5>
+                <div class="table-responsive text-nowrap">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Child Submenu</th>
+                                @foreach($allRole->whereNotIn('role', ['administrator']) as $role)
+                                    <th>{{ ucfirst($role->role) }}</th>
+                                @endforeach
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($allChildSub as $childSubmenu)
+                                <tr>
+                                    <td>{{ ucfirst($childSubmenu->title) }}</td>
+                                    @foreach($allRole->whereNotIn('role', ['administrator']) as $role)
+                                        <td>
+                                            <div class="form-check mt-3">
+                                                @php
+                                                    $AccessChildSubmenu     = \App\Models\AccessSubChild::all();
+                                                    $hasAccessChildSub = $AccessChildSubmenu->where('role_id', $role->id)->where('childsubmenu_id', $childSubmenu->id)->isNotEmpty();
+                                                @endphp                                           
+                                                <input class="form-check-input" data-role-id="{{ $role->id }}" data-type="childsubmenu" type="checkbox" value="{{ $childSubmenu->id }}" id="menu_{{ $childSubmenu->id }}" @if($hasAccessChildSub) checked @endif />
+                                            </div>
+                                        </td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>                    
+                </div>
+            </div>            
         </div>
     </div>
+</div>
 @endsection
 
 @push('footer-script')
@@ -133,62 +211,62 @@
 @endpush
 
 @push('footer-Sec-script')
-  <script src="{{ asset('assets') }}/js/admin-user.js"></script>
-  <script>
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var roleId = checkbox.getAttribute('data-role-id');
-            var menuId = checkbox.getAttribute('value');
+    <script src="{{ asset('assets') }}/js/admin-user.js"></script>
+    <script>
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var roleId      = checkbox.getAttribute('data-role-id');
+                var type        = checkbox.getAttribute('data-type');
+                var menuId      = checkbox.getAttribute('value');
 
-            // Kirim data ke controller
-            fetch('/change-access/menu', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    roleId: roleId,
-                    menuId: menuId
+                // Kirim data ke controller
+                fetch('/change-access', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        roleId: roleId,
+                        menuId: menuId,
+                        type: type
+                    })
                 })
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json(); // Mengembalikan respons JSON
-                } else {
-                    throw new Error('Gagal mengirim data ke controller');
-                }
-            })
-            .then(data => {
-                // Handle respons dari server
-                var title = 'Berhasil';
-                var message = '';
-                if (data.response === 'delete') {
-                    message = 'Penghapusan Access menu ' + data.menuName + ' untuk role ' + data.roleName + ' berhasil';
-                } else if (data.response === 'adding') {
-                    message = 'Penambahan Access menu ' + data.menuName + ' untuk role ' + data.roleName + ' berhasil';
-                }
-                showSweetAlert(title, message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
+                .then(response => {
+                    if (response.ok) {
+                        return response.json(); // Mengembalikan respons JSON
+                    } else {
+                        throw new Error('Gagal mengirim data ke controller');
+                    }
+                })
+                .then(data => {
+                    // Handle respons dari server
+                    var title = 'Berhasil';
+                    var message = '';
+                    if (data.response === 'delete') {
+                        message = 'Penghapusan Access menu ' + data.menuName + ' untuk role ' + data.roleName + ' berhasil';
+                    } else if (data.response === 'adding') {
+                        message = 'Penambahan Access menu ' + data.menuName + ' untuk role ' + data.roleName + ' berhasil';
+                    }
+                    showSweetAlert(title, message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
-    });
 
-    function showSweetAlert(title, message) {
-        // Lakukan logika untuk menampilkan SweetAlert di sini
-        // Misalnya, Anda dapat menggunakan library SweetAlert
-        // Contoh:
-        Swal.fire({
-            title: title,
-            text: message,
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
-    }
-</script>
-
-
+        function showSweetAlert(title, message) {
+            // Lakukan logika untuk menampilkan SweetAlert di sini
+            // Misalnya, Anda dapat menggunakan library SweetAlert
+            // Contoh:
+            Swal.fire({
+                title: title,
+                text: message,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        }
+    </script>    
 @endpush

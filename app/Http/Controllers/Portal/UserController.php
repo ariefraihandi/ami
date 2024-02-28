@@ -524,6 +524,8 @@ class UserController extends Controller
             $roleData           = UserRole::where('id', $user->role)->first();
             $allRole            = UserRole::all();
             $allMenu            = Menu::all();
+            $allMenuSub         = MenuSub::all();
+            $allChildSub        = MenuSubsChild::all();
 
             $additionalData = [
                 'title'                     => 'User Admin',
@@ -531,6 +533,8 @@ class UserController extends Controller
                 'user'                      => $user,
                 'allRole'                   => $allRole,
                 'allMenu'                   => $allMenu,
+                'allMenuSub'                => $allMenuSub,
+                'allChildSub'               => $allChildSub,
                 'role'                      => $roleData,
                 'menus'                     => $menus,
                 'subMenus'                  => $subMenus,
