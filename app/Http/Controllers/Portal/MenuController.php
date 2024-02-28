@@ -239,6 +239,44 @@ class MenuController extends Controller
         }
     }
 
+    public function changeMenuAccess(Request $request)
+    {
+        // Ambil data dari permintaan
+        $roleId = $request->input('roleId');
+        $menuId = $request->input('menuId');        
+
+        // Cari nama peran berdasarkan ID
+        $roleName = UserRole::find($roleId)->role;
+
+        // Cari nama menu berdasarkan ID
+        $menuName = Menu::find($menuId)->menu_name;
+
+        // Cek apakah akses menu sudah ada dalam database
+        $existingAccess = AccessMenu::where('user_id', $roleId)->where('menu_id', $menuId)->first();
+              
+        $response = '';
+
+        if ($existingAccess) {
+            // Jika akses menu sudah ada, hapus
+            $existingAccess->delete();
+            $response = 'delete';
+        } else {
+            // Jika akses menu belum ada, tambahkan
+            $newAccess = new AccessMenu();
+            $newAccess->user_id = $roleId;
+            $newAccess->menu_id = $menuId;
+            $newAccess->save();
+            $response = 'adding';
+        }
+       
+        // Beri respons dalam bentuk JSON dengan respons dan informasi nama peran dan nama menu
+        return response()->json([
+            'response' => $response,
+            'roleName' => $roleName,
+            'menuName' => $menuName
+        ]);
+    }
+
     // Submenus
     public function getAllSubmenus()
     {

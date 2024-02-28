@@ -84,7 +84,7 @@ class UserController extends Controller
         return response()->json(['data' => $formattedCustomers]);
     }
 
-
+//View
     public function index(Request $request)
     {
         //Check Access
@@ -173,6 +173,7 @@ class UserController extends Controller
         $menus              = Menu::whereIn('id', $accessMenus)->get();
         $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
         $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        // dd($childSubMenus);
         $roleData           = UserRole::where('id', $user->role)->first();
         $userActivities     = UserActivity::where('user_id', $user->id)->get();
 
@@ -199,20 +200,60 @@ class UserController extends Controller
     public function showPayroll(Request $request)
     {
 
-    //Check Access
-        $requestedUrl   = $request->path();      
-        $urlParts       = explode('/', $requestedUrl);
-        $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
-        $menuSub        = MenuSub::where('url', $urlPart)->first();
-        
-        if ($menuSub) {
-        
-            $menuSubId = $menuSub->id;
-            $userRole = session('user_role');
-            $accessSub = AccessSub::where('role_id', $userRole)
-                                ->where('submenu_id', $menuSubId)
-                                ->first();
-            if (!$accessSub) {
+        //Check Access
+            $requestedUrl   = $request->path();      
+            $urlParts       = explode('/', $requestedUrl);
+            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+            $menuSub        = MenuSub::where('url', $urlPart)->first();
+            
+            if ($menuSub) {
+            
+                $menuSubId = $menuSub->id;
+                $userRole = session('user_role');
+                $accessSub = AccessSub::where('role_id', $userRole)
+                                    ->where('submenu_id', $menuSubId)
+                                    ->first();
+                if (!$accessSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }                  
+            } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'URL tidak ditemukan!',
+                    ],
+                ]);
+            }
+        //!Check Access
+        // Check Subs Child Access
+            $requestedUrl = $request->path();       
+            $routes = Route::getRoutes();
+            $matchedRouteName = null;
+                    
+            foreach ($routes as $route) {
+                if ($route->uri() == $requestedUrl) {
+                    // Jika cocok, simpan nama rute dan keluar dari loop
+                    $matchedRouteName = $route->getName();
+                    break;
+                }
+            }
+
+            if ($matchedRouteName) {
+            $url            = $matchedRouteName;
+            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+            $userRole       = session('user_role');
+            $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                            ->where('childsubmenu_id', $menuChildSub->id)
+                            ->first();
+
+            if (!$accChildSub) {
                 return redirect()->route('user.profile')->with([
                     'response' => [
                         'success' => false,
@@ -220,39 +261,8 @@ class UserController extends Controller
                         'message' => 'Anda Tidak Memiliki Akses!',
                     ],
                 ]);
-            }                  
-        } else {
-            return redirect()->route('user.profile')->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Eror',
-                    'message' => 'URL tidak ditemukan!',
-                ],
-            ]);
-        }
-    //!Check Access
-    // Check Subs Child Access
-        $requestedUrl = $request->path();       
-        $routes = Route::getRoutes();
-        $matchedRouteName = null;
-                
-        foreach ($routes as $route) {
-            if ($route->uri() == $requestedUrl) {
-                // Jika cocok, simpan nama rute dan keluar dari loop
-                $matchedRouteName = $route->getName();
-                break;
-            }
-        }
-
-        if ($matchedRouteName) {
-        $url            = $matchedRouteName;
-        $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
-        $userRole       = session('user_role');
-        $accChildSub    = AccessSubChild::where('role_id', $userRole)
-                        ->where('childsubmenu_id', $menuChildSub->id)
-                        ->first();
-
-        if (!$accChildSub) {
+            }       
+            } else {
             return redirect()->route('user.profile')->with([
                 'response' => [
                     'success' => false,
@@ -260,17 +270,8 @@ class UserController extends Controller
                     'message' => 'Anda Tidak Memiliki Akses!',
                 ],
             ]);
-        }       
-        } else {
-        return redirect()->route('user.profile')->with([
-            'response' => [
-                'success' => false,
-                'title' => 'Eror',
-                'message' => 'Anda Tidak Memiliki Akses!',
-            ],
-        ]);
-        }
-    //! Check Subs Child Access
+            }
+        //! Check Subs Child Access
 
         $user = Auth::user();
         if (!$user) {
@@ -324,40 +325,223 @@ class UserController extends Controller
         return view('Konten/User/payroll', $additionalData);
     }
 
-    public function showUserAdminIndex(Request $request)
-    {
-        $user = Auth::user();
-        if (!$user) {
-          
-            return redirect('/login');
-        }       
+    //Admin
+        public function showUserAdminIndex(Request $request)
+        {
+            //Check Access
+                $requestedUrl = $request->path();      
+                $urlParts = explode('/', $requestedUrl);
+                $urlPart = $urlParts[0]; // Ambil bagian pertama dari URL    
+                $menuSub = MenuSub::where('url', $urlPart)->first();
+                
+                if ($menuSub) {
+                
+                    $menuSubId = $menuSub->id;
+                    $userRole = session('user_role');
+                    $accessSub = AccessSub::where('role_id', $userRole)
+                                        ->where('submenu_id', $menuSubId)
+                                        ->first();
+                    if (!$accessSub) {
+                        return redirect()->route('user.profile')->with([
+                            'response' => [
+                                'success' => false,
+                                'title' => 'Eror',
+                                'message' => 'Anda Tidak Memiliki Akses!',
+                            ],
+                        ]);
+                    }                  
+                } else {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'URL tidak ditemukan!',
+                        ],
+                    ]);
+                }
+            //!Check Access
+            // Check Subs Child Access
+                $requestedUrl = $request->path();       
+                $routes = Route::getRoutes();
+                $matchedRouteName = null;
+                        
+                foreach ($routes as $route) {
+                    if ($route->uri() == $requestedUrl) {
+                        // Jika cocok, simpan nama rute dan keluar dari loop
+                        $matchedRouteName = $route->getName();
+                        break;
+                    }
+                }
 
-        $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
-    
-        $menus              = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
-        $roleData           = UserRole::where('id', $user->role)->first();
-        $users              = User::all();
+                if ($matchedRouteName) {
+                $url            = $matchedRouteName;
+                $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+                $userRole       = session('user_role');
+                $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                                ->where('childsubmenu_id', $menuChildSub->id)
+                                ->first();
 
-        $additionalData = [
-            'title'                     => 'Admin',
-            'subtitle'                  => 'Users',
-            'user'                      => $user,
-            'users'                     => $users,
-            'role'                      => $roleData,
-            'menus'                     => $menus,
-            'subMenus'                  => $subMenus,
-            'childSubMenus'             => $childSubMenus,
-           
-           
-        ];
+                if (!$accChildSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }       
+                } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+                }
+            //! Check Subs Child Access
+
+            $user = Auth::user();
+            if (!$user) {
+            
+                return redirect('/login');
+            }       
+
+            $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+            $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+            $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
         
-        return view('Konten/User/adminUsers', $additionalData);
-    }     
-    
+            $menus              = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+            $roleData           = UserRole::where('id', $user->role)->first();
+            $users              = User::all();
+
+            $additionalData = [
+                'title'                     => 'Admin',
+                'subtitle'                  => 'Users',
+                'user'                      => $user,
+                'users'                     => $users,
+                'role'                      => $roleData,
+                'menus'                     => $menus,
+                'subMenus'                  => $subMenus,
+                'childSubMenus'             => $childSubMenus,
+            
+            
+            ];
+            
+            return view('Konten/User/adminUsers', $additionalData);
+        }     
+
+        public function showRoleList(Request $request)
+        {
+            //Check Access
+                $requestedUrl = $request->path();      
+                $urlParts = explode('/', $requestedUrl);
+                $urlPart = $urlParts[0]; // Ambil bagian pertama dari URL    
+                $menuSub = MenuSub::where('url', $urlPart)->first();
+                
+                if ($menuSub) {
+                
+                    $menuSubId = $menuSub->id;
+                    $userRole = session('user_role');
+                    $accessSub = AccessSub::where('role_id', $userRole)
+                                        ->where('submenu_id', $menuSubId)
+                                        ->first();
+                    if (!$accessSub) {
+                        return redirect()->route('user.profile')->with([
+                            'response' => [
+                                'success' => false,
+                                'title' => 'Eror',
+                                'message' => 'Anda Tidak Memiliki Akses!',
+                            ],
+                        ]);
+                    }                  
+                } else {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'URL tidak ditemukan!',
+                        ],
+                    ]);
+                }
+            //!Check Access
+            // Check Subs Child Access
+                $requestedUrl = $request->path();       
+                $routes = Route::getRoutes();
+                $matchedRouteName = null;
+                        
+                foreach ($routes as $route) {
+                    if ($route->uri() == $requestedUrl) {
+                        // Jika cocok, simpan nama rute dan keluar dari loop
+                        $matchedRouteName = $route->getName();
+                        break;
+                    }
+                }
+
+                if ($matchedRouteName) {
+                $url            = $matchedRouteName;
+                $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+                $userRole       = session('user_role');
+                $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                                ->where('childsubmenu_id', $menuChildSub->id)
+                                ->first();
+
+                if (!$accChildSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }       
+                } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+                }
+            //! Check Subs Child Access
+
+            $user = Auth::user();
+            if (!$user) {
+            
+                return redirect('/login');
+            }       
+
+            $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+            $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+            $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+        
+            $menus              = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+            $roleData           = UserRole::where('id', $user->role)->first();
+            $allRole            = UserRole::all();
+            $allMenu            = Menu::all();
+
+            $additionalData = [
+                'title'                     => 'User Admin',
+                'subtitle'                  => 'Role Access',
+                'user'                      => $user,
+                'allRole'                   => $allRole,
+                'allMenu'                   => $allMenu,
+                'role'                      => $roleData,
+                'menus'                     => $menus,
+                'subMenus'                  => $subMenus,
+                'childSubMenus'             => $childSubMenus,            
+            ];
+            
+            return view('Konten/User/adminUsersAccess', $additionalData);
+        }
+    //!Admin
+//!View
+
     public function addUsers(Request $request)
     {        
         DB::beginTransaction();
@@ -469,47 +653,47 @@ class UserController extends Controller
     }   
 
     public function update(Request $request)
-{
-    // Validasi request
-    $request->validate([
-        'name' => 'required|string',
-        'email' => 'required|email',
-        'username' => 'required|string',
-        'wa' => 'nullable|string',
-        'role' => 'required|numeric',
-        'jabatan' => 'required|string',
-        'status' => 'required|numeric',
-        'gaji' => 'required|string',
-        'date_of_birth' => 'nullable|date',
-        'id' => 'required|numeric',
-    ]);
+    {
+        // Validasi request
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'username' => 'required|string',
+            'wa' => 'nullable|string',
+            'role' => 'required|numeric',
+            'jabatan' => 'required|string',
+            'status' => 'required|numeric',
+            'gaji' => 'required|string',
+            'date_of_birth' => 'nullable|date',
+            'id' => 'required|numeric',
+        ]);
 
-    // Cari user berdasarkan ID
-    $user = User::find($request->id);
+        // Cari user berdasarkan ID
+        $user = User::find($request->id);
 
-    // Jika user tidak ditemukan, kembalikan response dengan pesan error
-    if (!$user) {
-        return redirect()->back()->with('error', 'User not found.');
+        // Jika user tidak ditemukan, kembalikan response dengan pesan error
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Update data user
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->username = $request->username;
+        $user->wa = $request->wa;
+        $user->role = $request->role;
+        $user->jabatan = $request->jabatan;
+        $user->status = $request->status;
+        // Format gaji menggunakan metode cleanNumericInput
+        $user->salary = $this->cleanNumericInput($request->gaji);
+        $user->date_of_birth = $request->date_of_birth;
+        $user->save();
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'User updated successfully.');
     }
 
-    // Update data user
-    $user->name = $request->name;
-    $user->email = $request->email;
-    $user->username = $request->username;
-    $user->wa = $request->wa;
-    $user->role = $request->role;
-    $user->jabatan = $request->jabatan;
-    $user->status = $request->status;
-    // Format gaji menggunakan metode cleanNumericInput
-    $user->salary = $this->cleanNumericInput($request->gaji);
-    $user->date_of_birth = $request->date_of_birth;
-    $user->save();
-
-    // Redirect kembali dengan pesan sukses
-    return redirect()->back()->with('success', 'User updated successfully.');
-}
-
-public function deleteUser(Request $request)
+    public function deleteUser(Request $request)
     {
         try {
             // Retrieve the ID from the query parameters

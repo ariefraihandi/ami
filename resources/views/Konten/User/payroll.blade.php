@@ -95,22 +95,32 @@
     <!-- User Content -->
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
       <!-- User Pills -->
+      @php        
+        $variabel1 = '<li class="nav-item">
+                        <a class="nav-link" href="' . route('user.profile') . '"><i class="bx bx-user me-1"></i>Account</a>
+                      </li>';
+        $variabel2 = '<li class="nav-item">
+                        <a class="nav-link active" href="' . route('user.gaji') . '"><i class="bx bxs-wallet me-1"></i>Gaji</a>
+                      </li>';
+        $variabel3 = '<li class="nav-item">
+                        <a class="nav-link" href="' . route('user.setting') . '"><i class="bx bx-cog me-1"></i>Setting</a>
+                      </li>';
+        $variabel4 = '<li class="nav-item">
+                        <a class="nav-link" href="' . route('user.security') . '"><i class="bx bx-lock-alt me-1"></i>Security</a>
+                      </li>';
+        $urls = $childSubMenus->pluck('url')->toArray();
+      @endphp
+
       <ul class="nav nav-pills flex-column flex-md-row mb-3">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('user.profile') }}"><i class="bx bx-user me-1"></i>Account</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{{ route('user.gaji') }}"
-            ><i class="bx bxs-wallet me-1"></i>Gaji</a>
-        </li>      
-        <li class="nav-item">
-          <a class="nav-link" href="app-user-view-security.html"
-            ><i class="bx bx-cog me-1"></i>Setting</a>
-        </li>      
-        <li class="nav-item">
-          <a class="nav-link" href="app-user-view-security.html"
-            ><i class="bx bx-lock-alt me-1"></i>Security</a>
-        </li>      
+        @foreach($urls as $url)
+          @if(in_array($url, ['user.profile', 'user.gaji', 'user.setting', 'user.security']))
+            @php
+              $routeName = array_search($url, ['user.profile', 'user.gaji', 'user.setting', 'user.security']);
+              $variableName = 'variabel' . ($routeName + 1);
+              echo $$variableName;
+            @endphp
+          @endif
+        @endforeach
       </ul>
       <!--/ User Pills -->
       <!-- Activity Timeline -->
