@@ -124,8 +124,8 @@
       </ul>
       <!--/ User Pills -->
       <!-- Activity Timeline -->
-    <div class="card mb-4">      
-        <form action="{{ route('upload.avatar') }}" method="POST" enctype="multipart/form-data">
+      <div class="card mb-4">      
+        <form id="uploadForm" action="{{ route('upload.avatar') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
                 <div class="d-flex align-items-start align-items-sm-center gap-4">
@@ -134,9 +134,8 @@
                         <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                             <span class="d-none d-sm-block">Upload new photo</span>
                             <i class="bx bx-upload d-block d-sm-none"></i>
-                            <input type="file" id="upload" name="avatar" class="account-file-input" accept="image/png, image/jpeg" />
+                            <input type="file" id="upload" name="avatar" hidden class="account-file-input" accept="image/png, image/jpeg" />
                         </label>
-                        <button type="submit" class="btn btn-success">Save</button>
                         <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
                     </div>
                 </div>
@@ -399,6 +398,11 @@
 @push('footer-Sec-script')
 <script src="{{ asset('assets') }}/js/modal-edit-user.js"></script>
 <script src="{{ asset('assets') }}/js/app-user-view.js"></script>
+<script>
+    document.getElementById('upload').addEventListener('change', function() {
+        document.getElementById('uploadForm').submit();
+    });
+</script>
 <script>
   @if(session('response'))
       var response = @json(session('response'));

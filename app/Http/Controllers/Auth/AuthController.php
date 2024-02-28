@@ -32,7 +32,6 @@ class AuthController extends Controller
         return view('Konten.Auth.login', $data);
     }
 
-
     public function login(Request $request)
     {
         // Validate the login request
@@ -60,7 +59,7 @@ class AuthController extends Controller
                 $userActivity->user_id = $user->id;
                 $userActivity->activity = 'Logged in';
                 $userActivity->ip_address = $request->ip();
-                $userActivity->device_info = "$device $platform $browser"; // Menggabungkan informasi perangkat dalam satu string
+                $userActivity->device_info = "$device $platform $browser";
                 $userActivity->save();
                 session(['user_id' => $user->id, 'user_role' => $user->role]);
 

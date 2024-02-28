@@ -30,6 +30,7 @@ use App\Models\AccessSubChild;
 use App\Models\UserActivity; 
 use App\Models\User;
 use App\Models\Tagihan;
+use Jenssegers\Agent\Facades\Agent;
 
 class UserController extends Controller
 {
@@ -767,27 +768,57 @@ class UserController extends Controller
     }   
 
     public function uploadAvatar(Request $request)
-    {
-        // Validasi permintaan
-        $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:800',
-        ]);
-    
-        // Simpan file yang diunggah
-        $avatar = $request->file('avatar');
-        $imageName = $avatar->getClientOriginalName(); // Gunakan nama file asli untuk menyimpan
-    
-        // Simpan file ke direktori yang sesuai (misalnya, public/img/staff)
-        $avatar->move(public_path('img/staff'), $imageName);
-    
-        // Ubah nama file dalam database untuk user tertentu
-        $user = auth()->user();
-        $user->image = $imageName;
-        $user->save();
-    
-        // Redirect atau berikan respons yang sesuai
-        return redirect()->back()->with('success', 'Avatar updated successfully.');
+{
+    // Validasi permintaan
+    $request->validate([
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:800',
+    ]);
+
+    $device = Agent::device();
+    $platform = Agent::platform();
+    $browser = Agent::browser();
+
+    $avatar = $request->file('avatar');
+    $imageName = $avatar->getClientOriginalName(); // Gunakan nama file asli untuk menyimpan
+
+    // Periksa apakah gambar pengguna saat ini adalah gambar default
+    $user = auth()->user();
+    if ($user->image !== 'default.webp') {
+        // Jika bukan gambar default, hapus gambar lama sebelum menyimpan yang baru
+        $oldImagePath = public_path('assets/img/staff') . '/' . $user->image;
+        if (file_exists($oldImagePath)) {
+            unlink($oldImagePath); // Hapus gambar lama
+        }
     }
+
+    // Simpan file ke direktori yang sesuai (misalnya, public/img/staff)
+    $avatar->move(public_path('assets/img/staff'), $imageName);
+
+    $user->image = $imageName;
+    $user->save();
+
+    // Buat objek UserActivity baru
+    $adminActivity = new UserActivity([
+        'user_id' => auth()->id(),
+        'activity' => 'Change image',
+        'ip_address' => 'Mengganti foto profile',
+        'device_info' => "$device $platform $browser",
+    ]);
+
+    // Simpan aktivitas
+    $adminActivity->save();
+
+    $successMessage = 'Foto Profil Berhasil Diperbaharui';
+
+    return redirect()->route('user.setting')->with([
+        'response' => [
+            'success' => true,
+            'title' => 'Success',
+            'message' => $successMessage,
+        ],
+    ]);
+}
+
 
     public function update(Request $request)
     {

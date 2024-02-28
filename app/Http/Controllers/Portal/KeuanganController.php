@@ -1135,7 +1135,7 @@ class KeuanganController extends Controller
     
             'logoPath'          => $link,
             'imagePath'         => $imagePath,            
-            'bgImage'                => $bgImage,            
+            'bgImage'           => $bgImage,            
 
             'income'            => $income,
             'outcome'           => $outcome,
