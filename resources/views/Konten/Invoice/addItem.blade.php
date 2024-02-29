@@ -267,26 +267,25 @@
                     <i class="bx bx-download bx-xs me-1"></i>
                     Download
                 </span>
-            </a>
-            <a href="{{ url('/send-invoice?invoiceNumber='.$invoiceNumber.'&customerUuid='.$customerData->uuid.'') }}" target="_blank" class="btn btn-success d-grid w-100 mb-3">
-              <span class="d-flex align-items-center justify-content-center text-nowrap">
-                  <i class="bx bx-send bx-xs me-1"></i>
-                  Kirim Invoice
-              </span>
-          </a>
+              </a>
+              <a href="{{ url('/send-invoice?invoiceNumber='.$invoiceNumber.'&customerUuid='.$customerData->uuid.'') }}" target="_blank" class="btn btn-success d-grid w-100 mb-3">
+                <span class="d-flex align-items-center justify-content-center text-nowrap">
+                    <i class="bx bx-send bx-xs me-1"></i>
+                    Kirim Invoice
+                </span>
+              </a>
               <a href="{{ route("deleteInvoice") }}?invoiceNumber={{$invoiceNumber}}" class="btn btn-label-danger d-grid w-100 mb-3" onclick="return confirm('Are you sure?')">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                     <i class="bx bx-trash bx-xs me-1"></i>
                     Hapus
                 </span>
-            </a>
+              </a>
               <a href="{{ route('invoice.list') }}" class="btn btn-warning d-grid w-100 mb-3">
                 <span class="d-flex align-items-center justify-content-center text-nowrap">
                   <i class="bx bxs-left-arrow-circle bx-xs me-1"></i>
                   Back
                 </span>
               </a>
-              
             </div>
           </div>
           <div class="card">

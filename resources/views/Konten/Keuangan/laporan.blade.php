@@ -48,14 +48,12 @@
                       <input type="date" class="form-control" placeholder="<?= date('Y-m-d', strtotime($startDate)) ?>" value="<?= date('Y-m-d', strtotime($startDate)) ?>" name="startDate" id="startDate" />
                     </div>
                   </dd>
-                  
                   <dt class="col-sm-6 mb-2 mb-sm-0 text-md-end">
                     <span class="fw-normal">Sampai:</span>
                   </dt>
-                  
                   <dd class="col-sm-6 d-flex justify-content-md-end">
                     <div class="w-px-150">
-                      <input type="text" class="form-control" disabled id="endDate" name="endDate" value="{{$endDate}}" value="{{$endDate}}" />
+                      <input type="date" class="form-control" placeholder="<?= date('Y-m-d', strtotime($endDate)) ?>" value="<?= date('Y-m-d', strtotime($endDate)) ?>" name="endDate" id="endDate" />
                     </div>
                   </dd>                  
                 </dl>
