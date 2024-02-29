@@ -62,7 +62,7 @@
                   <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                 </div>
               </div>            
-              <input type="text" class="form-control" id="previous_url" name="previous_url" value="{{$previous_url}}" />
+              <input type="hidden" class="form-control" id="previous_url" name="previous_url" value="{{$previous_url}}" />
               
               <div class="mb-3">
                 <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>

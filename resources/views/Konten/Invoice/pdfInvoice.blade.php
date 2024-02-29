@@ -51,6 +51,7 @@
         </style>
     </head>
     <body style="margin: 0;">  
+            <img src="{{ $kopSuratImage }}" alt="Kop Surat" class="kop-surat-image" style="position: absolute; top: -45px; left: -45px; width: 115%; z-index: -1;">
         <img src="{{ $bgImage }}" alt="Background" class="bg-image" style="position: fixed; top: 0;  width: 114%; left: -45px; top: -45px;">
         <div style="position: relative;">       
         </div>

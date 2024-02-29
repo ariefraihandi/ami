@@ -45,7 +45,7 @@
                   </dt>
                   <dd class="col-sm-6 d-flex justify-content-md-end">
                     <div class="w-px-150">
-                        <input type="text" class="form-control" disabled placeholder="{{$startDate}}" value="{{$startDate}}" name="startDate" id="startDate" />
+                      <input type="date" class="form-control" placeholder="<?= date('Y-m-d', strtotime($startDate)) ?>" value="<?= date('Y-m-d', strtotime($startDate)) ?>" name="startDate" id="startDate" />
                     </div>
                   </dd>
                   

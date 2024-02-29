@@ -1061,16 +1061,17 @@ class InvoiceController extends Controller
         $format_panjar      = "Rp. " . number_format($panjar_amount, 0) . ",-";
         $format_total       = "Rp. " . number_format($total_amount, 0) . ",-";
         $background         = 'bg-report.png';
-        $link               = public_path('assets/img/report/kop.png');                        
+        $kopSuratImage      = public_path('assets/img/report/kop.png');                        
         $logo               = public_path('assets/img/icons/brands/logo-kecil.png');                        
-        $bgImage            = public_path('assets/img/report/' . $background);        
+        $bgImage            = public_path('assets/img/report/' . $background);                
 
         $data = [
             'title'          => 'Unduh Invoice',
             'subtitle'       => '#' . $invoiceNumber,
             'bgImage'        => $bgImage,
+            'kopSuratImage'  => $kopSuratImage,
             'logo'           => $logo,
-            'logoPath'       => $link,
+            // 'logoPath'       => $link,
             'formattedDate'  => $formattedDate,
             'subtotal'       => $format_subtotal,
             'panjar_amount'  => $format_panjar,
