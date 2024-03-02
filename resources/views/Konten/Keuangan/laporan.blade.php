@@ -74,7 +74,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-6 col-12 mb-4">
+              {{-- <div class="col-md-6 col-12 mb-4">
                 <div class="card">
                   <div class="card-header d-flex align-items-center justify-content-between">
                     <div>
@@ -100,7 +100,7 @@
                     <div id="donutChart2"></div>
                   </div>
                 </div>
-              </div>
+              </div> --}}
             </div>
               
             <hr class="my-4 mx-n4" />
@@ -673,10 +673,10 @@
 
 @push('footer-Sec-script')
     <script>         
-      var totalInvoices = {{ $totalInvoices }};
-      var totalInvoicesBB = {{ $totalInvoicesBB }};
-      var totalInvoicesPJ = {{ $totalInvoicesPJ }};
-      var invoicesLN = {{ $invoicesLN }};
+      var totalInvoices = {{ $totalInvoices }};   
+      var totalInvoicesBB = {{ ($totalInvoicesBB / $totalInvoices) * 100 }};
+      var totalInvoicesPJ = {{ ($totalInvoicesPJ / $totalInvoices) * 100 }};
+      var invoicesLN = {{ ($invoicesLN / $totalInvoices) * 100 }};
     </script>
     <script src="{{ asset('assets') }}/js/laporan.js"></script>
     <script>         
