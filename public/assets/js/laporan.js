@@ -55,7 +55,7 @@ function reloadPageWithNewDates() {
     const donutChartEl = document.querySelector('#donutChart'),
     donutChartConfig = {
       chart: {
-        height: 250,
+        height: 280,
         type: 'donut'
       },
       labels: ['Lunas', 'Panjar', 'Belum Bayar'],
@@ -199,7 +199,7 @@ function reloadPageWithNewDates() {
     const donutChartE2 = document.querySelector('#donutChart2'),
     donutChart2Config = {
       chart: {
-        height: 250,
+        height: 280,
         type: 'donut'
       },
       labels: ['Income', 'Bon', 'Outcome', 'Setor Kas', 'Top Up'],
@@ -212,7 +212,7 @@ function reloadPageWithNewDates() {
         chartColors.donutB.series5
       ],
       stroke: {
-        show: false,
+        show: true,
         curve: 'straight'
       },
       dataLabels: {
@@ -247,17 +247,17 @@ function reloadPageWithNewDates() {
                 fontSize: '0.8rem',
                 color: legendColor,
                 fontFamily: 'Public Sans',
-                formatter: function (val) {
-                  return parseInt(val, 10);
+                formatter: function (val) {                
+                  return 'Rp ' + parseInt(val, 10).toLocaleString('id-ID');
                 }
               },
               total: {
                 show: true,
                 fontSize: '0.8rem',
                 color: headingColor,
-                label: 'Total',
+                label: 'Income',
                 formatter: function (w) {
-                  return totalInvoices;
+                  return 'Rp ' + parseInt(pemasukan, 10).toLocaleString('id-ID');                  
                 }
               }
             }
