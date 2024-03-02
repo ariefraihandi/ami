@@ -38,25 +38,32 @@ function reloadPageWithNewDates() {
   
     // Color constant
     const chartColors = {
-      donut: {
+      donutA: {
         series1: '#71dd37',
         series2: '#696cff',
         series3: '#ff3e1d',      
+      },
+      donutB: {
+        series1: '#bcf235',
+        series2: '#ff2f15',
+        series3: '#f7591d',
+        series4: '#ffd52b',      
+        series5: '#00e7d5',      
       }
     };
 
     const donutChartEl = document.querySelector('#donutChart'),
     donutChartConfig = {
       chart: {
-        height: 390,
+        height: 250,
         type: 'donut'
       },
       labels: ['Lunas', 'Panjar', 'Belum Bayar'],
       series: [invoicesLN, totalInvoicesPJ, totalInvoicesBB],
       colors: [
-        chartColors.donut.series1,    
-        chartColors.donut.series2,
-        chartColors.donut.series3
+        chartColors.donutA.series1,    
+        chartColors.donutA.series2,
+        chartColors.donutA.series3
       ],
       stroke: {
         show: false,
@@ -87,20 +94,20 @@ function reloadPageWithNewDates() {
             labels: {
               show: true,
               name: {
-                fontSize: '2rem',
+                fontSize: '1rem',
                 fontFamily: 'Public Sans'
               },
               value: {
-                fontSize: '1.2rem',
+                fontSize: '0.8rem',
                 color: legendColor,
                 fontFamily: 'Public Sans',
                 formatter: function (val) {
-                  return parseInt(val, 10) + '%';
+                  return parseInt(val, 10);
                 }
               },
               total: {
                 show: true,
-                fontSize: '1.5rem',
+                fontSize: '0.8rem',
                 color: headingColor,
                 label: 'Total',
                 formatter: function (w) {
@@ -116,13 +123,13 @@ function reloadPageWithNewDates() {
           breakpoint: 992,
           options: {
             chart: {
-              height: 380
+              height: 250
             },
             legend: {
               position: 'bottom',
               labels: {
                 colors: legendColor,
-                useSeriesColors: false
+                useSeriesColors: true
               }
             }
           }
@@ -131,7 +138,7 @@ function reloadPageWithNewDates() {
           breakpoint: 576,
           options: {
             chart: {
-              height: 320
+              height: 250
             },
             plotOptions: {
               pie: {
@@ -139,13 +146,13 @@ function reloadPageWithNewDates() {
                   labels: {
                     show: true,
                     name: {
-                      fontSize: '1.5rem'
+                      fontSize: '0.8rem'
                     },
                     value: {
                       fontSize: '1rem'
                     },
                     total: {
-                      fontSize: '1.5rem'
+                      fontSize: '0.8rem'
                     }
                   }
                 }
@@ -167,7 +174,7 @@ function reloadPageWithNewDates() {
               height: 280
             },
             legend: {
-              show: false
+              show: true
             }
           }
         },
@@ -178,16 +185,162 @@ function reloadPageWithNewDates() {
               height: 250
             },
             legend: {
-              show: false
+              show: true
             }
           }
         }
       ]
-    };
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl, donutChartConfig);
-    donutChart.render();
-  }
+    };    
+    if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+      const donutChart = new ApexCharts(donutChartEl, donutChartConfig);
+      donutChart.render();
+    }
+    
+    const donutChartE2 = document.querySelector('#donutChart2'),
+    donutChart2Config = {
+      chart: {
+        height: 250,
+        type: 'donut'
+      },
+      labels: ['Income', 'Bon', 'Outcome', 'Setor Kas', 'Top Up'],
+      series: [pemasukan, hutangCustumer, outcomeTotal, saldoKas, topup],
+      colors: [
+        chartColors.donutB.series1,    
+        chartColors.donutB.series2,
+        chartColors.donutB.series3,
+        chartColors.donutB.series4,
+        chartColors.donutB.series5
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '1rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '0.8rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10);
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '0.8rem',
+                color: headingColor,
+                label: 'Total',
+                formatter: function (w) {
+                  return totalInvoices;
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: true
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 250
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '0.8rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '0.8rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: true
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: true
+            }
+          }
+        }
+      ]
+    };    
+    if (typeof donutChartE2 !== undefined && donutChartE2 !== null) {
+      const donutChart = new ApexCharts(donutChartE2, donutChart2Config);
+      donutChart.render();
+    }
 })();
 
 
