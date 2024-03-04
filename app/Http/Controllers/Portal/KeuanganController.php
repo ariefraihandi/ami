@@ -195,14 +195,13 @@ class KeuanganController extends Controller
        
         $today                  = Carbon::today();
         $yesterday              = Carbon::yesterday();
-
-        
+        $users                  = User::all();
 
         $additionalData = [
             'title'                     => 'Bisnis',
             'subtitle'                  => 'Keuangan',
             'user'                      => $user,
-            // 'users'                     => $users,
+            'users'                     => $users,
             'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
