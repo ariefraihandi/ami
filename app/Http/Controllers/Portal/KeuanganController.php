@@ -182,7 +182,6 @@ class KeuanganController extends Controller
           
             return redirect('/login');
         }
-        dd($user);
         $users                  = User::all();
         $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
@@ -206,7 +205,6 @@ class KeuanganController extends Controller
         
         // dd($totalkas);
         $transaction            = FinancialTransaction::all();
-        $users                  = User::all();
         
         $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
         $incomeYesterday        = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [1, 2, 3])->get();
@@ -583,7 +581,7 @@ class KeuanganController extends Controller
         if (!$user) {
             return redirect('/login');
         }
-dd($user);
+
         // Mengambil ID dari menu, submenu, dan sub-child menu yang diakses oleh pengguna
         $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
