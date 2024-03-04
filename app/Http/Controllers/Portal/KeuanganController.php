@@ -582,7 +582,7 @@ class KeuanganController extends Controller
         if (!$user) {
             return redirect('/login');
         }
-
+dd($user);
         // Mengambil ID dari menu, submenu, dan sub-child menu yang diakses oleh pengguna
         $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');

@@ -166,7 +166,7 @@ class UserController extends Controller
           
             return redirect('/');
         }
-
+        dd($user);
         $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
         $accessChildren     = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
@@ -279,6 +279,8 @@ class UserController extends Controller
           
             return redirect('/');
         }
+
+        dd($user);
         $bulanIni           = date('Y-m');
         $accessMenus        = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus     = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
