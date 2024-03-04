@@ -116,34 +116,72 @@ class DashboardController extends Controller
             $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData = UserRole::where('id', $user->role)->first();
         //!Syistem
+        $today = Carbon::today();
+        $yesterday = $today->copy()->subDay();
 
-        $today      = Carbon::today();
-        $yesterday  = $today->copy()->subDay(); 
+        // Inisialisasi tanggal hari dalam seminggu
+        $seninDate = $today->startOfWeek();
+        $selasaDate = $seninDate->copy()->addDay();
+        $rabuDate = $seninDate->copy()->addDays(2);
+        $kamisDate = $seninDate->copy()->addDays(3);
+        $jumatDate = $seninDate->copy()->addDays(4);
+        $sabtuDate = $seninDate->copy()->addDays(5);
 
-        $income     = FinancialTransaction::whereDate('transaction_date', $today)
-                    ->whereIn('status', [1, 2, 3])
-                    ->get();
+        // Mendapatkan data pendapatan untuk hari ini dan kemarin
+        $income = FinancialTransaction::whereDate('transaction_date', $today)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeYes = FinancialTransaction::whereDate('transaction_date', $yesterday)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
 
-        $incomeYes  = FinancialTransaction::whereDate('transaction_date', $yesterday)
-                    ->whereIn('status', [1, 2, 3])
-                    ->get();
+        // Mendapatkan data pendapatan harian
+        $incomeSen = FinancialTransaction::whereDate('transaction_date', $seninDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeSel = FinancialTransaction::whereDate('transaction_date', $selasaDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeRab = FinancialTransaction::whereDate('transaction_date', $rabuDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeKam = FinancialTransaction::whereDate('transaction_date', $kamisDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeJum = FinancialTransaction::whereDate('transaction_date', $jumatDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
+        $incomeSab = FinancialTransaction::whereDate('transaction_date', $sabtuDate)
+            ->whereIn('status', [1, 2, 3])
+            ->get();
 
+        // Menghitung total pendapatan
+        $incomeTotal = $income->sum('transaction_amount');
+        $incomeTotalYes = $incomeYes->sum('transaction_amount');
 
-
-        $incomeTotal        = $income->sum('transaction_amount');
-        $incomeTotalYes     = $incomeYes->sum('transaction_amount');
-
+        // Menghitung pendapatan harian
+        $totIncomeSen = $incomeSen->sum('transaction_amount');
+        $totIncomeSel = $incomeSel->sum('transaction_amount');
+        $totIncomeRab = $incomeRab->sum('transaction_amount');
+        $totIncomeKam = $incomeKam->sum('transaction_amount');
+        $totIncomeJum = $incomeJum->sum('transaction_amount');
+        $totIncomeSab = $incomeSab->sum('transaction_amount');
         $data = [
-            'title'                 => 'Customer List',
-            'subtitle'              => 'Dashboard',
-            'user'                  => $user,
-            'role'                  => $roleData,
-            'menus'                 => $menus,
-            'subMenus'              => $subMenus,
-            'childSubMenus'         => $childSubMenus,
-            'income'                => $incomeTotal,
-            'incomeTotalYes'        => $incomeTotalYes,
-         
+            'title' => 'Customer List',
+            'subtitle' => 'Dashboard',
+            'user' => $user,
+            'role' => $roleData,
+            'menus' => $menus,
+            'subMenus' => $subMenus,
+            'childSubMenus' => $childSubMenus,
+            'income' => $incomeTotal,
+            'incomeTotalYes' => $incomeTotalYes,
+            'totIncomeSen' => $totIncomeSen,
+            'totIncomeSel' => $totIncomeSel,
+            'totIncomeRab' => $totIncomeRab,
+            'totIncomeKam' => $totIncomeKam,
+            'totIncomeJum' => $totIncomeJum,
+            'totIncomeSab' => $totIncomeSab,
         ];
 
         return view('Konten/Portal/dashboard', $data);

@@ -70,14 +70,14 @@
         </div>
       </div>
     </div>
-    <!-- New Visitors & Activity -->
+    <!-- Pemasukan & Pengeluaran -->
     <div class="col-lg-8 mb-4">
       <div class="card">
         <div class="card-body row g-4">
           <div class="col-md-6 pe-md-4 card-separator">
             <div class="card-title d-flex align-items-start justify-content-between">
-              <h5 class="mb-0">New Visitors</h5>
-              <small>Last Week</small>
+              <h5 class="mb-0">Pemasukan</h5>
+              <small>Mingguan</small>
             </div>
             <div class="d-flex justify-content-between">
               <div class="mt-auto">
@@ -86,13 +86,13 @@
                   ><i class="bx bx-down-arrow-alt"></i> -13.24%</small
                 >
               </div>
-              <div id="visitorsChart"></div>
+              <div id="pendapatanChart"></div>
             </div>
           </div>
           <div class="col-md-6 ps-md-4">
             <div class="card-title d-flex align-items-start justify-content-between">
-              <h5 class="mb-0">Activity</h5>
-              <small>Last Week</small>
+              <h5 class="mb-0">Pengeluaran</h5>
+              <small>Mingguan</small>
             </div>
             <div class="d-flex justify-content-between">
               <div class="mt-auto">
@@ -101,7 +101,7 @@
                   ><i class="bx bx-up-arrow-alt"></i> 24.8%</small
                 >
               </div>
-              <div id="activityChart"></div>
+              <div id="pengeluaranChart"></div>
             </div>
           </div>
         </div>
@@ -910,6 +910,14 @@
 @endpush
 
 @push('footer-Sec-script')
+<script>         
+  var totIncomeSen   = {{ $totIncomeSen }};   
+  var totIncomeSel   = {{ $totIncomeSel }};   
+  var totIncomeRab   = {{ $totIncomeRab }};   
+  var totIncomeKam   = {{ $totIncomeKam }};   
+  var totIncomeJum   = {{ $totIncomeJum }};   
+  var totIncomeSab   = {{ $totIncomeSab }};   
+</script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>
 <script>
   @if(session('response'))

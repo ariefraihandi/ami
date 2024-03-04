@@ -171,12 +171,82 @@
   if (typeof visitorBarChartEl !== undefined && visitorBarChartEl !== null) {
     const visitorBarChart = new ApexCharts(visitorBarChartEl, visitorBarChartConfig);
     visitorBarChart.render();
-  }
-
+  }  
+  
   // Activity Area Chart
   // --------------------------------------------------------------------
-  const activityAreaChartEl = document.querySelector('#activityChart'),
-    activityAreaChartConfig = {
+  const pendapatanChartEl = document.querySelector('#pendapatanChart'),
+  pendapatanChartConfig = {
+      chart: {
+        height: 120,
+        width: 220,
+        parentHeightOffset: 0,
+        toolbar: {
+          show: false
+        },
+        type: 'area'
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: 2,
+        curve: 'smooth'
+      },
+      series: [
+        {
+          data: [totIncomeSen, totIncomeSel, ,totIncomeRab, totIncomeKam, totIncomeJum, totIncomeSab]
+        }
+      ],
+      colors: [config.colors.success],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: shadeColor,
+          shadeIntensity: 0.8,
+          opacityFrom: 0.8,
+          opacityTo: 0.25,
+          stops: [0, 85, 100]
+        }
+      },
+      grid: {
+        show: false,
+        padding: {
+          top: -20,
+          bottom: -8
+        }
+      },
+      legend: {
+        show: false
+      },
+      xaxis: {
+        categories: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        labels: {
+          style: {
+            fontSize: '13px',
+            colors: labelColor
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          show: false
+        }
+      }
+    };
+  if (typeof pendapatanChartEl !== undefined && pendapatanChartEl !== null) {
+    const activityAreaChart = new ApexCharts(pendapatanChartEl, pendapatanChartConfig);
+    activityAreaChart.render();
+  }
+  
+  const pengeluaranChartEl = document.querySelector('#pengeluaranChart'),
+  pengeluaranChartConfig = {
       chart: {
         height: 120,
         width: 220,
@@ -240,10 +310,12 @@
         }
       }
     };
-  if (typeof activityAreaChartEl !== undefined && activityAreaChartEl !== null) {
-    const activityAreaChart = new ApexCharts(activityAreaChartEl, activityAreaChartConfig);
+
+  if (typeof pengeluaranChartEl !== undefined && pengeluaranChartEl !== null) {
+    const activityAreaChart = new ApexCharts(pengeluaranChartEl, pengeluaranChartConfig);
     activityAreaChart.render();
   }
+
 
   // Profit Bar Chart
   // --------------------------------------------------------------------
