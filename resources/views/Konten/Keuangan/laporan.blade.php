@@ -663,6 +663,7 @@
       var invoicesLN      = {{$invoicesLN}};
       
       var pemasukan       = {{$incomeTotal}};
+      var income          = {{$incomeTotal-$outcomeTotal}};
       var hutangCustumer  = {{$hutangCustumer}};
       var outcomeTotal    = {{$outcomeTotal}};
       var saldoKas        = {{$saldoKas}};

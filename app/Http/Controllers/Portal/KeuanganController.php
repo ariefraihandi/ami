@@ -198,7 +198,7 @@ class KeuanganController extends Controller
         $yesterday              = Carbon::yesterday();
         $usersData              = User::all();
 
-$qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
+        $qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
         $qoutcomeTotal          = FinancialTransaction::whereIn('status', [4, 5])->get();
         $saldoKas               = FinancialTransaction::whereIn('status', [6])->get();
         $topupKas               = FinancialTransaction::whereIn('status', [7])->get();

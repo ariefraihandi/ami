@@ -13,12 +13,6 @@ function reloadPageWithNewDates() {
   document.getElementById("startDate").addEventListener("change", reloadPageWithNewDates);
   document.getElementById("endDate").addEventListener("change", reloadPageWithNewDates);
 
- 
-  console.log("Total Invoices:", totalInvoices);
-  console.log("Total Invoices Belum Bayar:", totalInvoicesBB);
-  console.log("Total Invoices Panjar:", totalInvoicesPJ);
-  console.log("Total Invoices Lunas:", invoicesLN);
-
   (function () {
     let cardColor, headingColor, labelColor, borderColor, legendColor;
   
@@ -45,10 +39,11 @@ function reloadPageWithNewDates() {
       },
       donutB: {
         series1: '#bcf235',
-        series2: '#ff2f15',
-        series3: '#f7591d',
-        series4: '#ffd52b',      
-        series5: '#00e7d5',      
+        series2: '#71dd37',
+        series3: '#ff2f15',
+        series4: '#f7591d',
+        series5: '#ffd52b',      
+        series6: '#00e7d5',      
       }
     };
 
@@ -202,17 +197,18 @@ function reloadPageWithNewDates() {
         height: 280,
         type: 'donut'
       },
-      labels: ['Income', 'Bon', 'Outcome', 'Setor Kas', 'Top Up'],
-      series: [pemasukan, hutangCustumer, outcomeTotal, saldoKas, topup],
+      labels: ['Income', 'Outcome', 'Sisa Kas', 'Bon',  'Setor Kas', 'Top Up'],
+      series: [pemasukan, outcomeTotal, income, hutangCustumer, saldoKas, topup],
       colors: [
         chartColors.donutB.series1,    
+        chartColors.donutB.series4,
         chartColors.donutB.series2,
         chartColors.donutB.series3,
-        chartColors.donutB.series4,
-        chartColors.donutB.series5
+        chartColors.donutB.series5,
+        chartColors.donutB.series6
       ],
       stroke: {
-        show: true,
+        show: false,
         curve: 'straight'
       },
       dataLabels: {
