@@ -21,4 +21,16 @@ class FinancialTransaction extends Model
         'status',
         'lunas',
     ];
+
+    public static function getTransactionAmount($date)
+    {
+        return self::whereDate('transaction_date', $date)->sum('transaction_amount');
+    }
+
+    public static function getWeeklyTransactionAmount($startDate, $endDate)
+    {
+        return self::whereBetween('transaction_date', [$startDate, $endDate])->sum('transaction_amount');
+    }
+
+
 }

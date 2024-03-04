@@ -39,19 +39,19 @@
             <div class="card-body">
               <h6 class="card-title mb-1 text-nowrap">Selamat {{$user->name}}</h6>
               <small class="d-block mb-3 text-nowrap">
-                Pendapatan Hari Ini Lebih
+                Pendapatan Hari Ini 
                 @if ($income > $incomeTotalYes)
-                    Besar
+                Lebih Besar dari
                 @elseif ($income < $incomeTotalYes)
-                    Kecil
+                Lebih Kecil dari
                 @else
                     Sama dengan
                 @endif
-                dari Kemarin
+                 Kemarin
               </small>
               <h5 class="card-title text-{{ $income > $incomeTotalYes ? 'success' : 'danger' }} mb-1">Rp. {{ number_format($income, 0) }},-</h5>
               @if($incomeTotalYes != 0)
-                  <?php $increasePercentage = (($incomeTotal - $incomeTotalYes) / $incomeTotalYes) * 100; ?>
+                  <?php $increasePercentage = (($income - $incomeTotalYes) / $incomeTotalYes) * 100; ?>
               @else
                   <?php $increasePercentage = 100;?>
               @endif
@@ -81,10 +81,13 @@
             </div>
             <div class="d-flex justify-content-between">
               <div class="mt-auto">
-                <h2 class="mb-2">23%</h2>
-                <small class="text-danger text-nowrap fw-medium"
-                  ><i class="bx bx-down-arrow-alt"></i> -13.24%</small
-                >
+                <h4 class="mb-2">{{number_format($incomeWeekly,0)}},-</h4>
+                  @php
+                    $percentChange = ($incomeWeekly - $incomeLastWeek) / $incomeLastWeek * 100;
+                    $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                    $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
+                  @endphp
+                <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
               </div>
               <div id="pendapatanChart"></div>
             </div>
