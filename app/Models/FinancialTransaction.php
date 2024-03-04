@@ -24,13 +24,29 @@ class FinancialTransaction extends Model
 
     public static function getTransactionAmount($date)
     {
-        return self::whereDate('transaction_date', $date)->sum('transaction_amount');
+        return self::whereDate('transaction_date', $date)
+                   ->whereIn('status', [1, 2, 3])
+                   ->sum('transaction_amount');
     }
-
+    
+    public static function getOutTransAmount($date)
+    {
+        return self::whereDate('transaction_date', $date)
+                   ->whereIn('status', [4, 5])
+                   ->sum('transaction_amount');
+    }
+    
     public static function getWeeklyTransactionAmount($startDate, $endDate)
     {
-        return self::whereBetween('transaction_date', [$startDate, $endDate])->sum('transaction_amount');
-    }
-
-
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
+                   ->whereIn('status', [1, 2, 3])
+                   ->sum('transaction_amount');
+    }   
+    
+    public static function getWeeklyOutTransonAmount($startDate, $endDate)
+    {
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
+                   ->whereIn('status', [4, 5])
+                   ->sum('transaction_amount');
+    }   
 }

@@ -82,12 +82,19 @@
             <div class="d-flex justify-content-between">
               <div class="mt-auto">
                 <h4 class="mb-2">{{number_format($incomeWeekly,0)}},-</h4>
-                  @php
+                @php
+                if ($incomeLastWeek != 0) {
                     $percentChange = ($incomeWeekly - $incomeLastWeek) / $incomeLastWeek * 100;
-                    $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
-                    $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
-                  @endphp
-                <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
+                } else {
+                    $percentChange = 0; // Atau nilai default yang Anda tentukan
+            }
+            
+            $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+            $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
+            @endphp
+            
+            <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
+            
               </div>
               <div id="pendapatanChart"></div>
             </div>
@@ -99,10 +106,19 @@
             </div>
             <div class="d-flex justify-content-between">
               <div class="mt-auto">
-                <h2 class="mb-2">82%</h2>
-                <small class="text-success text-nowrap fw-medium"
-                  ><i class="bx bx-up-arrow-alt"></i> 24.8%</small
-                >
+                <h4 class="mb-2">{{number_format($outcomeWeekly,0)}},-</h4>
+                @php
+                if ($outcomelastWeek != 0) {
+                    $percentCha = ($outcomeWeekly - $outcomelastWeek) / $outcomelastWeek * 100;
+                } else {
+                    $percentCha = 0; // Atau nilai default yang Anda tentukan
+                }
+                
+                $arrowIon = $percentCha <= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                $textColor = $percentCha <= 0 ? 'text-success' : 'text-danger';
+                @endphp
+                
+                <small class="{{ $textColor }} text-nowrap fw-medium"><i class="{{ $arrowIon }}"></i> {{ number_format($percentCha, 2) }}%</small>
               </div>
               <div id="pengeluaranChart"></div>
             </div>
@@ -920,6 +936,14 @@
   var totIncomeKam   = {{ $totIncomeKam }};   
   var totIncomeJum   = {{ $totIncomeJum }};   
   var totIncomeSab   = {{ $totIncomeSab }};   
+  
+  var totOutcomeSen   = {{ $totOutcomeSen }};   
+  var totOutcomeSel   = {{ $totOutcomeSel }};   
+  var totOutcomeRab   = {{ $totOutcomeRab }};   
+  var totOutcomeKam   = {{ $totOutcomeKam }};   
+  var totOutcomeJum   = {{ $totOutcomeJum }};   
+  var totOutcomeSab   = {{ $totOutcomeSab }};   
+  
 </script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>
 <script>

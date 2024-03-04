@@ -265,7 +265,7 @@
       },
       series: [
         {
-          data: [15, 20, 14, 22, 17, 40, 12, 35, 25]
+          data: [totOutcomeSen, totOutcomeSel, totOutcomeRab, totOutcomeKam, totOutcomeJum, totOutcomeSab]
         }
       ],
       colors: [config.colors.success],
@@ -290,7 +290,7 @@
         show: false
       },
       xaxis: {
-        categories: ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9'],
+        categories: ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
         axisBorder: {
           show: false
         },

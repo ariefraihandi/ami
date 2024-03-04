@@ -140,10 +140,22 @@ class DashboardController extends Controller
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
+        
+        $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
+        $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
+        $totOutcomeSen      = FinancialTransaction::getOutTransAmount($seninDate);
+        $totOutcomeSel      = FinancialTransaction::getOutTransAmount($selasaDate);
+        $totOutcomeRab      = FinancialTransaction::getOutTransAmount($rabuDate);
+        $totOutcomeKam      = FinancialTransaction::getOutTransAmount($kamisDate);
+        $totOutcomeJum      = FinancialTransaction::getOutTransAmount($jumatDate);
+        $totOutcomeSab      = FinancialTransaction::getOutTransAmount($sabtuDate);
+        $outcomeWeekly      = FinancialTransaction::getWeeklyOutTransonAmount($seninDate, $sabtuDate);
+        $outcomelastWeek    = FinancialTransaction::getWeeklyOutTransonAmount($startLast, $endLast);
 
+        // dd($outcomeTotal);
         $data = [
             'title'             => 'Dashboard',
-            'subtitle'          => 'Analitic',
+            'subtitle'          => 'Analytics',
             'user'              => $user,
             'role'              => $roleData,
             'menus'             => $menus,
@@ -161,6 +173,16 @@ class DashboardController extends Controller
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
             
+            'outcomeTotal'      => $outcomeTotal,
+            'outcomeTotalYes'   => $outcomeTotalYes,
+            'totOutcomeSen'     => $totOutcomeSen,
+            'totOutcomeSel'     => $totOutcomeSel,
+            'totOutcomeRab'     => $totOutcomeRab,
+            'totOutcomeKam'     => $totOutcomeKam,
+            'totOutcomeJum'     => $totOutcomeJum,
+            'totOutcomeSab'     => $totOutcomeSab,
+            'outcomeWeekly'     => $outcomeWeekly,
+            'outcomelastWeek'   => $outcomelastWeek,
         ];
 
         return view('Konten/Portal/dashboard', $data);
