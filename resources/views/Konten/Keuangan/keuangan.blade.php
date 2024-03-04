@@ -135,7 +135,7 @@
 </div>
 
 <!-- Add New Transaction -->
-{{-- <div class="modal fade" id="addNewTransactionModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="addNewTransactionModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
     <div class="modal-content p-3 p-md-5">
       <div class="modal-body">
@@ -202,7 +202,7 @@
       </div>
     </div>
   </div>
-</div> --}}
+</div>
 <!--/ Add New Transaction -->
 
 {{-- <!-- Edit Transaction -->
