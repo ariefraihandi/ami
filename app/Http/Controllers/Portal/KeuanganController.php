@@ -182,6 +182,7 @@ class KeuanganController extends Controller
           
             return redirect('/login');
         }
+        dd($user);
         $users                  = User::all();
         $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
         $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
