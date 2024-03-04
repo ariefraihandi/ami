@@ -114,7 +114,7 @@
                     $percentCha = 0; // Atau nilai default yang Anda tentukan
                 }
                 
-                $arrowIon = $percentCha <= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                $arrowIon = $percentCha >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
                 $textColor = $percentCha <= 0 ? 'text-success' : 'text-danger';
                 @endphp
                 

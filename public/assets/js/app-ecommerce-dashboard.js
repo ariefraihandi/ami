@@ -268,7 +268,7 @@
           data: [totOutcomeSen, totOutcomeSel, totOutcomeRab, totOutcomeKam, totOutcomeJum, totOutcomeSab]
         }
       ],
-      colors: [config.colors.success],
+      colors: [config.colors.danger],
       fill: {
         type: 'gradient',
         gradient: {
