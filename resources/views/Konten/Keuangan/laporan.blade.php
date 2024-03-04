@@ -182,7 +182,7 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Invoice</th>
-                                  <th>Custumer</th>                                              
+                                  <th>Custumer</th>                                                                               
                                   <th>Status</th>                              
                                   <th>Tagihan</th>
                                   <th>Sisa</th>
@@ -199,7 +199,13 @@
                                     <tr>
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $invoice->invoice_number }}<br>{{ $invoice->invoice_name }}</td>
-                                      <td>{{ $invoice->customer_uuid }}</td>
+                                      <td>
+                                        @php
+                                            $customer = \App\Models\Customer::where('uuid', $invoice->customer_uuid)->first();
+                                            $customerName = $customer ? $customer->name : 'Customer not found';
+                                        @endphp
+                                        {{ $customerName }}
+                                      </td>                                     
                                       <td>
                                         @if ($invoice->panjar_amount == 0.00)
                                             <span class="badge bg-warning">Belum Bayar</span>
@@ -234,7 +240,7 @@
                                   <tr>
                                     <th>No</th>
                                     <th>Invoice</th>
-                                    <th>Custumer</th>                                              
+                                    <th>Custumer</th>                                                                                                                  
                                     <th>Status</th>                              
                                     <th>Tagihan</th>
                                     <th>Sisa</th>
@@ -251,7 +257,13 @@
                                       <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $invoice->invoice_number }}<br>{{ $invoice->invoice_name }}</td>
-                                        <td>{{ $invoice->customer_uuid }}</td>
+                                        <td>
+                                          @php
+                                              $customer = \App\Models\Customer::where('uuid', $invoice->customer_uuid)->first();
+                                              $customerName = $customer ? $customer->name : 'Customer not found';
+                                          @endphp
+                                          {{ $customerName }}
+                                        </td>                                    
                                         <td>
                                           @if ($invoice->panjar_amount == 0.00)
                                               <span class="badge bg-warning">Belum Bayar</span>
@@ -286,7 +298,7 @@
                                 <tr>
                                   <th>No</th>
                                   <th>Invoice</th>
-                                  <th>Custumer</th>                                              
+                                  <th>Custumer</th>                                                                                    
                                   <th>Status</th>                              
                                   <th>Tagihan</th>
                                   <th>Sisa</th>
@@ -303,7 +315,13 @@
                                     <tr>
                                       <td>{{ $loop->iteration }}</td>
                                       <td>{{ $invoice->invoice_number }}<br>{{ $invoice->invoice_name }}</td>
-                                      <td>{{ $invoice->customer_uuid }}</td>
+                                      <td>
+                                        @php
+                                            $customer = \App\Models\Customer::where('uuid', $invoice->customer_uuid)->first();
+                                            $customerName = $customer ? $customer->name : 'Customer not found';
+                                        @endphp
+                                        {{ $customerName }}
+                                      </td>                                 
                                       <td>
                                         @if ($invoice->panjar_amount == 0.00)
                                             <span class="badge bg-warning">Belum Bayar</span>
