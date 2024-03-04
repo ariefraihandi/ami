@@ -70,6 +70,7 @@ class DownloadController extends Controller
             $format_panjar      = "Rp. " . number_format($panjar_amount, 0) . ",-";
             $format_total       = "Rp. " . number_format($total_amount, 0) . ",-";
             $background         = 'bg-report.png';
+            $kopSuratImage      = public_path('assets/img/report/kop.png');     
             $link               = public_path('assets/img/report/kop.png');                        
             $logo               = public_path('assets/img/icons/brands/logo-kecil.png');                        
             $bgImage            = public_path('assets/img/report/' . $background);        
@@ -78,6 +79,7 @@ class DownloadController extends Controller
                 'title'          => 'Unduh Invoice',
                 'subtitle'       => '#' . $invoiceNumber,
                 'bgImage'        => $bgImage,
+                'kopSuratImage'  => $kopSuratImage,
                 'logo'           => $logo,
                 'logoPath'       => $link,
                 'formattedDate'  => $formattedDate,

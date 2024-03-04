@@ -24,7 +24,7 @@
                   <span class="app-brand-logo demo">
                     <img src="/assets/img/icons/brands/ami-logo.png" alt="AMI Fast Logo" width="50">
                 </span>
-                  <span class="app-brand-text demo text-body fw-bold">Atjeh Mediatamalk </span>
+                  <span class="app-brand-text demo text-body fw-bold">Atjeh Mediatama</span>
                 </div>
                 <p class="mb-1">Jl. Medan-B.Aceh, Mns. Mee Kandang, Kec. Muara Dua</p>
                 <p class="mb-1">Lhokseumawe, Aceh, 24351, Indonesia</p>
