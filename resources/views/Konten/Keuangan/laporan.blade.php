@@ -459,6 +459,7 @@
                                   <th>No</th>
                                   <th>Transaksi</th>
                                   <th>Deskripsi</th>                                              
+                                  <th>Invoice</th>                                              
                                   <th>Tanggal</th>                                              
                                   <th>Jumlah</th>                              
                                   <th>Metode</th>
@@ -473,8 +474,28 @@
                                   @foreach ($income as $item)
                                     <tr>
                                       <td>{{ $loop->iteration }}</td>
-                                      <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
-                                      <td>{{ $item->description }}</td>
+                                      <td>{{ $item->source_receiver }}<br>
+                                        @php
+                                            $invoice = \App\Models\Invoice::where('invoice_number', $item->reference_number)->first();
+                                            if ($invoice) {
+                                                $customerUuid = $invoice->customer_uuid;
+                                                $invoiceNumber = $invoice->invoice_number;
+                                                $url = url('/invoice/add') . "?invoiceNumber=$invoiceNumber&customerUuid=$customerUuid";
+                                            } else {
+                                                $url = '';
+                                            }
+                                        @endphp
+                                        <a href="{{ $url }}" target="_blank">{{ $item->reference_number }}</a>
+                                    </td>
+                                    
+                                      <td>href url{{ $item->description }}</td>
+                                      <td>
+                                        @php
+                                          $invoice = \App\Models\Invoice::where('invoice_number', $item->reference_number)->first();
+                                          $invoiceName = $invoice ? $invoice->invoice_name : 'Invoice not found';
+                                        @endphp
+                                        {{ $invoiceName }}
+                                      </td>
                                       <td>{{ $item->transaction_date }}</td>
                                       <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
                                       <td>{{ $item->payment_method }}</td>                                      
