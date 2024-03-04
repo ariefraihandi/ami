@@ -11,24 +11,58 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <div class="row">
+    <div class="col-lg-12 mb-4 order-0">
+        <div class="card">
+            <div class="d-flex align-items-end row">
+                <div class="col-sm-7">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">Selamat Datang {{$user->name}}! 🎉</h5>
+                        <p class="mb-4">
+                            Mari Mulai Hari Ini Dengan Semngat Baru
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-5 text-center text-sm-left">
+                    <div class="card-body pb-0 px-0 px-md-4">
+                        <img src="{{ asset('assets') }}/img/illustrations/superman-flying-dark.png" height="140" alt="View Badge User"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <div class="row">
     <div class="col-md-12 col-lg-4 mb-4">
       <div class="card">
         <div class="d-flex align-items-end row">
           <div class="col-8">
             <div class="card-body">
-              <h6 class="card-title mb-1 text-nowrap">Congratulations Katie!</h6>
-              <small class="d-block mb-3 text-nowrap">Best seller of the month</small>
-
-              <h5 class="card-title text-primary mb-1">$48.9k</h5>
-              <small class="d-block mb-4 pb-1 text-muted">78% of target</small>
-
-              <a href="javascript:;" class="btn btn-sm btn-primary">View sales</a>
+              <h6 class="card-title mb-1 text-nowrap">Selamat {{$user->name}}</h6>
+              <small class="d-block mb-3 text-nowrap">
+                Pendapatan Hari Ini Lebih
+                @if ($income > $incomeTotalYes)
+                    Besar
+                @elseif ($income < $incomeTotalYes)
+                    Kecil
+                @else
+                    Sama dengan
+                @endif
+                dari Kemarin
+              </small>
+              <h5 class="card-title text-{{ $income > $incomeTotalYes ? 'success' : 'danger' }} mb-1">Rp. {{ number_format($income, 0) }},-</h5>
+              @if($incomeTotalYes != 0)
+                  <?php $increasePercentage = (($incomeTotal - $incomeTotalYes) / $incomeTotalYes) * 100; ?>
+              @else
+                  <?php $increasePercentage = 100;?>
+              @endif
+              <small class="d-block mb-4 pb-1 text-muted">{{ round($increasePercentage, 2) }}% {{ $income > $incomeTotalYes ? 'Peningkatan' : 'Penururnan' }}</small>
+              <a href="{{ route('keuangan.laporan') }}" class="btn btn-sm btn-{{ $income > $incomeTotalYes ? 'success' : 'danger' }}">Lihat Laporan</a>
             </div>
           </div>
           <div class="col-4 pt-3 ps-0">
             <img
-              src="{{ asset('assets') }}/img/illustrations/prize-light.png"
-              width="90"
+            src="{{ asset('assets') }}/img/illustrations/{{ $income > $incomeTotalYes ? 'profit.png' : 'loss.png' }}"
+              width="120"
               height="140"
               class="rounded-start"
               alt="View Sales" />
