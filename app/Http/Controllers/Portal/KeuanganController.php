@@ -193,35 +193,97 @@ class KeuanganController extends Controller
         $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
         $roleData               = UserRole::where('id', $user->role)->first();
        
+
         $today                  = Carbon::today();
         $yesterday              = Carbon::yesterday();
-        $users                  = User::all();
+        $usersData              = User::all();
+
+$qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
+        $qoutcomeTotal          = FinancialTransaction::whereIn('status', [4, 5])->get();
+        $saldoKas               = FinancialTransaction::whereIn('status', [6])->get();
+        $topupKas               = FinancialTransaction::whereIn('status', [7])->get();
+        $allIncome              = $qincomeTotal->sum('transaction_amount');
+        $totalkas               = $qincomeTotal->sum('transaction_amount') - $qoutcomeTotal->sum('transaction_amount') - $saldoKas->sum('transaction_amount') + $topupKas->sum('transaction_amount') ;     
+        $udahStor               = $saldoKas->sum('transaction_amount') - $topupKas->sum('transaction_amount');
+        
+        // dd($totalkas);
+        $transaction            = FinancialTransaction::all();
+        
+        $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
+        $incomeYesterday        = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [1, 2, 3])->get();
+        
+        $outcomeToday           = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [4, 5])->get();
+        $outcomeYesterday       = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [4, 5])->get();        
+        
+        
+        // Dayli Income Amount
+            $totalIncomeToday       = $incomeToday->sum('transaction_amount');
+            $totalIncomeYesterday   = $incomeYesterday->sum('transaction_amount');
+            $percentageIncome = 0;
+
+            if ($totalIncomeYesterday != 0) {
+                $percentageIncome = (($totalIncomeToday - $totalIncomeYesterday) / $totalIncomeYesterday) * 100;
+            }
+        //Dayli Income Amount
+        
+        //Dayli Outcome Amount
+            $totalOutcomeToday      = $outcomeToday->sum('transaction_amount');
+            $totalOutcomeYesterday  = $outcomeYesterday->sum('transaction_amount');
+            $percentageOutcome = 0;
+            
+            if ($totalOutcomeYesterday != 0) {
+                $percentageOutcome = (($totalOutcomeToday - $totalOutcomeYesterday) / $totalOutcomeYesterday) * 100;
+            }
+        //Dayli Outcome Amount
+
+        //Margin Amount
+            $marginToday            = $totalIncomeToday - $totalOutcomeToday;      
+            $marginYesterday        = $totalIncomeYesterday - $totalOutcomeYesterday;      
+            $percentageMargin = 0;
+            
+            if ($marginYesterday != 0) {
+                $percentageMargin = (($marginToday - $marginYesterday) / $marginYesterday) * 100;
+            }
+        //Margin Amount
+        
+
+       // Total Income and Total Outcome for all transactions
+        $incomeTotal = $qincomeTotal->sum('transaction_amount');
+        $outcomeTotal = $qoutcomeTotal->sum('transaction_amount');
+        
+        $sisaTidakStor          = $marginToday - $totalkas;          
+        
+        $percentageTotal = 0;
+        
+        if ($outcomeTotal != 0) {
+            $percentageTotal = (($incomeTotal - $outcomeTotal) / $outcomeTotal) * 100;
+        }
 
         $additionalData = [
             'title'                     => 'Bisnis',
             'subtitle'                  => 'Keuangan',
             'user'                      => $user,
-            'users'                     => $users,
+            'usersData'                 => $usersData,
             'role'                      => $roleData,
             'menus'                     => $menus,
             'subMenus'                  => $subMenus,
             'childSubMenus'             => $childSubMenus,
-            // 'transaction'               => $transaction,
+            'transaction'               => $transaction,
 
-            // 'totalToday'                => $totalIncomeToday,
-            // 'totalYesterday'            => $totalIncomeYesterday,
-            // 'percentageIncome'          => $percentageIncome,
-            // 'totalOutcomeToday'         => $totalOutcomeToday,
-            // 'totalOutcomeYesterday'     => $totalOutcomeYesterday,
-            // 'percentageOutcome'         => $percentageOutcome,
-            // 'marginToday'               => $marginToday,
-            // 'marginYesterday'           => $marginYesterday,
-            // 'percentageMargin'          => $percentageMargin,
-            // 'totalIncome'               => $incomeTotal,
-            // 'totalOutcome'              => $outcomeTotal,
-            // 'percentageTotal'           => $percentageTotal,
-            // 'totalkas'                  => $totalkas,
-            // 'sisaTidakStor'             => $udahStor,
+            'totalToday'                => $totalIncomeToday,
+            'totalYesterday'            => $totalIncomeYesterday,
+            'percentageIncome'          => $percentageIncome,
+            'totalOutcomeToday'         => $totalOutcomeToday,
+            'totalOutcomeYesterday'     => $totalOutcomeYesterday,
+            'percentageOutcome'         => $percentageOutcome,
+            'marginToday'               => $marginToday,
+            'marginYesterday'           => $marginYesterday,
+            'percentageMargin'          => $percentageMargin,
+            'totalIncome'               => $incomeTotal,
+            'totalOutcome'              => $outcomeTotal,
+            'percentageTotal'           => $percentageTotal,
+            'totalkas'                  => $totalkas,
+            'sisaTidakStor'             => $udahStor,
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);

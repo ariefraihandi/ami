@@ -17,7 +17,7 @@
     <div class="container-xxl flex-grow-1 container-p-y">
       <h4 class="py-3 mb-4"><span class="text-muted fw-light">{{$title}} /</span> {{$subtitle}}</h4>
       <!-- Invoice List Widget -->
-      {{-- <div class="card mb-4">
+      <div class="card mb-4">
         <div class="card-widget-separator-wrapper">
           <div class="card-body card-widget-separator">
             <div class="row gy-4 gy-sm-1">
@@ -111,9 +111,9 @@
             </div>
           </div>
         </div>
-      </div> --}}
+      </div>
       <!-- Invoice List Table -->
-      {{-- <div class="card">
+      <div class="card">
         <div class="card-datatable table-responsive">
           <table id="dataTable" class="table border-top">
             <thead>
@@ -129,7 +129,7 @@
           </thead>          
           </table>
         </div>
-      </div>       --}}
+      </div>      
     </div>       
   </div>
 </div>
@@ -179,8 +179,8 @@
           <div id="karyawanSelectDiv" style="display: none;">
             <label class="form-label" for="karyawan">Karyawan</label>
             <select id="karyawan" name="karyawan" class="form-select">
-                <?php foreach ($users as $user): ?>
-                    <option value="<?= $user->id ?>"><?= $user->name ?></option>
+                <?php foreach ($usersData as $item): ?>
+                    <option value="<?= $item->id ?>"><?= $item->name ?></option>
                 <?php endforeach; ?>
             </select>
           </div>
@@ -205,7 +205,7 @@
 </div>
 <!--/ Add New Transaction -->
 
-{{-- <!-- Edit Transaction -->
+<!-- Edit Transaction -->
 @foreach($transaction as $item)
   <div class="modal fade" id="editTransactionModal{{$item->id}}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
@@ -267,7 +267,7 @@
       </form>
     </div>
   </div>
-</div> --}}
+</div>
 
 @endsection
 
