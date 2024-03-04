@@ -486,9 +486,9 @@
                                             }
                                         @endphp
                                         <a href="{{ $url }}" target="_blank">{{ $item->reference_number }}</a>
-                                    </td>
+                                      </td>
                                     
-                                      <td>href url{{ $item->description }}</td>
+                                      <td>{{ $item->description }}</td>
                                       <td>
                                         @php
                                           $invoice = \App\Models\Invoice::where('invoice_number', $item->reference_number)->first();
