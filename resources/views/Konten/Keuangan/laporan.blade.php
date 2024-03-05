@@ -409,7 +409,7 @@
                               <div class="d-flex justify-content-between align-items-start">
                                   <div>
                                       <h6 class="mb-2">Sisa Kas</h6>
-                                      <h4 class="mb-0">{{ number_format($incomeTotal+$topup-$outcomeTotal-$saldoKas), 0 }},-</h4>                                             
+                                      <h4 class="mb-0">{{ number_format($sisaBefore+$incomeTotal+$topup-$outcomeTotal-$saldoKas), 0 }},-</h4>                                             
                                   </div>
                                   <div class="avatar">
                                       <span class="avatar-initial rounded bg-label-secondary">
