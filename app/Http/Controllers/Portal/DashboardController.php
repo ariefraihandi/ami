@@ -141,8 +141,8 @@ class DashboardController extends Controller
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
         
-        $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($startLast, $endLast);
-        $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($startLast, $endLast);
+        $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
+        $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
 
         $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
         $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
