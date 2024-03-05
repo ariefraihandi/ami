@@ -163,8 +163,9 @@ class DashboardController extends Controller
         $invBonLastWeek     = Invoice::getCountInvBon($startLast, $endLast);
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
+        $sisaKasTotal         = $fixedTotal-$setorKasWeek;
 
-        dd($fixedTotal);
+        dd($fixedTotal, $sisaKasTotal);
         $data = [
         //Sistem
             'title'             => 'Dashboard',
