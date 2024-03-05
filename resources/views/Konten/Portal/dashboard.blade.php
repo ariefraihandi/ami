@@ -170,11 +170,7 @@
                     @endif
                 </small>
               </div>
-                
-                <div id="invLunChart" class="mb-2"></div>
-              <div class="p-3 pt-2">
-                <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
-              </div>
+                <div id="invLunChart" class="mb-2"></div>            
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -217,10 +213,11 @@
                   @endif
               </small>
             </div>
+            <div id="invPanChart" class="mb-2"></div>          
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div>    
     <div class="col-md-12 col-lg-4">
       <div class="row">        
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -229,7 +226,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/inv-info.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-danger.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -248,25 +245,22 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Invoice Panjar</span>
+              <span class="d-block">Invoice Bon</span>
               @php
-                $percentageDiff = ($invPanLastWeek == 0 && $invPanWeek != 0) ? 100 : (($invPanLastWeek != 0) ? (($invPanWeek - $invPanLastWeek) / $invPanLastWeek) * 100 : 0);
-                $arrowIc = ($percentageDiff >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+                $percentage = ($invBonLastWeek == 0 && $invBonWeek != 0) ? 100 : (($invBonLastWeek != 0) ? (($invBonWeek - $invBonLastWeek) / $invPanLastWeek) * 100 : 0);
+                $arrow = ($percentage >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
               @endphp
-              <h4 class="card-title mb-1">{{ $invPanWeek }}</h4>
+              <h4 class="card-title mb-1">{{ $invBonWeek }}</h4>
               <small class="fw-medium">
-                  <i class="{{ $arrowIc }}"></i> 
-                  @if ($percentageDiff >= 0)
-                      +{{ number_format(abs($percentageDiff), 2) }}%
+                  <i class="{{ $arrow }}"></i> 
+                  @if ($percentage >= 0)
+                      +{{ number_format(abs($percentage), 2) }}%
                   @else
-                      -{{ number_format(abs($percentageDiff), 2) }}%
+                      -{{ number_format(abs($percentage), 2) }}%
                   @endif
               </small>
             </div>
-            <div id="expensesChart" class="mb-2"></div>
-            <div class="p-3 pt-2">
-              <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
-            </div>
+            <div id="invBonChart" class="mb-2"></div>          
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -1166,6 +1160,8 @@
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
   var invLun = {{ number_format($percentageDifference, 0, '.', '') }};
+  var invPan = {{ number_format($percentageDiff, 0, '.', '') }};
+  var invBon = {{ number_format($percentage, 0, '.', '') }};
   
 </script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>

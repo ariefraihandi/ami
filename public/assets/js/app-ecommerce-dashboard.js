@@ -368,6 +368,113 @@
     const invLunChartChart = new ApexCharts(invLunChartChartEl, invLunChartConfig);
     invLunChartChart.render();
   }
+  
+  const invPanChartEl = document.querySelector('#invPanChart'),
+    invPanChartConfig = {
+      chart: {
+        height: 130,
+        sparkline: {
+          enabled: true
+        },
+        parentHeightOffset: 0,
+        type: 'radialBar'
+      },
+      colors: [config.colors.info],
+      series: [invPan],
+      plotOptions: {
+        radialBar: {
+          startAngle: -90,
+          endAngle: 90,
+          hollow: {
+            size: '55%'
+          },
+          track: {
+            background: config.colors_label.secondary
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              fontSize: '22px',
+              color: headingColor,
+              fontWeight: 500,
+              offsetY: 0
+            }
+          }
+        }
+      },
+      grid: {
+        show: false,
+        padding: {
+          left: -10,
+          right: -10,
+          top: -10
+        }
+      },
+      stroke: {
+        lineCap: 'round'
+      },
+      labels: ['Progress']
+    };
+  if (typeof invPanChartEl !== undefined && invPanChartEl !== null) {
+    const invPanChart = new ApexCharts(invPanChartEl, invPanChartConfig);
+    invPanChart.render();
+  }
+
+  const invBonChartChartEl = document.querySelector('#invBonChart'),
+  invBonChartConfig = {
+    chart: {
+      height: 130,
+      sparkline: {
+        enabled: true
+      },
+      parentHeightOffset: 0,
+      type: 'radialBar'
+    },
+    colors: [config.colors.danger],
+    series: [invBon],
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '55%'
+        },
+        track: {
+          background: config.colors_label.secondary
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            fontSize: '22px',
+            color: headingColor,
+            fontWeight: 500,
+            offsetY: 0
+          }
+        }
+      }
+    },
+    grid: {
+      show: false,
+      padding: {
+        left: -10,
+        right: -10,
+        top: -10
+      }
+    },
+    stroke: {
+      lineCap: 'round'
+    },
+    labels: ['Progress']
+  };
+if (typeof invBonChartChartEl !== undefined && invBonChartChartEl !== null) {
+  const invBonChartChart = new ApexCharts(invBonChartChartEl, invBonChartConfig);
+  invBonChartChart.render();
+}
+
 
   // --------------------------------------------------------------------
   // !Used
@@ -451,62 +558,6 @@
     const profitBarChart = new ApexCharts(profitBarChartEl, profitBarChartConfig);
     profitBarChart.render();
   }
-
-  // Total Sales Radial Bar Chart
-  // --------------------------------------------------------------------
-  const expensesRadialChartEl = document.querySelector('#expensesChart'),
-    expensesRadialChartConfig = {
-      chart: {
-        height: 130,
-        sparkline: {
-          enabled: true
-        },
-        parentHeightOffset: 0,
-        type: 'radialBar'
-      },
-      colors: [config.colors.primary],
-      series: [78],
-      plotOptions: {
-        radialBar: {
-          startAngle: -90,
-          endAngle: 90,
-          hollow: {
-            size: '55%'
-          },
-          track: {
-            background: config.colors_label.secondary
-          },
-          dataLabels: {
-            name: {
-              show: false
-            },
-            value: {
-              fontSize: '22px',
-              color: headingColor,
-              fontWeight: 500,
-              offsetY: 0
-            }
-          }
-        }
-      },
-      grid: {
-        show: false,
-        padding: {
-          left: -10,
-          right: -10,
-          top: -10
-        }
-      },
-      stroke: {
-        lineCap: 'round'
-      },
-      labels: ['Progress']
-    };
-  if (typeof expensesRadialChartEl !== undefined && expensesRadialChartEl !== null) {
-    const expensesRadialChart = new ApexCharts(expensesRadialChartEl, expensesRadialChartConfig);
-    expensesRadialChart.render();
-  }
-
 
   // Total Income - Area Chart
   // --------------------------------------------------------------------

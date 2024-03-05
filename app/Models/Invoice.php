@@ -42,5 +42,13 @@ class Invoice extends Model
                    ->count();
     }
     
-    
+    public static function getCountInvBon($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', [0])
+                ->where('total_amount', '!=', 0.00)
+                ->where('panjar_amount', '=', 0.00)
+                ->count();
+    }
+
 }

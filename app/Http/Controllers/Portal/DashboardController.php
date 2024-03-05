@@ -156,6 +156,8 @@ class DashboardController extends Controller
         $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
         $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
         $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
+        $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
+        $invBonLastWeek     = Invoice::getCountInvBon($startLast, $endLast);
         // dd($outcomeTotal);
         $data = [
         //Sistem
@@ -201,6 +203,8 @@ class DashboardController extends Controller
             'invLunLastWeek'    => $invLunLastWeek,
             'invPanWeek'        => $invPanWeek,
             'invPanLastWeek'    => $invPanLastWeek,
+            'invBonWeek'        => $invBonWeek,
+            'invBonLastWeek'    => $invBonLastWeek,
         //!Invoice
         ];
 
