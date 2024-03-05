@@ -173,7 +173,7 @@
     visitorBarChart.render();
   }  
   
-  // Activity Area Chart
+  // Used
   // --------------------------------------------------------------------
   const pendapatanChartEl = document.querySelector('#pendapatanChart'),
   pendapatanChartConfig = {
@@ -316,6 +316,62 @@
     activityAreaChart.render();
   }
 
+  const invLunChartChartEl = document.querySelector('#invLunChart'),
+    invLunChartConfig = {
+      chart: {
+        height: 130,
+        sparkline: {
+          enabled: true
+        },
+        parentHeightOffset: 0,
+        type: 'radialBar'
+      },
+      colors: [config.colors.success],
+      series: [invLun],
+      plotOptions: {
+        radialBar: {
+          startAngle: -90,
+          endAngle: 90,
+          hollow: {
+            size: '55%'
+          },
+          track: {
+            background: config.colors_label.secondary
+          },
+          dataLabels: {
+            name: {
+              show: false
+            },
+            value: {
+              fontSize: '22px',
+              color: headingColor,
+              fontWeight: 500,
+              offsetY: 0
+            }
+          }
+        }
+      },
+      grid: {
+        show: false,
+        padding: {
+          left: -10,
+          right: -10,
+          top: -10
+        }
+      },
+      stroke: {
+        lineCap: 'round'
+      },
+      labels: ['Progress']
+    };
+  if (typeof invLunChartChartEl !== undefined && invLunChartChartEl !== null) {
+    const invLunChartChart = new ApexCharts(invLunChartChartEl, invLunChartConfig);
+    invLunChartChart.render();
+  }
+
+  // --------------------------------------------------------------------
+  // !Used
+
 
   // Profit Bar Chart
   // --------------------------------------------------------------------
@@ -450,6 +506,7 @@
     const expensesRadialChart = new ApexCharts(expensesRadialChartEl, expensesRadialChartConfig);
     expensesRadialChart.render();
   }
+
 
   // Total Income - Area Chart
   // --------------------------------------------------------------------

@@ -39,15 +39,15 @@
             <div class="card-body">
               <h6 class="card-title mb-1 text-nowrap">Selamat {{$user->name}}</h6>
               <small class="d-block mb-3 text-nowrap">
-                Pendapatan Hari Ini 
+                  Pendapatan Hari Ini 
                 @if ($income > $incomeTotalYes)
-                Lebih Besar dari
+                  Lebih Besar dari
                 @elseif ($income < $incomeTotalYes)
-                Lebih Kecil dari
+                  Lebih Kecil dari
                 @else
-                    Sama dengan
+                  Sama dengan
                 @endif
-                 Kemarin
+                  Kemarin
               </small>
               <h5 class="card-title text-{{ $income > $incomeTotalYes ? 'success' : 'danger' }} mb-1">Rp. {{ number_format($income, 0) }},-</h5>
               @if($incomeTotalYes != 0)
@@ -136,7 +136,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/wallet-info.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-success.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -151,26 +151,160 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
-              <span class="d-block">Sales</span>
-              <h4 class="card-title mb-1">$4,679</h4>
-              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+              <span class="d-block">Invoice Lunas</span>
+                @php
+                  $percentageDifference = ($invLunLastWeek == 0 && $invLunWeek != 0) ? 100 : (($invLunLastWeek != 0) ? (($invLunWeek - $invLunLastWeek) / $invLunLastWeek) * 100 : 0);
+                  $arrowIcon = ($percentageDifference >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+                @endphp
+                <h4 class="card-title mb-1">{{ $invLunWeek }}</h4>
+                <small class="fw-medium">
+                    <i class="{{ $arrowIcon }}"></i> 
+                    @if ($percentageDifference >= 0)
+                        +{{ number_format(abs($percentageDifference), 2) }}%
+                    @else
+                        -{{ number_format(abs($percentageDifference), 2) }}%
+                    @endif
+                </small>
+              </div>
+                
+                <div id="invLunChart" class="mb-2"></div>
+              <div class="p-3 pt-2">
+                <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
+              </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-info.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Invoice Panjar</span>
+              @php
+                $percentageDiff = ($invPanLastWeek == 0 && $invPanWeek != 0) ? 100 : (($invPanLastWeek != 0) ? (($invPanWeek - $invPanLastWeek) / $invPanLastWeek) * 100 : 0);
+                $arrowIc = ($percentageDiff >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+              @endphp
+              <h4 class="card-title mb-1">{{ $invPanWeek }}</h4>
+              <small class="fw-medium">
+                  <i class="{{ $arrowIc }}"></i> 
+                  @if ($percentageDiff >= 0)
+                      +{{ number_format(abs($percentageDiff), 2) }}%
+                  @else
+                      -{{ number_format(abs($percentageDiff), 2) }}%
+                  @endif
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+      <div class="row">        
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-info.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Invoice Panjar</span>
+              @php
+                $percentageDiff = ($invPanLastWeek == 0 && $invPanWeek != 0) ? 100 : (($invPanLastWeek != 0) ? (($invPanWeek - $invPanLastWeek) / $invPanLastWeek) * 100 : 0);
+                $arrowIc = ($percentageDiff >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+              @endphp
+              <h4 class="card-title mb-1">{{ $invPanWeek }}</h4>
+              <small class="fw-medium">
+                  <i class="{{ $arrowIc }}"></i> 
+                  @if ($percentageDiff >= 0)
+                      +{{ number_format(abs($percentageDiff), 2) }}%
+                  @else
+                      -{{ number_format(abs($percentageDiff), 2) }}%
+                  @endif
+              </small>
+            </div>
+            <div id="expensesChart" class="mb-2"></div>
+            <div class="p-3 pt-2">
+              <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
             </div>
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
           <div class="card">
-            <div class="card-body pb-2">
-              <span class="d-block fw-medium">Profit</span>
-              <h3 class="card-title mb-0">624k</h3>
-              <div id="profitChart"></div>
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/briefcase.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt1"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt1">
+                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Transactions</span>
+              <h4 class="card-title mb-1">$14,857</h4>
+              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+      <div class="row">        
         <div class="col-lg-6 col-md-3 col-6 mb-4">
           <div class="card">
             <div class="card-body pb-0">
@@ -216,7 +350,94 @@
         </div>
       </div>
     </div>
-
+    <div class="col-md-12 col-lg-4">
+      <div class="row">
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/wallet-info.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Sales</span>
+              <h4 class="card-title mb-1">$4,679</h4>
+              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body pb-2">
+              <span class="d-block fw-medium">Profit</span>
+              <h3 class="card-title mb-0">624k</h3>
+              <div id="profitChart"></div>
+            </div>
+          </div>
+        </div>
+      <div class="col-lg-6 col-md-3 col-6 mb-4">
+        <div class="card">
+          <div class="card-body pb-0">
+            <span class="d-block fw-medium">Expenses</span>
+          </div>
+          <div id="expensesChart" class="mb-2"></div>
+          <div class="p-3 pt-2">
+            <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-3 col-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title d-flex align-items-start justify-content-between">
+              <div class="avatar flex-shrink-0">
+                <img
+                  src="{{ asset('assets') }}/img/icons/unicons/briefcase.png"
+                  alt="Credit Card"
+                  class="rounded" />
+              </div>
+              <div class="dropdown">
+                <button
+                  class="btn p-0"
+                  type="button"
+                  id="cardOpt1"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false">
+                  <i class="bx bx-dots-vertical-rounded"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt1">
+                  <a class="dropdown-item" href="javascript:void(0);">View More</a>
+                  <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                </div>
+              </div>
+            </div>
+            <span class="d-block">Transactions</span>
+            <h4 class="card-title mb-1">$14,857</h4>
+            <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
     <!-- Total Income -->
     <div class="col-md-12 col-lg-8 mb-4">
       <div class="card">
@@ -943,6 +1164,8 @@
   var totOutcomeKam   = {{ $totOutcomeKam }};   
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
+  
+  var invLun          = {{ $percentageDifference }};   
   
 </script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>

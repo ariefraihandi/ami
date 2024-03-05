@@ -140,7 +140,7 @@ class DashboardController extends Controller
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
-        
+
         $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
         $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
         $totOutcomeSen      = FinancialTransaction::getOutTransAmount($seninDate);
@@ -152,8 +152,13 @@ class DashboardController extends Controller
         $outcomeWeekly      = FinancialTransaction::getWeeklyOutTransonAmount($seninDate, $sabtuDate);
         $outcomelastWeek    = FinancialTransaction::getWeeklyOutTransonAmount($startLast, $endLast);
 
+        $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
+        $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
+        $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
+        $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
         // dd($outcomeTotal);
         $data = [
+        //Sistem
             'title'             => 'Dashboard',
             'subtitle'          => 'Analytics',
             'user'              => $user,
@@ -161,7 +166,11 @@ class DashboardController extends Controller
             'menus'             => $menus,
             'subMenus'          => $subMenus,
             'childSubMenus'     => $childSubMenus,
-            
+            'stardateWeek'      => $seninDate,
+            'enddateWeek'       => $sabtuDate,
+        //!Sistem
+
+        // Income
             'income'            => $incomeTotal,
             'incomeTotalYes'    => $incomeTotalYes,
             'totIncomeSen'      => $totIncomeSen,
@@ -172,7 +181,9 @@ class DashboardController extends Controller
             'totIncomeSab'      => $totIncomeSab,
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
-            
+        //!Income            
+        
+        // Outcome            
             'outcomeTotal'      => $outcomeTotal,
             'outcomeTotalYes'   => $outcomeTotalYes,
             'totOutcomeSen'     => $totOutcomeSen,
@@ -183,6 +194,14 @@ class DashboardController extends Controller
             'totOutcomeSab'     => $totOutcomeSab,
             'outcomeWeekly'     => $outcomeWeekly,
             'outcomelastWeek'   => $outcomelastWeek,
+        //!Outcome    
+        
+        // Invoice
+            'invLunWeek'        => $invLunWeek,
+            'invLunLastWeek'    => $invLunLastWeek,
+            'invPanWeek'        => $invPanWeek,
+            'invPanLastWeek'    => $invPanLastWeek,
+        //!Invoice
         ];
 
         return view('Konten/Portal/dashboard', $data);
