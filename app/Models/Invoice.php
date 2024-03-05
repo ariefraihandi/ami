@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Invoice extends Model
 {
@@ -32,6 +33,31 @@ class Invoice extends Model
                 ->where('total_amount', '!=', 0.00)
                 ->get(); 
     }
+    
+    public static function getInvBB($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                ->where('total_amount', '!=', 0.00)
+                ->where('panjar_amount', 0.00)
+                ->get(); 
+    }
+    
+    public static function getInvPJ($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+            ->where('panjar_amount', '!=', 0.00)
+            ->where('total_amount', '>', DB::raw('panjar_amount'))
+            ->get(); 
+    }
+    
+    public static function getInvLN($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+        ->where('total_amount', '<=', DB::raw('panjar_amount'))
+        ->where('panjar_amount', '!=', 0.00)
+            ->get(); 
+    }
+    
     
     //Count
         public static function getCountInvLun($startDate, $endDate)

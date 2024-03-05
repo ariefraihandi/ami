@@ -101,7 +101,7 @@ class KeuanganController extends Controller
         }
     }
     
-    //KeuanganIndex
+//KeuanganIndex
     public function showKeuanganIndex(Request $request)
     {
         //Sistem
@@ -540,19 +540,20 @@ class KeuanganController extends Controller
             $roleData = UserRole::where('id', $user->role)->first();
         //!Sistem
 
+        $starting       = Carbon::createFromDate(2024, 1, 1);
         $startDate      = $request->input('startDate');
         $endDate        = $request->input('endDate');
-        $users          = User::all();     
-
-        if (!$startDate || !$endDate) {
-            // Jika salah satu atau kedua parameter kosong, atur tanggal mulai dan akhir menjadi tanggal hari ini
-            $startDate = now()->startOfDay();
-            $endDate = now()->endOfDay();
-        } else {
-            // Jika waktu tidak disertakan dalam URL, tambahkan waktu default
-            $startDate = Carbon::parse($startDate)->startOfDay();
-            $endDate = Carbon::parse($endDate)->endOfDay();
-        }
+    
+        //Date
+            if (!$startDate || !$endDate) {
+                $startDate = now()->startOfDay();
+                $endDate = now()->endOfDay();
+            } else {
+                // Jika waktu tidak disertakan dalam URL, tambahkan waktu default
+                $startDate = Carbon::parse($startDate)->startOfDay();
+                $endDate = Carbon::parse($endDate)->endOfDay();
+            }
+        //!Date
 
         // Menentukan Jenis Laporan
             $diffInDays         = $endDate->diffInDays($startDate);
@@ -573,26 +574,34 @@ class KeuanganController extends Controller
             }
         // !Menentukan Jenis Laporan       
 
-        $inv        = Invoice::getInv($startDate, $endDate);
-dd($inv);
-        $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])
-                            ->where('total_amount', '!=', 0.00)
-                            ->get(); 
+        $yesterday      = $endDate->copy()->subDay();
 
-        $invoicesBB         = Invoice::whereBetween('created_at', [$startDate, $endDate])
-                            ->where('total_amount', '!=', 0.00)
-                            ->where('panjar_amount', 0.00)
-                            ->get();  
+        $invoices               = Invoice::getInv($startDate, $endDate);
+        $invoicesBB             = Invoice::getInvBB($startDate, $endDate);
+        $invoicesPJ             = Invoice::getInvPJ($startDate, $endDate);
+        $invoicesLUN            = Invoice::getInvLN($startDate, $endDate);   
+        
+        $JumlahBB               = $invoicesBB->sum('total_amount');
+        $jumlahPanjar           = $invoicesPJ->sum('panjar_amount');
+        $sisaPanjar             = $invoicesPJ->sum('total_amount');
+        $sisa                   = $sisaPanjar - $jumlahPanjar;
+        $hutangCustumer         = $sisa + $JumlahBB;
+        
+        $incomeTotal            = FinancialTransaction::getWeeklyTransactionAmount($startDate, $endDate);
+        $outcomeTotal           = FinancialTransaction::getWeeklyOutTransonAmount($startDate, $endDate);
+        $topup                  = FinancialTransaction::getWeeklyTopUpAmount($startDate, $endDate);
+        $setorKas               = FinancialTransaction::getWeeklySetorKasAmount($startDate, $endDate);
 
-        $invoicesPJ         = Invoice::whereBetween('created_at', [$startDate, $endDate])
-                            ->where('total_amount', '>', DB::raw('panjar_amount'))
-                            ->where('panjar_amount', '!=', 0.00)
-                            ->get();
+        //Geting Saldo Sisa
+            $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
+            $outcomeForSisa     = FinancialTransaction::getWeeklyOutTransonAmount($starting, $yesterday);
+            $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+            $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+            $sisaBefore         =  $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;
 
-        $invoicesLUN        = Invoice::whereBetween('created_at', [$startDate, $endDate])
-                            ->where('total_amount', '<=', DB::raw('panjar_amount'))
-                            ->where('panjar_amount', '!=', 0.00)
-                            ->get();
+            
+            // dd($jumlahPanjar);
+        //!Geting Saldo Sisa
 
         $income             = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
                             ->whereIn('status', [1, 2, 3])
@@ -601,19 +610,9 @@ dd($inv);
         $outcome            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
                             ->whereIn('status', [4,5])
                             ->get();
-        
-        $tagihan            = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
-                            ->whereIn('status', [4, 5])
-                            ->where('lunas', 0)
-                            ->get();
+               
                         
-        $setorKas           = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
-                            ->whereIn('status', [6])
-                            ->get();
-        
-        $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
-                            ->whereIn('status', [7])
-                            ->get();
+
                             
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
@@ -621,23 +620,13 @@ dd($inv);
         $invoicesLN         = $invoicesLUN->count();
         
         $totalincome        = $income->count();
-        $incomeTotal        = $income->sum('transaction_amount');
-        $totaloutcome       = $outcome->count();
-        $outcomeTotal       = $outcome->sum('transaction_amount');
-        $saldoKas           = $setorKas->sum('transaction_amount');
-        $saldoTopup         = $topup->sum('transaction_amount');
-        $totalTagih         = $tagihan->sum('transaction_amount');
-        $JumlahBB           = $invoicesBB->sum('total_amount');
-        $jumlahPanjar       = $invoicesPJ->sum('panjar_amount');
-        $sisaPanjar         = $invoicesPJ->sum('total_amount');
-        $sis     = $sisaPanjar - $jumlahPanjar;
-        $hutangCustumer     = $sis + $JumlahBB;
-
+  
+        
+      
         $additionalData = [
             'title'             => 'Bisnis',
             'subtitle'          => 'Keuangan / Laporan',
-            'user'              => $user,
-            'users'             => $users,
+            'user'              => $user,            
             'role'              => $roleData,
             'menus'             => $menus,
             'subMenus'          => $subMenus,
@@ -658,16 +647,16 @@ dd($inv);
             'income'            => $income,
             'outcome'           => $outcome,
             'setorKas'          => $setorKas,
-            'tagihan'           => $tagihan,
+            // 'tagihan'           => $tagihan,
             'top'               => $topup,
             'totalincome'       => $totalincome,
+            
             'incomeTotal'       => $incomeTotal,
-            'totaloutcome'      => $totaloutcome,
             'outcomeTotal'      => $outcomeTotal,
-            'saldoKas'          => $saldoKas,
+            'topup'             => $topup,
+            'saldoKas'          => $setorKas,
+            'sisaBefore'          => $sisaBefore,            
             'hutangCustumer'    => $hutangCustumer,
-            'totalTagih'          => $totalTagih,
-            'topup'             => $saldoTopup,
 
         ];
 
