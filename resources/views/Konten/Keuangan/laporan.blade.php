@@ -361,8 +361,8 @@
                           <div class="col-sm-6 col-lg-3">
                               <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                                   <div>
-                                      <h6 class="mb-2">Pemasukan</h6>
-                                      <h5 class="mb-2">{{ number_format($incomeTotal), 0 }},-</h5>       
+                                      <h6 class="mb-2">Pemasukan + Sisa</h6>
+                                      <h5 class="mb-2">{{ number_format($incomeTotal+$sisaBefore), 0 }},-</h5>       
                                       <h6 class="mb-2">Saldo Lampau</h6>
                                       <h5 class="mb-0">{{ number_format($sisaBefore), 0 }},-</h5>           
                                   </div>
