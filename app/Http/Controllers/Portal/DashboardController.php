@@ -140,6 +140,9 @@ class DashboardController extends Controller
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
+        
+        $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($startLast, $endLast);
+        $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($startLast, $endLast);
 
         $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
         $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
@@ -158,7 +161,10 @@ class DashboardController extends Controller
         $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
         $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
         $invBonLastWeek     = Invoice::getCountInvBon($startLast, $endLast);
-        // dd($outcomeTotal);
+
+        $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
+
+        dd($fixedTotal);
         $data = [
         //Sistem
             'title'             => 'Dashboard',

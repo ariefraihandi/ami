@@ -269,7 +269,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/briefcase.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/income.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -289,7 +289,7 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Transactions</span>
+              <span class="d-block">Sisa Kas</span>
               <h4 class="card-title mb-1">$14,857</h4>
               <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
             </div>
