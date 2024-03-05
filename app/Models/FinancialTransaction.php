@@ -78,4 +78,17 @@ class FinancialTransaction extends Model
                    ->sum('transaction_amount');
     }  
 //!Sum 
+
+    public static function getSetor($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', [6])
+                ->get(); 
+    }
+    public static function getTopup($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', [7])
+                ->get(); 
+    }
 }

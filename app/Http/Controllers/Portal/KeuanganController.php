@@ -587,6 +587,9 @@ class KeuanganController extends Controller
         $sisa                   = $sisaPanjar - $jumlahPanjar;
         $hutangCustumer         = $sisa + $JumlahBB;
         
+        $setorData              = FinancialTransaction::getSetor($startDate, $endDate);
+        $topupData              = FinancialTransaction::getTopup($startDate, $endDate);
+
         $incomeTotal            = FinancialTransaction::getWeeklyTransactionAmount($startDate, $endDate);
         $outcomeTotal           = FinancialTransaction::getWeeklyOutTransonAmount($startDate, $endDate);
         $topup                  = FinancialTransaction::getWeeklyTopUpAmount($startDate, $endDate);
@@ -645,10 +648,10 @@ class KeuanganController extends Controller
             
             'income'            => $income,
             'outcome'           => $outcome,
-            'setorKas'          => $setorKas,
-            // 'tagihan'           => $tagihan,
-            'top'               => $topup,
             'totalincome'       => $totalincome,
+            
+            'setorKas'          => $setorData,
+            'top'               => $topupData,
             
             'incomeTotal'       => $incomeTotal,
             'outcomeTotal'      => $outcomeTotal,

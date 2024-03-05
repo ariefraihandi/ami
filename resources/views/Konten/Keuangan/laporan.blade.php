@@ -422,7 +422,7 @@
                   </div>
               </div>
             </div>          
-            {{-- <div class="row">
+            <div class="row">
               <div class="col-xl-12">                  
                 <div class="nav-align-top mb-4">
                     <ul class="nav nav-tabs" role="tablist">
@@ -434,11 +434,6 @@
                         <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-outcome" aria-controls="navs-top-outcome" aria-selected="false">
                                 Pengeluaran
-                            </button>
-                        </li>
-                        <li class="nav-item">
-                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-tagihan" aria-controls="navs-top-tagihan" aria-selected="false">
-                                Tagihan
                             </button>
                         </li>
                         <li class="nav-item">
@@ -546,42 +541,6 @@
                           </div>
                         </div>
                       </div>
-                      <div class="tab-pane fade" id="navs-top-tagihan" role="tabpanel">
-                        <div class="card">                             
-                          <div class="table-responsive text-nowrap">
-                            <table class="table">
-                              <thead>
-                                <tr>
-                                  <th>No</th>
-                                  <th>Transaksi</th>
-                                  <th>Deskripsi</th> 
-                                  <th>Tanggal</th>                                                   
-                                  <th>Jumlah</th>                              
-                                  <th>Metode</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                @if($tagihan->isEmpty())
-                                  <tr>
-                                    <td colspan="7" class="text-center">No Data Found</td>
-                                  </tr>
-                                @else
-                                  @foreach ($tagihan as $item)
-                                    <tr>
-                                      <td>{{ $loop->iteration }}</td>
-                                      <td>{{ $item->source_receiver }}<br>{{ $item->reference_number }}</td>
-                                      <td>{{ $item->description }}</td>
-                                      <td>{{ $item->transaction_date }}</td>
-                                      <td>Rp. {{ number_format($item->transaction_amount), 0 }},-</td>
-                                      <td>{{ $item->payment_method }}</td>                                      
-                                    </tr>
-                                  @endforeach
-                                @endif
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
                       <div class="tab-pane fade" id="navs-top-setoran" role="tabpanel">
                         <div class="card">                              
                           <div class="table-responsive text-nowrap">
@@ -657,7 +616,7 @@
                     </div>
                 </div>
               </div>
-            </div>  --}}
+            </div> 
           </div>
         </div>
       </div>
