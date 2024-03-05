@@ -574,7 +574,7 @@ class KeuanganController extends Controller
             }
         // !Menentukan Jenis Laporan       
 
-        $yesterday      = $endDate->copy()->subDay();
+        $yesterday      = $startDate->copy()->subDay();
 
         $invoices               = Invoice::getInv($startDate, $endDate);
         $invoicesBB             = Invoice::getInvBB($startDate, $endDate);
