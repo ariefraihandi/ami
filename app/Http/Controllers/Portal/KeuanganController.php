@@ -183,7 +183,6 @@ class KeuanganController extends Controller
                 return redirect('/login');
             }
 
-        
             $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
             $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
             $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
@@ -199,7 +198,7 @@ class KeuanganController extends Controller
         $usersData              = User::all();
         $transaction            = FinancialTransaction::all();
 
-        $incomeTodayRaw            = FinancialTransaction::getTransactionAmount($today);
+        $incomeToday         = FinancialTransaction::getTransactionAmount($today);
         $incomeYesterday        = FinancialTransaction::getTransactionAmount($yesterday);
         $outcomeToday           = FinancialTransaction::getOutTransAmount($today);
         $outcomeYesterday       = FinancialTransaction::getOutTransAmount($yesterday);
@@ -207,8 +206,8 @@ class KeuanganController extends Controller
         $setorYesterday         = FinancialTransaction::getDayliSetorKasAmount($yesterday);
         $topupToday             = FinancialTransaction::getDayliTopUpAmount($today);
         $topupYesterday         = FinancialTransaction::getDayliTopUpAmount($yesterday);
-        $sisaKasYesterday       = $incomeYesterday+$topupYesterday-$outcomeYesterday-$setorYesterday;
-        $incomeToday            = $incomeTodayRaw+$sisaKasYesterday;
+        // $sisaKasYesterday       = $incomeYesterday+$topupYesterday-$outcomeYesterday-$setorYesterday;
+        // $incomeToday            = $incomeTodayRaw+$sisaKasYesterday;
 
         $additionalData = [
             'title'                     => 'Bisnis',
@@ -450,20 +449,61 @@ class KeuanganController extends Controller
 // Laporan
     public function showLaporan(Request $request)
     {
-        //Check Access
-            $requestedUrl   = $request->path();      
-            $urlParts       = explode('/', $requestedUrl);
-            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
-            $menuSub        = MenuSub::where('url', $urlPart)->first();
-            
-            if ($menuSub) {
-            
-                $menuSubId = $menuSub->id;
-                $userRole = session('user_role');
-                $accessSub = AccessSub::where('role_id', $userRole)
-                                    ->where('submenu_id', $menuSubId)
-                                    ->first();
-                if (!$accessSub) {
+        //Sistem
+            //Check Access
+                $requestedUrl   = $request->path();      
+                $urlParts       = explode('/', $requestedUrl);
+                $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+                $menuSub        = MenuSub::where('url', $urlPart)->first();
+                
+                if ($menuSub) {
+                
+                    $menuSubId = $menuSub->id;
+                    $userRole = session('user_role');
+                    $accessSub = AccessSub::where('role_id', $userRole)
+                                        ->where('submenu_id', $menuSubId)
+                                        ->first();
+                    if (!$accessSub) {
+                        return redirect()->route('user.profile')->with([
+                            'response' => [
+                                'success' => false,
+                                'title' => 'Eror',
+                                'message' => 'Anda Tidak Memiliki Akses!',
+                            ],
+                        ]);
+                    }                  
+                } else {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'URL tidak ditemukan!',
+                        ],
+                    ]);
+                }
+            //!Check Access
+            // Check Subs Child Access
+                $requestedUrl = $request->path();       
+                $routes = Route::getRoutes();
+                $matchedRouteName = null;
+                        
+                foreach ($routes as $route) {
+                    if ($route->uri() == $requestedUrl) {
+                        // Jika cocok, simpan nama rute dan keluar dari loop
+                        $matchedRouteName = $route->getName();
+                        break;
+                    }
+                }
+
+                if ($matchedRouteName) {
+                $url            = $matchedRouteName;
+                $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+                $userRole       = session('user_role');
+                $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                                ->where('childsubmenu_id', $menuChildSub->id)
+                                ->first();
+
+                if (!$accChildSub) {
                     return redirect()->route('user.profile')->with([
                         'response' => [
                             'success' => false,
@@ -471,39 +511,8 @@ class KeuanganController extends Controller
                             'message' => 'Anda Tidak Memiliki Akses!',
                         ],
                     ]);
-                }                  
-            } else {
-                return redirect()->route('user.profile')->with([
-                    'response' => [
-                        'success' => false,
-                        'title' => 'Eror',
-                        'message' => 'URL tidak ditemukan!',
-                    ],
-                ]);
-            }
-        //!Check Access
-        // Check Subs Child Access
-            $requestedUrl = $request->path();       
-            $routes = Route::getRoutes();
-            $matchedRouteName = null;
-                    
-            foreach ($routes as $route) {
-                if ($route->uri() == $requestedUrl) {
-                    // Jika cocok, simpan nama rute dan keluar dari loop
-                    $matchedRouteName = $route->getName();
-                    break;
-                }
-            }
-
-            if ($matchedRouteName) {
-            $url            = $matchedRouteName;
-            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
-            $userRole       = session('user_role');
-            $accChildSub    = AccessSubChild::where('role_id', $userRole)
-                            ->where('childsubmenu_id', $menuChildSub->id)
-                            ->first();
-
-            if (!$accChildSub) {
+                }       
+                } else {
                 return redirect()->route('user.profile')->with([
                     'response' => [
                         'success' => false,
@@ -511,35 +520,25 @@ class KeuanganController extends Controller
                         'message' => 'Anda Tidak Memiliki Akses!',
                     ],
                 ]);
-            }       
-            } else {
-            return redirect()->route('user.profile')->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Eror',
-                    'message' => 'Anda Tidak Memiliki Akses!',
-                ],
-            ]);
+                }
+            //! Check Subs Child Access
+
+            $user = Auth::user();
+            if (!$user) {
+                return redirect('/login');
             }
-        //! Check Subs Child Access
 
-        $user = Auth::user();
-        if (!$user) {
-            return redirect('/login');
-        }
+            // Mengambil ID dari menu, submenu, dan sub-child menu yang diakses oleh pengguna
+            $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+            $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+            $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
 
-        // Mengambil ID dari menu, submenu, dan sub-child menu yang diakses oleh pengguna
-        $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
-
-        // Mengambil data menu, submenu, dan sub-child menu berdasarkan ID yang diakses oleh pengguna
-        $menus = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-
-        // Mendapatkan data peran pengguna
-        $roleData = UserRole::where('id', $user->role)->first();
+            // Mengambil data menu, submenu, dan sub-child menu berdasarkan ID yang diakses oleh pengguna
+            $menus = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();      
+            $roleData = UserRole::where('id', $user->role)->first();
+        //!Sistem
 
         $startDate      = $request->input('startDate');
         $endDate        = $request->input('endDate');
@@ -574,6 +573,8 @@ class KeuanganController extends Controller
             }
         // !Menentukan Jenis Laporan       
 
+        $inv        = Invoice::getInv($startDate, $endDate);
+dd($inv);
         $invoices           = Invoice::whereBetween('created_at', [$startDate, $endDate])
                             ->where('total_amount', '!=', 0.00)
                             ->get(); 

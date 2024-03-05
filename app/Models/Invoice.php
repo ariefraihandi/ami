@@ -26,29 +26,37 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class, 'customer_uuid', 'uuid');
     }
 
-    public static function getCountInvLun($startDate, $endDate)
+    public static function getInv($startDate, $endDate)
     {
         return self::whereBetween('created_at', [$startDate, $endDate])
-                   ->whereIn('status', [2])
-                   ->whereColumn('total_amount', '<=', 'panjar_amount')
-                   ->count();
-    }
-    
-    public static function getCountInvPan($startDate, $endDate)
-    {
-        return self::whereBetween('created_at', [$startDate, $endDate])
-                   ->whereIn('status', [1])
-                   ->whereColumn('total_amount', '>', 'panjar_amount')
-                   ->count();
-    }
-    
-    public static function getCountInvBon($startDate, $endDate)
-    {
-        return self::whereBetween('created_at', [$startDate, $endDate])
-                ->whereIn('status', [0])
                 ->where('total_amount', '!=', 0.00)
-                ->where('panjar_amount', '=', 0.00)
-                ->count();
+                ->get(); 
     }
-
+    
+    //Count
+        public static function getCountInvLun($startDate, $endDate)
+        {
+            return self::whereBetween('created_at', [$startDate, $endDate])
+                    ->whereIn('status', [2])
+                    ->whereColumn('total_amount', '<=', 'panjar_amount')
+                    ->count();
+        }
+        
+        public static function getCountInvPan($startDate, $endDate)
+        {
+            return self::whereBetween('created_at', [$startDate, $endDate])
+                    ->whereIn('status', [1])
+                    ->whereColumn('total_amount', '>', 'panjar_amount')
+                    ->count();
+        }
+        
+        public static function getCountInvBon($startDate, $endDate)
+        {
+            return self::whereBetween('created_at', [$startDate, $endDate])
+                    ->whereIn('status', [0])
+                    ->where('total_amount', '!=', 0.00)
+                    ->where('panjar_amount', '=', 0.00)
+                    ->count();
+        }
+    //!Count
 }

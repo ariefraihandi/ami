@@ -21,7 +21,7 @@ class FinancialTransaction extends Model
         'status',
         'lunas',
     ];
-
+//Sum
     public static function getTransactionAmount($date)
     {
         return self::whereDate('transaction_date', $date)
@@ -76,5 +76,6 @@ class FinancialTransaction extends Model
         return self::whereBetween('transaction_date', [$startDate, $endDate])
                    ->whereIn('status', [4, 5])
                    ->sum('transaction_amount');
-    }   
+    }  
+//!Sum 
 }
