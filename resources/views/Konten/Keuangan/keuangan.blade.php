@@ -25,12 +25,20 @@
                 <div
                   class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                   <div>
-                    <h6 class="mb-2">Daily Icome</h6>
-                    <h4 class="mb-2">Rp. {{ number_format($totalToday) }}</h4>
+                    <h6 class="mb-2">Pendapatan Hari Ini</h6>                    
+                    <h4 class="mb-2">Rp. {{ number_format($incomeToday) }}</h4>                       
+                    <span class="text-muted me-2">Pendapatan Kemarin</span>                                  
                     <p class="mb-0">
-                      <span class="text-muted me-2">Rp. {{ number_format($totalYesterday) }}</span>
+                      <span class="text-muted me-2">Rp. {{ number_format($incomeYesterday) }}</span>
+                      @php
+                        if ($incomeYesterday > 0) {
+                            $percentageIncome = ($incomeToday - $incomeYesterday) / $incomeYesterday * 100;
+                        } else {
+                            $percentageIncome = ($incomeToday > 0) ? 100 : 0;
+                        }
+                      @endphp                  
                       @if ($percentageIncome < 0)
-                        <span class="badge bg-label-danger">{{ number_format($percentageIncome, 1) }}%</span>
+                        <span class="badge bg-label-danger">+{{ number_format($percentageIncome, 1) }}%</span>
                       @elseif ($percentageIncome > 0)
                         <span class="badge bg-label-success">+{{ number_format($percentageIncome, 1) }}%</span>
                       @else
@@ -50,18 +58,26 @@
                 <div
                   class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-3 pb-sm-0">
                   <div>
-                    <h6 class="mb-2">Daily Outcome</h6>
-                    <h4 class="mb-2">Rp. {{ number_format($totalOutcomeToday) }}</h4>
+                    <h6 class="mb-2">Pengeluaran Hari Ini</h6>
+                    <h4 class="mb-2">Rp. {{ number_format($outcomeToday) }}</h4>
+                    <span class="text-muted me-2">Pengeluaran Kemarin</span> 
                     <p class="mb-0">
-                      <span class="text-muted me-2">Rp. {{ number_format($totalOutcomeYesterday) }}</span>
-                      @if ($percentageOutcome < 0)
-                        <span class="badge bg-label-success">{{ number_format($percentageOutcome, 1) }}%</span>
-                      @elseif ($percentageOutcome > 0)
-                        <span class="badge bg-label-danger">+{{ number_format($percentageOutcome, 1) }}%</span>
+                      <span class="text-muted me-2">Rp. {{ number_format($outcomeYesterday) }}</span>
+                      @if ($outcomeYesterday > 0)
+                          @php
+                              $percentageOutcome = ($outcomeToday - $outcomeYesterday) / $outcomeYesterday * 100;
+                          @endphp
+                          @if ($percentageOutcome < 0)
+                              <span class="badge bg-label-success">{{ number_format($percentageOutcome, 1) }}%</span>
+                          @elseif ($percentageOutcome > 0)
+                              <span class="badge bg-label-danger">+{{ number_format($percentageOutcome, 1) }}%</span>
+                          @else
+                              <span class="badge bg-label-secondary">{{ number_format($percentageOutcome, 1) }}%</span>
+                          @endif
                       @else
-                        <span class="badge bg-label-secondary">{{ number_format($percentageOutcome, 1) }}%</span>
+                          <span class="badge bg-label-secondary">0%</span>
                       @endif
-                    </p>
+                  </p>
                   </div>
                   <div class="avatar me-lg-4">
                     <span class="avatar-initial rounded bg-label-secondary">
@@ -74,17 +90,10 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">
                   <div>
-                    <h6 class="mb-2">Daily Margin</h6>
-                    <h4 class="mb-2">Rp.  {{ number_format($marginToday) }}</h4>
-                    <span class="text-muted me-2">Rp. {{ number_format($marginYesterday) }}</span>
-                    @if ($percentageMargin > 0)
-                        <span class="badge bg-label-success">+ {{ number_format($percentageMargin, 1) }}% </span>
-                      @elseif ($percentageMargin < 0)
-                        <span class="badge bg-label-danger">{{ number_format($percentageMargin, 1) }}% </span>
-                      @else
-                        <span class="badge bg-label-secondary">{{ number_format($percentageMargin, 1) }}% </span>
-                      @endif
-                    
+                    <h6 class="mb-2">Top Up Hari Ini</h6>
+                    <h4 class="mb-2">Rp. {{ number_format($topupToday) }}</h4>
+                    <span class="text-muted me-2">Setor Kas Hari Ini</span> <br>
+                    <span class="text-muted me-2">Rp. {{ number_format($setorToday) }}</span>                    
                   </div>
                   <div class="avatar me-sm-4">
                     <span class="avatar-initial rounded bg-label-secondary">
@@ -96,10 +105,10 @@
               <div class="col-sm-6 col-lg-3">
                 <div class="d-flex justify-content-between align-items-start">
                   <div>
-                    <h6 class="mb-2">Kas</h6>
-                    <h4 class="mb-2">Rp.  {{ number_format($sisaTidakStor) }}</h4>
-                    <span class="text-muted me-2">Sisa Rp. {{ number_format($totalkas) }}</span>
-                    
+                    <h6 class="mb-2">Sisa Kas Hari Ini</h6>
+                    <h4 class="mb-2">Rp.
+                      {{ number_format($incomeToday+$topupToday-$outcomeToday-$setorToday) }}
+                    </h4>
                   </div>
                   <div class="avatar">
                     <span class="avatar-initial rounded bg-label-secondary">

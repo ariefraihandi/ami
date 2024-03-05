@@ -36,6 +36,20 @@ class FinancialTransaction extends Model
                    ->sum('transaction_amount');
     }
     
+    public static function getDayliSetorKasAmount($date)
+    {
+        return self::whereDate('transaction_date', $date)
+                   ->whereIn('status', [6])
+                   ->sum('transaction_amount');
+    }
+    
+    public static function getDayliTopUpAmount($date)
+    {
+        return self::whereDate('transaction_date', $date)
+                   ->whereIn('status', [7])
+                   ->sum('transaction_amount');
+    }
+    
     public static function getWeeklyTransactionAmount($startDate, $endDate)
     {
         return self::whereBetween('transaction_date', [$startDate, $endDate])

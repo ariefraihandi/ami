@@ -100,24 +100,65 @@ class KeuanganController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-//KeuanganIndex
+    
+    //KeuanganIndex
     public function showKeuanganIndex(Request $request)
     {
-        //Check Access
-            $requestedUrl   = $request->path();      
-            $urlParts       = explode('/', $requestedUrl);
-            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
-            $menuSub        = MenuSub::where('url', $urlPart)->first();
-            
-            if ($menuSub) {
-            
-                $menuSubId = $menuSub->id;
-                $userRole = session('user_role');
-                $accessSub = AccessSub::where('role_id', $userRole)
-                                    ->where('submenu_id', $menuSubId)
-                                    ->first();
-                if (!$accessSub) {
+        //Sistem
+            //Check Access
+                $requestedUrl   = $request->path();      
+                $urlParts       = explode('/', $requestedUrl);
+                $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+                $menuSub        = MenuSub::where('url', $urlPart)->first();
+                
+                if ($menuSub) {
+                
+                    $menuSubId = $menuSub->id;
+                    $userRole = session('user_role');
+                    $accessSub = AccessSub::where('role_id', $userRole)
+                                        ->where('submenu_id', $menuSubId)
+                                        ->first();
+                    if (!$accessSub) {
+                        return redirect()->route('user.profile')->with([
+                            'response' => [
+                                'success' => false,
+                                'title' => 'Eror',
+                                'message' => 'Anda Tidak Memiliki Akses!',
+                            ],
+                        ]);
+                    }                  
+                } else {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'URL tidak ditemukan!',
+                        ],
+                    ]);
+                }
+            //!Check Access
+            // Check Subs Child Access
+                $requestedUrl = $request->path();       
+                $routes = Route::getRoutes();
+                $matchedRouteName = null;
+                        
+                foreach ($routes as $route) {
+                    if ($route->uri() == $requestedUrl) {
+                        // Jika cocok, simpan nama rute dan keluar dari loop
+                        $matchedRouteName = $route->getName();
+                        break;
+                    }
+                }
+
+                if ($matchedRouteName) {
+                $url            = $matchedRouteName;
+                $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+                $userRole       = session('user_role');
+                $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                                ->where('childsubmenu_id', $menuChildSub->id)
+                                ->first();
+
+                if (!$accChildSub) {
                     return redirect()->route('user.profile')->with([
                         'response' => [
                             'success' => false,
@@ -125,39 +166,8 @@ class KeuanganController extends Controller
                             'message' => 'Anda Tidak Memiliki Akses!',
                         ],
                     ]);
-                }                  
-            } else {
-                return redirect()->route('user.profile')->with([
-                    'response' => [
-                        'success' => false,
-                        'title' => 'Eror',
-                        'message' => 'URL tidak ditemukan!',
-                    ],
-                ]);
-            }
-        //!Check Access
-        // Check Subs Child Access
-            $requestedUrl = $request->path();       
-            $routes = Route::getRoutes();
-            $matchedRouteName = null;
-                    
-            foreach ($routes as $route) {
-                if ($route->uri() == $requestedUrl) {
-                    // Jika cocok, simpan nama rute dan keluar dari loop
-                    $matchedRouteName = $route->getName();
-                    break;
-                }
-            }
-
-            if ($matchedRouteName) {
-            $url            = $matchedRouteName;
-            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
-            $userRole       = session('user_role');
-            $accChildSub    = AccessSubChild::where('role_id', $userRole)
-                            ->where('childsubmenu_id', $menuChildSub->id)
-                            ->first();
-
-            if (!$accChildSub) {
+                }       
+                } else {
                 return redirect()->route('user.profile')->with([
                     'response' => [
                         'success' => false,
@@ -165,99 +175,40 @@ class KeuanganController extends Controller
                         'message' => 'Anda Tidak Memiliki Akses!',
                     ],
                 ]);
-            }       
-            } else {
-            return redirect()->route('user.profile')->with([
-                'response' => [
-                    'success' => false,
-                    'title' => 'Eror',
-                    'message' => 'Anda Tidak Memiliki Akses!',
-                ],
-            ]);
+                }
+            //! Check Subs Child Access
+            $user = Auth::user();
+            if (!$user) {
+            
+                return redirect('/login');
             }
-        //! Check Subs Child Access
 
-        $user = Auth::user();
-        if (!$user) {
-          
-            return redirect('/login');
-        }
+        
+            $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+            $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+            $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+        
+            $menus                  = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
+            $roleData               = UserRole::where('id', $user->role)->first();
+        //!Sistem   
 
-       
-        $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
-        $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
-        $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
-    
-        $menus                  = Menu::whereIn('id', $accessMenus)->get();
-        $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
-        $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
-        $roleData               = UserRole::where('id', $user->role)->first();
-       
-
-        $today                  = Carbon::today();
-        $yesterday              = Carbon::yesterday();
+        $today                  = Carbon::now();
+        $yesterday              = $today->copy()->subDay();
         $usersData              = User::all();
-
-        $qincomeTotal           = FinancialTransaction::whereIn('status', [1, 2, 3])->get();
-        $qoutcomeTotal          = FinancialTransaction::whereIn('status', [4, 5])->get();
-        $saldoKas               = FinancialTransaction::whereIn('status', [6])->get();
-        $topupKas               = FinancialTransaction::whereIn('status', [7])->get();
-        $allIncome              = $qincomeTotal->sum('transaction_amount');
-        $totalkas               = $qincomeTotal->sum('transaction_amount') - $qoutcomeTotal->sum('transaction_amount') - $saldoKas->sum('transaction_amount') + $topupKas->sum('transaction_amount') ;     
-        $udahStor               = $saldoKas->sum('transaction_amount') - $topupKas->sum('transaction_amount');
-        
-        // dd($totalkas);
         $transaction            = FinancialTransaction::all();
-        
-        $incomeToday            = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [1, 2, 3])->get();
-        $incomeYesterday        = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [1, 2, 3])->get();
-        
-        $outcomeToday           = FinancialTransaction::whereDate('transaction_date', $today)->whereIn('status', [4, 5])->get();
-        $outcomeYesterday       = FinancialTransaction::whereDate('transaction_date', $yesterday)->whereIn('status', [4, 5])->get();        
-        
-        
-        // Dayli Income Amount
-            $totalIncomeToday       = $incomeToday->sum('transaction_amount');
-            $totalIncomeYesterday   = $incomeYesterday->sum('transaction_amount');
-            $percentageIncome = 0;
 
-            if ($totalIncomeYesterday != 0) {
-                $percentageIncome = (($totalIncomeToday - $totalIncomeYesterday) / $totalIncomeYesterday) * 100;
-            }
-        //Dayli Income Amount
-        
-        //Dayli Outcome Amount
-            $totalOutcomeToday      = $outcomeToday->sum('transaction_amount');
-            $totalOutcomeYesterday  = $outcomeYesterday->sum('transaction_amount');
-            $percentageOutcome = 0;
-            
-            if ($totalOutcomeYesterday != 0) {
-                $percentageOutcome = (($totalOutcomeToday - $totalOutcomeYesterday) / $totalOutcomeYesterday) * 100;
-            }
-        //Dayli Outcome Amount
-
-        //Margin Amount
-            $marginToday            = $totalIncomeToday - $totalOutcomeToday;      
-            $marginYesterday        = $totalIncomeYesterday - $totalOutcomeYesterday;      
-            $percentageMargin = 0;
-            
-            if ($marginYesterday != 0) {
-                $percentageMargin = (($marginToday - $marginYesterday) / $marginYesterday) * 100;
-            }
-        //Margin Amount
-        
-
-       // Total Income and Total Outcome for all transactions
-        $incomeTotal = $qincomeTotal->sum('transaction_amount');
-        $outcomeTotal = $qoutcomeTotal->sum('transaction_amount');
-        
-        $sisaTidakStor          = $marginToday - $totalkas;          
-        
-        $percentageTotal = 0;
-        
-        if ($outcomeTotal != 0) {
-            $percentageTotal = (($incomeTotal - $outcomeTotal) / $outcomeTotal) * 100;
-        }
+        $incomeTodayRaw            = FinancialTransaction::getTransactionAmount($today);
+        $incomeYesterday        = FinancialTransaction::getTransactionAmount($yesterday);
+        $outcomeToday           = FinancialTransaction::getOutTransAmount($today);
+        $outcomeYesterday       = FinancialTransaction::getOutTransAmount($yesterday);
+        $setorToday             = FinancialTransaction::getDayliSetorKasAmount($today);
+        $setorYesterday         = FinancialTransaction::getDayliSetorKasAmount($yesterday);
+        $topupToday             = FinancialTransaction::getDayliTopUpAmount($today);
+        $topupYesterday         = FinancialTransaction::getDayliTopUpAmount($yesterday);
+        $sisaKasYesterday       = $incomeYesterday+$topupYesterday-$outcomeYesterday-$setorYesterday;
+        $incomeToday            = $incomeTodayRaw+$sisaKasYesterday;
 
         $additionalData = [
             'title'                     => 'Bisnis',
@@ -270,20 +221,12 @@ class KeuanganController extends Controller
             'childSubMenus'             => $childSubMenus,
             'transaction'               => $transaction,
 
-            'totalToday'                => $totalIncomeToday,
-            'totalYesterday'            => $totalIncomeYesterday,
-            'percentageIncome'          => $percentageIncome,
-            'totalOutcomeToday'         => $totalOutcomeToday,
-            'totalOutcomeYesterday'     => $totalOutcomeYesterday,
-            'percentageOutcome'         => $percentageOutcome,
-            'marginToday'               => $marginToday,
-            'marginYesterday'           => $marginYesterday,
-            'percentageMargin'          => $percentageMargin,
-            'totalIncome'               => $incomeTotal,
-            'totalOutcome'              => $outcomeTotal,
-            'percentageTotal'           => $percentageTotal,
-            'totalkas'                  => $totalkas,
-            'sisaTidakStor'             => $udahStor,
+            'incomeToday'               => $incomeToday,
+            'incomeYesterday'           => $incomeYesterday,
+            'outcomeToday'              => $outcomeToday,
+            'outcomeYesterday'          => $outcomeYesterday,
+            'setorToday'                => $setorToday,
+            'topupToday'                => $topupToday,          
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);
@@ -670,7 +613,6 @@ class KeuanganController extends Controller
         $topup              = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])
                             ->whereIn('status', [7])
                             ->get();
-                               
                             
         $totalInvoices      = $invoices->count();
         $totalInvoicesBB    = $invoicesBB->count();
