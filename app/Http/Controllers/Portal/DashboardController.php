@@ -165,7 +165,7 @@ class DashboardController extends Controller
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
         $sisaKasTotal         = $fixedTotal-$setorKasWeek;
 
-        dd($fixedTotal, $sisaKasTotal);
+        // dd($fixedTotal, $sisaKasTotal);
         $data = [
         //Sistem
             'title'             => 'Dashboard',
