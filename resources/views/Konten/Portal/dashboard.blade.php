@@ -1165,7 +1165,7 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
-  var invLun          = {{ $percentageDifference }};   
+  var invLun = {{ number_format($percentageDifference, 0, '.', '') }};
   
 </script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>
