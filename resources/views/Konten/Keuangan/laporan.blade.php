@@ -667,8 +667,8 @@
       
       var pemasukan       = {{$incomeTotal}};
       var income          = {{$incomeTotal-$outcomeTotal}};
-      var outcomeTotal    = {{$outcomeTotal+$topup}};
-      
+      var outcomeTotal    = {{$outcomeTotal}};
+      // $topup
       var hutangCustumer  = {{$hutangCustumer}};
       var saldoKas        = {{$saldoKas}};
       
