@@ -409,7 +409,7 @@
                               <div class="d-flex justify-content-between align-items-start">
                                   <div>
                                     <h6 class="mb-2">Setoran Kas</h6>
-                                    <h5 class="mb-0">{{ number_format($setorKas), 0 }},-</h5>
+                                    <h5 class="mb-0">{{ number_format($saldoKas), 0 }},-</h5>
                                       <h6 class="mb-2">Sisa Kas</h6>
                                       <h4 class="mb-0">{{ number_format($sisaBefore+$incomeTotal+$topup-$outcomeTotal-$saldoKas), 0 }},-</h4>                                             
                                   </div>
