@@ -382,7 +382,7 @@
                                       <h6 class="mb-2">Top Up:</h6>
                                       <h5 class="mb-0">{{ number_format($topup), 0 }},-</h5>  
                                       <h6 class="mb-2">Jumlah:</h6>
-                                      <h5 class="mb-0">{{ number_format($topup+$outcomeTotal), 0 }},-</h5>  
+                                      <h5 class="mb-0">{{ number_format($outcomeTotal-$topup), 0 }},-</h5>  
                                   </div>
                                   <div class="avatar me-lg-4">
                                       <span class="avatar-initial rounded bg-label-secondary">
