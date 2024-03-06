@@ -362,7 +362,8 @@
                               <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                                   <div>
                                       <h6 class="mb-2">Pemasukan</h6>
-                                      <h5 class="mb-2">{{ number_format($incomeTotal), 0 }},-</h5>       
+                                      <h5 class="mb-2">{{ number_format($incomeTotal), 0 }},-</h5>  
+                                      <hr>     
                                       <h6 class="mb-2">Saldo Lampau</h6>
                                       <h5 class="mb-0">{{ number_format($sisaBefore), 0 }},-</h5>           
                                   </div>
@@ -379,6 +380,7 @@
                                   <div>
                                     <h6 class="mb-2">Top Up Kas OP:</h6>
                                     <h5 class="mb-2">{{ number_format($topup), 0 }},-</h5>  
+                                    <hr>
                                     <h6 class="mb-2">OP POT Kas:</h6>
                                     <h5 class="mb-2">{{ number_format($outcomeTotal-$topup), 0 }},-</h5>  
                                   </div>
@@ -395,6 +397,7 @@
                                   <div>
                                     <h6 class="mb-2">Total Pengeluaran:</h6>
                                     <h5 class="mb-2">{{ number_format($outcomeTotal), 0 }},-</h5> 
+                                    <hr>
                                     <h6 class="mb-2">Bon Konsumen</h6>
                                       <h5 class="mb-0">{{ number_format($hutangCustumer), 0 }},-</h5>                                                                                                                                  
                                   </div>
@@ -410,6 +413,7 @@
                                   <div>
                                     <h6 class="mb-2">Setoran Kas</h6>
                                     <h5 class="mb-0">{{ number_format($saldoKas), 0 }},-</h5>
+                                    <hr>
                                       <h6 class="mb-2">Sisa Kas</h6>
                                       <h4 class="mb-0">{{ number_format($sisaBefore+$incomeTotal+$topup-$outcomeTotal-$saldoKas), 0 }},-</h4>                                             
                                   </div>
