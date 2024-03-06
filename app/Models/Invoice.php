@@ -33,6 +33,16 @@ class Invoice extends Model
                 ->where('total_amount', '!=', 0.00)
                 ->get(); 
     }
+
+    public static function getBon($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                    ->where('total_amount', '!=', 0.00)
+                    ->whereColumn('total_amount', '>', 'panjar_amount')
+                    ->sum(DB::raw('total_amount - panjar_amount'));
+    }
+    
+
     
     public static function getInvBB($startDate, $endDate)
     {

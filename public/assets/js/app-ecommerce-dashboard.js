@@ -327,7 +327,7 @@
         type: 'radialBar'
       },
       colors: [config.colors.success],
-      series: [invLun],
+      series: [incomeYearly],
       plotOptions: {
         radialBar: {
           startAngle: -90,

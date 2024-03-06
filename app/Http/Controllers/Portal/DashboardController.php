@@ -118,6 +118,8 @@ class DashboardController extends Controller
         //!Syistem        
        
         //Date Configuration
+            $startingYear   = Carbon::now()->startOfYear();
+            $yearStart      = $startingYear->toDateString();
             $today          = Carbon::now();
             $yesterday      = $today->copy()->subDay();
             $seninDate      = $today->copy()->startOfWeek();
@@ -128,7 +130,7 @@ class DashboardController extends Controller
             $sabtuDate      = $seninDate->copy()->addDays(5);
             $startLast      = $seninDate->copy()->subWeek();
             $endLast        = $sabtuDate->copy()->subWeek();
-        //!Date Configuration
+        //!Date Configuration        
         
         $incomeTotal        = FinancialTransaction::getTransactionAmount($today);
         $incomeTotalYes     = FinancialTransaction::getTransactionAmount($yesterday);
@@ -140,6 +142,8 @@ class DashboardController extends Controller
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
+        $incomeYearly       = FinancialTransaction::getWeeklyTransactionAmount($startingYear, $today);
+        // $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
         
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
         $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
@@ -155,6 +159,8 @@ class DashboardController extends Controller
         $outcomeWeekly      = FinancialTransaction::getWeeklyOutTransonAmount($seninDate, $sabtuDate);
         $outcomelastWeek    = FinancialTransaction::getWeeklyOutTransonAmount($startLast, $endLast);
 
+        $getInvYear         = Invoice::getInv($startingYear, $today)->count();
+        $getSUmBonYear      = Invoice::getBon($startingYear, $today);
         $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
         $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
         $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
@@ -164,7 +170,7 @@ class DashboardController extends Controller
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
         $sisaKasTotal         = $fixedTotal-$setorKasWeek;
-
+// dd($getSUmBonYear);
         // dd($fixedTotal, $sisaKasTotal);
         $data = [
         //Sistem
@@ -190,6 +196,7 @@ class DashboardController extends Controller
             'totIncomeSab'      => $totIncomeSab,
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
+            'incomeYearly'    => $incomeYearly,
         //!Income            
         
         // Outcome            
@@ -206,7 +213,8 @@ class DashboardController extends Controller
         //!Outcome    
         
         // Invoice
-            'invLunWeek'        => $invLunWeek,
+            'getInvYear'        => $getInvYear,
+            'getSumBonYear'     => $getSUmBonYear,
             'invLunLastWeek'    => $invLunLastWeek,
             'invPanWeek'        => $invPanWeek,
             'invPanLastWeek'    => $invPanLastWeek,

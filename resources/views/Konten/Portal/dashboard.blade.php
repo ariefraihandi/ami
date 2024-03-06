@@ -136,7 +136,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/inv-success.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/income.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -155,19 +155,15 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Invoice Lunas</span>
-                @php
-                  $percentageDifference = ($invLunLastWeek == 0 && $invLunWeek != 0) ? 100 : (($invLunLastWeek != 0) ? (($invLunWeek - $invLunLastWeek) / $invLunLastWeek) * 100 : 0);
-                  $arrowIcon = ($percentageDifference >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
-                @endphp
-                <h4 class="card-title mb-1">{{ $invLunWeek }}</h4>
-                <small class="fw-medium">
-                    <i class="{{ $arrowIcon }}"></i> 
-                    @if ($percentageDifference >= 0)
-                        +{{ number_format(abs($percentageDifference), 2) }}%
-                    @else
-                        -{{ number_format(abs($percentageDifference), 2) }}%
-                    @endif
+              <span class="d-block">Yearly Income</span>
+              <h5 class="card-title mb-1">Rp. {{ number_format($incomeYearly, 0, ',', '.') }}</h5>
+              <hr> 
+              <span class="d-block">Yearly Invoice</span>
+              <h5 class="card-title mb-1">{{$getInvYear}}</h5>
+              <small class="fw-medium">
+                  @php
+                    $percentageDifference = ($getSumBonYear == 0) ? 100 : (($incomeYearly - $getSumBonYear) / $getSumBonYear) * 100;
+                  @endphp
                 </small>
               </div>
                 <div id="invLunChart" class="mb-2"></div>            
@@ -1159,7 +1155,7 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
-  var invLun = {{ number_format($percentageDifference, 0, '.', '') }};
+  var incomeYearly = {{ number_format($percentageDifference, 0, '.', '') }};
   var invPan = {{ number_format($percentageDiff, 0, '.', '') }};
   var invBon = {{ number_format($percentage, 0, '.', '') }};
   
