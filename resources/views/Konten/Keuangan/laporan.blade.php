@@ -381,8 +381,6 @@
                                     <h5 class="mb-2">{{ number_format($topup), 0 }},-</h5>  
                                     <h6 class="mb-2">OP POT Kas:</h6>
                                     <h5 class="mb-2">{{ number_format($outcomeTotal-$topup), 0 }},-</h5>  
-                                    <h6 class="mb-2">Total</h6>
-                                    <h5 class="mb-2">{{ number_format($outcomeTotal), 0 }},-</h5> 
                                   </div>
                                   <div class="avatar me-lg-4">
                                       <span class="avatar-initial rounded bg-label-secondary">
@@ -395,6 +393,8 @@
                           <div class="col-sm-6 col-lg-3">
                               <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">
                                   <div>
+                                    <h6 class="mb-2">Total Pengeluaran:</h6>
+                                    <h5 class="mb-2">{{ number_format($outcomeTotal), 0 }},-</h5> 
                                     <h6 class="mb-2">Bon Konsumen</h6>
                                       <h5 class="mb-0">{{ number_format($hutangCustumer), 0 }},-</h5>                                                                                                                                  
                                   </div>
