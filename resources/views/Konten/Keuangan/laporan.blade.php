@@ -645,7 +645,7 @@
       <!-- /Transaksi --> --}}
     </div>
   </div>
-   
+
   
 
 @endsection
@@ -660,17 +660,17 @@
 
 @push('footer-Sec-script')
     <script>         
-      var totalInvoices   = {{ $totalInvoices }};   
+      var totalInvoices   = {{$totalInvoices}};   
       var totalInvoicesBB = {{$totalInvoicesBB}};
       var totalInvoicesPJ = {{$totalInvoicesPJ}};
       var invoicesLN      = {{$invoicesLN}};
       
       var pemasukan       = {{$incomeTotal}};
       var income          = {{$incomeTotal-$outcomeTotal}};
-      var hutangCustumer  = {{$hutangCustumer}};
       var outcomeTotal    = {{$outcomeTotal+$topup}};
+      
+      var hutangCustumer  = {{$hutangCustumer}};
       var saldoKas        = {{$saldoKas}};
-      // var topup           = {{$topup}};
       
     </script>
     <script src="{{ asset('assets') }}/js/laporan.js"></script>

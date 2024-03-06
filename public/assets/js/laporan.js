@@ -197,15 +197,11 @@ function reloadPageWithNewDates() {
         height: 280,
         type: 'donut'
       },
-      labels: ['Income', 'Outcome', 'Sisa Kas', 'Bon',  'Setor Kas'],
-      series: [pemasukan, outcomeTotal, income, hutangCustumer, saldoKas],
+      labels: ['Pengeluaran', 'Margin'],
+      series: [outcomeTotal, income],
       colors: [
-        chartColors.donutB.series1,    
         chartColors.donutB.series4,
-        chartColors.donutB.series2,
-        chartColors.donutB.series3,
-        chartColors.donutB.series5,
-        chartColors.donutB.series6
+        chartColors.donutB.series1
       ],
       stroke: {
         show: false,
