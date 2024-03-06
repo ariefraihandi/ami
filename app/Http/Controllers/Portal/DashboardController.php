@@ -167,7 +167,7 @@ class DashboardController extends Controller
         $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
         $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
         $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
-        $invBonLastWeek     = Invoice::getCountInvBon($startLast, $endLast);
+        $invBon     = Invoice::getCountInvBon($startingYear, $today);
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
         $sisaKasTotal         = $fixedTotal-$setorKasWeek;
@@ -221,7 +221,7 @@ class DashboardController extends Controller
             'invPanWeek'        => $invPanWeek,
             'invPanLastWeek'    => $invPanLastWeek,
             'invBonWeek'        => $invBonWeek,
-            'invBonLastWeek'    => $invBonLastWeek,
+            'invBon'    => $invBon,
         //!Invoice
         ];
 

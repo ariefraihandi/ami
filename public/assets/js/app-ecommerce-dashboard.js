@@ -379,7 +379,7 @@
         parentHeightOffset: 0,
         type: 'radialBar'
       },
-      colors: [config.colors.info],
+      colors: [config.colors.danger],
       series: [invPan],
       plotOptions: {
         radialBar: {

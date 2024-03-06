@@ -162,7 +162,7 @@
               <h6 class="card-title mb-1">{{$getInvYear}}</h6>
               <small class="fw-medium">
                   @php
-$percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
+                    $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
                   @endphp 
                 </small>
               </div>
@@ -175,7 +175,7 @@ $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncY
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/inv-info.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/upaid.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -195,14 +195,13 @@ $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncY
                 </div>
               </div>
               @php
-                $percentageDiff = ($invPanLastWeek == 0 && $invPanWeek != 0) ? 100 : (($invPanLastWeek != 0) ? (($invPanWeek - $invPanLastWeek) / $invPanLastWeek) * 100 : 0);
-                $arrowIc = ($percentageDiff >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+                $percentageDiff = ($getSumBonYear == 0) ? 0 : ($getSumBonYear / 50000000) * 100;                                
               @endphp              
               <span class="d-block">Bon Konsumen</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($getSumBonYear, 0, ',', '.') }}</h6>
               <hr>
               <span class="d-block">Invoice Bon</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($getSumBonYear, 0, ',', '.') }}</h6>    
+              <h6 class="card-title mb-1">{{$invBon}}</h6>    
             </div>
             <div id="invPanChart" class="mb-2"></div>          
             </div>
@@ -238,7 +237,7 @@ $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncY
               </div>
               <span class="d-block">Invoice Bon</span>
               @php
-                $percentage = ($invBonLastWeek == 0 && $invBonWeek != 0) ? 100 : (($invBonLastWeek != 0) ? (($invBonWeek - $invBonLastWeek) / $invPanLastWeek) * 100 : 0);
+                $percentage = '1';
                 $arrow = ($percentage >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
               @endphp
               <h4 class="card-title mb-1">{{ $invBonWeek }}</h4>
