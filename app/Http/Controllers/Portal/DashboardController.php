@@ -160,6 +160,7 @@ class DashboardController extends Controller
         $outcomelastWeek    = FinancialTransaction::getWeeklyOutTransonAmount($startLast, $endLast);
 
         $getInvYear         = Invoice::getInv($startingYear, $today)->count();
+        $getAllIncYear      = Invoice::getInv($startingYear, $today)->sum('total_amount');
         $getSUmBonYear      = Invoice::getBon($startingYear, $today);
         $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
         $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);

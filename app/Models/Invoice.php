@@ -41,7 +41,6 @@ class Invoice extends Model
                     ->whereColumn('total_amount', '>', 'panjar_amount')
                     ->sum(DB::raw('total_amount - panjar_amount'));
     }
-    
 
     
     public static function getInvBB($startDate, $endDate)

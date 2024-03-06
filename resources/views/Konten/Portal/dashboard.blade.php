@@ -156,13 +156,13 @@
                 </div>
               </div>
               <span class="d-block">Yearly Income</span>
-              <h5 class="card-title mb-1">Rp. {{ number_format($incomeYearly, 0, ',', '.') }}</h5>
+              <h6 class="card-title mb-1">Rp. {{ number_format($incomeYearly, 0, ',', '.') }}</h6>
               <hr> 
               <span class="d-block">Yearly Invoice</span>
-              <h5 class="card-title mb-1">{{$getInvYear}}</h5>
+              <h6 class="card-title mb-1">{{$getInvYear}}</h6>
               <small class="fw-medium">
                   @php
-                    $percentageDifference = ($getSumBonYear == 0) ? 100 : (($incomeYearly - $getSumBonYear) / $getSumBonYear) * 100;
+                    $percentageDifference = ($getSumBonYear == 0) ? 100 : (($getAllIncYear - $getSumBonYear) / $getSumBonYear) * 100;
                   @endphp
                 </small>
               </div>
@@ -194,20 +194,15 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Invoice Panjar</span>
               @php
                 $percentageDiff = ($invPanLastWeek == 0 && $invPanWeek != 0) ? 100 : (($invPanLastWeek != 0) ? (($invPanWeek - $invPanLastWeek) / $invPanLastWeek) * 100 : 0);
                 $arrowIc = ($percentageDiff >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
-              @endphp
-              <h4 class="card-title mb-1">{{ $invPanWeek }}</h4>
-              <small class="fw-medium">
-                  <i class="{{ $arrowIc }}"></i> 
-                  @if ($percentageDiff >= 0)
-                      +{{ number_format(abs($percentageDiff), 2) }}%
-                  @else
-                      -{{ number_format(abs($percentageDiff), 2) }}%
-                  @endif
-              </small>
+              @endphp              
+              <span class="d-block">Bon Konsumen</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($getSumBonYear, 0, ',', '.') }}</h6>
+              <hr>
+              <span class="d-block">Invoice Bon</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($getSumBonYear, 0, ',', '.') }}</h6>    
             </div>
             <div id="invPanChart" class="mb-2"></div>          
             </div>
