@@ -198,6 +198,7 @@ class DashboardController extends Controller
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
             'incomeYearly'    => $incomeYearly,
+            'getAllIncYear'    => $getAllIncYear,
         //!Income            
         
         // Outcome            
