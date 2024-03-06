@@ -668,9 +668,9 @@
       var pemasukan       = {{$incomeTotal}};
       var income          = {{$incomeTotal-$outcomeTotal}};
       var hutangCustumer  = {{$hutangCustumer}};
-      var outcomeTotal    = {{$outcomeTotal}};
+      var outcomeTotal    = {{$outcomeTotal+$topup}};
       var saldoKas        = {{$saldoKas}};
-      var topup           = {{$topup}};
+      // var topup           = {{$topup}};
       
     </script>
     <script src="{{ asset('assets') }}/js/laporan.js"></script>

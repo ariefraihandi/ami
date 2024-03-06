@@ -197,8 +197,8 @@ function reloadPageWithNewDates() {
         height: 280,
         type: 'donut'
       },
-      labels: ['Income', 'Outcome', 'Sisa Kas', 'Bon',  'Setor Kas', 'Top Up'],
-      series: [pemasukan, outcomeTotal, income, hutangCustumer, saldoKas, topup],
+      labels: ['Income', 'Outcome', 'Sisa Kas', 'Bon',  'Setor Kas'],
+      series: [pemasukan, outcomeTotal, income, hutangCustumer, saldoKas],
       colors: [
         chartColors.donutB.series1,    
         chartColors.donutB.series4,
