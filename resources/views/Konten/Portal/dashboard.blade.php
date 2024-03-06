@@ -162,7 +162,7 @@
               <h6 class="card-title mb-1">{{$getInvYear}}</h6>
               <small class="fw-medium">
                   @php
-$percentageDifference = ($getInvYear == 0) ? 100 : (($getAllIncYear - $getInvYear) / $getInvYear) * 100;
+$percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
                   @endphp 
                 </small>
               </div>
