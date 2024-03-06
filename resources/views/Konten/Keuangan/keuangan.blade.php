@@ -25,8 +25,8 @@
                 <div
                   class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                   <div>
-                    <h6 class="mb-2">Pendapatan Hari Ini</h6>                    
-                    <h4 class="mb-2">Rp. {{ number_format($incomeToday) }}</h4>                       
+                    <h6 class="mb-2">Pendapatan Hari Ini + Sisa</h6>                    
+                    <h4 class="mb-2">Rp. {{ number_format($incomeToday) }} + {{number_format($sisaBefore)}}</h4>                       
                     <span class="text-muted me-2">Pendapatan Kemarin</span>                                  
                     <p class="mb-0">
                       <span class="text-muted me-2">Rp. {{ number_format($incomeYesterday) }}</span>
@@ -107,7 +107,7 @@
                   <div>
                     <h6 class="mb-2">Sisa Kas Hari Ini</h6>
                     <h4 class="mb-2">Rp.
-                      {{ number_format($incomeToday+$topupToday-$outcomeToday-$setorToday) }}
+                      {{ number_format($incomeToday+$sisaBefore+$topupToday-$outcomeToday-$setorToday) }}
                     </h4>
                   </div>
                   <div class="avatar">

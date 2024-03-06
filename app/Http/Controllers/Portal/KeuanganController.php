@@ -192,13 +192,13 @@ class KeuanganController extends Controller
             $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData               = UserRole::where('id', $user->role)->first();
         //!Sistem   
-
+        $starting               = Carbon::createFromDate(2024, 1, 1);       
         $today                  = Carbon::now();
         $yesterday              = $today->copy()->subDay();
         $usersData              = User::all();
         $transaction            = FinancialTransaction::all();
 
-        $incomeToday         = FinancialTransaction::getTransactionAmount($today);
+        $incomeToday            = FinancialTransaction::getTransactionAmount($today);
         $incomeYesterday        = FinancialTransaction::getTransactionAmount($yesterday);
         $outcomeToday           = FinancialTransaction::getOutTransAmount($today);
         $outcomeYesterday       = FinancialTransaction::getOutTransAmount($yesterday);
@@ -206,8 +206,15 @@ class KeuanganController extends Controller
         $setorYesterday         = FinancialTransaction::getDayliSetorKasAmount($yesterday);
         $topupToday             = FinancialTransaction::getDayliTopUpAmount($today);
         $topupYesterday         = FinancialTransaction::getDayliTopUpAmount($yesterday);
-        // $sisaKasYesterday       = $incomeYesterday+$topupYesterday-$outcomeYesterday-$setorYesterday;
-        // $incomeToday            = $incomeTodayRaw+$sisaKasYesterday;
+    
+        //Geting Saldo Sisa
+            $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
+            $outcomeForSisa     = FinancialTransaction::getWeeklyOutTransonAmount($starting, $yesterday);
+            $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+            $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+            $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;        
+    
+        //!Geting Saldo Sisa
 
         $additionalData = [
             'title'                     => 'Bisnis',
@@ -226,6 +233,7 @@ class KeuanganController extends Controller
             'outcomeYesterday'          => $outcomeYesterday,
             'setorToday'                => $setorToday,
             'topupToday'                => $topupToday,          
+            'sisaBefore'                => $sisaBefore,          
         ];
 
         return view('Konten/Keuangan/keuangan', $additionalData);
