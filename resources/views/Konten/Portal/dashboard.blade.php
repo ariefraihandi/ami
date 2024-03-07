@@ -216,7 +216,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/inv-danger.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/income-warning.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -235,22 +235,10 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Invoice Bon</span>
-              @php
-                $percentage = '1';
-                $arrow = ($percentage >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
-              @endphp
-              <h4 class="card-title mb-1">{{ $invBonWeek }}</h4>
-              <small class="fw-medium">
-                  <i class="{{ $arrow }}"></i> 
-                  @if ($percentage >= 0)
-                      +{{ number_format(abs($percentage), 2) }}%
-                  @else
-                      -{{ number_format(abs($percentage), 2) }}%
-                  @endif
-              </small>
+              <span class="d-block">Setor Kas</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6>            
             </div>
-            <div id="invBonChart" class="mb-2"></div>          
+            {{-- <div id="invBonChart" class="mb-2"></div>           --}}
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -1151,7 +1139,7 @@
   
   var incomeYearly = {{ number_format($percentageDifference, 0, '.', '') }};
   var invPan = {{ number_format($percentageDiff, 0, '.', '') }};
-  var invBon = {{ number_format($percentage, 0, '.', '') }};
+  
   
 </script>
 <script src="{{ asset('assets') }}/js/app-ecommerce-dashboard.js"></script>

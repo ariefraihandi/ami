@@ -395,7 +395,7 @@
                           <div class="col-sm-6 col-lg-3">
                               <div class="d-flex justify-content-between align-items-start border-end pb-3 pb-sm-0 card-widget-3">
                                   <div>
-                                    <h6 class="mb-2">Total Pengeluaran:</h6>
+                                    <h6 class="mb-2">Pengeluaran:</h6>
                                     <h5 class="mb-2">{{ number_format($outcomeTotal), 0 }},-</h5> 
                                     <hr>
                                     <h6 class="mb-2">Bon Konsumen</h6>

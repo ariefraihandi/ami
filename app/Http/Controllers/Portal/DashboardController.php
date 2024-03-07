@@ -143,6 +143,7 @@ class DashboardController extends Controller
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
         $incomeYearly       = FinancialTransaction::getWeeklyTransactionAmount($startingYear, $today);
+        $setorKas           = FinancialTransaction::getWeeklySetorKasAmount($startingYear, $today);        
         // $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
         
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
@@ -167,7 +168,7 @@ class DashboardController extends Controller
         $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
         $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
         $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
-        $invBon     = Invoice::getCountInvBon($startingYear, $today);
+        $invBon             = Invoice::getCountInvBon($startingYear, $today);
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
         $sisaKasTotal         = $fixedTotal-$setorKasWeek;
@@ -197,8 +198,8 @@ class DashboardController extends Controller
             'totIncomeSab'      => $totIncomeSab,
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
-            'incomeYearly'    => $incomeYearly,
-            'getAllIncYear'    => $getAllIncYear,
+            'incomeYearly'      => $incomeYearly,
+            'getAllIncYear'     => $getAllIncYear,
         //!Income            
         
         // Outcome            
@@ -213,6 +214,7 @@ class DashboardController extends Controller
             'outcomeWeekly'     => $outcomeWeekly,
             'outcomelastWeek'   => $outcomelastWeek,
         //!Outcome    
+            'setorKas'          => $setorKas,
         
         // Invoice
             'getInvYear'        => $getInvYear,
