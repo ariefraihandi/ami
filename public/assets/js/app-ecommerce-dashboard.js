@@ -195,7 +195,7 @@
       },
       series: [
         {
-          data: [totIncomeSen, totIncomeSel, ,totIncomeRab, totIncomeKam, totIncomeJum, totIncomeSab]
+          data: [totIncomeSen, totIncomeSel, totIncomeRab, totIncomeKam, totIncomeJum, totIncomeSab]
         }
       ],
       colors: [config.colors.success],
@@ -432,8 +432,8 @@
       parentHeightOffset: 0,
       type: 'radialBar'
     },
-    colors: [config.colors.danger],
-    series: [invBon],
+    colors: [config.colors.warning],
+    series: [topup],
     plotOptions: {
       radialBar: {
         startAngle: -90,

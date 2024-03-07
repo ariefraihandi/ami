@@ -160,11 +160,9 @@
               <hr> 
               <span class="d-block">Yearly Invoice</span>
               <h6 class="card-title mb-1">{{$getInvYear}}</h6>
-              <small class="fw-medium">
-                  @php
-                    $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
-                  @endphp 
-                </small>
+                @php
+                  $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
+                @endphp 
               </div>
                 <div id="invLunChart" class="mb-2"></div>            
           </div>
@@ -236,9 +234,15 @@
                 </div>
               </div>
               <span class="d-block">Setor Kas</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6>            
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6>          
+              <hr>
+              <span class="d-block">Top Up</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($topUp, 0, ',', '.') }}</h6>          
             </div>
-            {{-- <div id="invBonChart" class="mb-2"></div>           --}}
+            @php
+              $percentage = ($setorKas == 0) ? 0 : ($topUp / $setorKas) * 100;
+            @endphp
+            <div id="invBonChart" class="mb-2"></div>
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -1137,6 +1141,7 @@
   
   var incomeYearly = {{ number_format($percentageDifference, 0, '.', '') }};
   var invPan = {{ number_format($percentageDiff, 0, '.', '') }};
+  var topup = {{ number_format($percentage, 0, '.', '') }};
   
   
 </script>

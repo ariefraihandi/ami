@@ -144,8 +144,9 @@ class DashboardController extends Controller
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
         $incomeYearly       = FinancialTransaction::getWeeklyTransactionAmount($startingYear, $today);
         $setorKas           = FinancialTransaction::getWeeklySetorKasAmount($startingYear, $today);        
+        $topUp           = FinancialTransaction::getWeeklyTopUpAmount($startingYear, $today);        
         // $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
-        
+      
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
         $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
 
@@ -215,6 +216,7 @@ class DashboardController extends Controller
             'outcomelastWeek'   => $outcomelastWeek,
         //!Outcome    
             'setorKas'          => $setorKas,
+            'topUp'            => $topUp,
         
         // Invoice
             'getInvYear'        => $getInvYear,
@@ -223,7 +225,7 @@ class DashboardController extends Controller
             'invPanWeek'        => $invPanWeek,
             'invPanLastWeek'    => $invPanLastWeek,
             'invBonWeek'        => $invBonWeek,
-            'invBon'    => $invBon,
+            'invBon'            => $invBon,
         //!Invoice
         ];
 
