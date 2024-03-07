@@ -247,7 +247,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/income-danger.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -255,21 +255,19 @@
                   <button
                     class="btn p-0"
                     type="button"
-                    id="cardOpt1"
+                    id="cardOpt6"
                     data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false">
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt1">
-                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
-              <span class="d-block">Sisa Kas</span>
-              <h4 class="card-title mb-1">$14,857</h4>
-              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
+              <span class="d-block">Pengeluaran</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6> 
             </div>
           </div>
         </div>
