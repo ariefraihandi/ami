@@ -192,7 +192,7 @@ class KeuanganController extends Controller
             $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData               = UserRole::where('id', $user->role)->first();
         //!Sistem   
-        $starting               = Carbon::createFromDate(2024, 1, 1);       
+        $starting       = Carbon::createFromDate(2023, 12, 1);        
         $today                  = Carbon::now();
         $yesterday              = $today->copy()->subDay();
         $usersData              = User::all();
