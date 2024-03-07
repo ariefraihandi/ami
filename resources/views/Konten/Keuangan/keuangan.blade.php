@@ -38,7 +38,7 @@
                         }
                       @endphp                  
                       @if ($percentageIncome < 0)
-                        <span class="badge bg-label-danger">+{{ number_format($percentageIncome, 1) }}%</span>
+                        <span class="badge bg-label-danger">{{ number_format($percentageIncome, 1) }}%</span>
                       @elseif ($percentageIncome > 0)
                         <span class="badge bg-label-success">+{{ number_format($percentageIncome, 1) }}%</span>
                       @else
