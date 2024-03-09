@@ -120,8 +120,9 @@ class DashboardController extends Controller
             $bulanLalu      = Date::now()->subMonth()->locale('id')->monthName;
             $startingYear   = Carbon::now()->startOfYear();
             $startingMonth  = Carbon::now()->startOfMonth();
-            $startPastMonth = $startingMonth->subMonth()->startOfMonth();
-            $endPastMonth   = $startingMonth->subMonth()->endOfMonth();
+            $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
+            $endPastMonth = $startPastMonth->copy()->endOfMonth();
+            dd($startPastMonth, $endPastMonth);
         //!Syistem        
        
         //Date Configuration
@@ -163,6 +164,7 @@ class DashboardController extends Controller
                 $setorKasLastMonth  = FinancialTransaction::getWeeklySetorKasAmount($startPastMonth, $endPastMonth);     
                 $topUpMonthly       = FinancialTransaction::getWeeklyTopUpAmount($startingMonth, $today);           
                 $topUpLastMonth     = FinancialTransaction::getWeeklyTopUpAmount($startPastMonth, $endPastMonth);  
+                
                 $outcomeMountly     = FinancialTransaction::getRangeOutTransonAmount($startingMonth, $today);  
                 $outcomeLastMount   = FinancialTransaction::getRangeOutTransonAmount($startPastMonth, $endPastMonth);  
                 $operational        = $outcomeMountly-$topUpMonthly;
