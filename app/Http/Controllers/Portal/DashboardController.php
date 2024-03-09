@@ -120,6 +120,7 @@ class DashboardController extends Controller
             $bulanLalu      = Date::now()->subMonth()->locale('id')->monthName;
             $startingYear   = Carbon::now()->startOfYear();
             $startingMonth  = Carbon::now()->startOfMonth();
+            $endMonth       = Carbon::now()->endOfMonth();
             $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
             $endPastMonth   = $startPastMonth->copy()->endOfMonth();
         //!Syistem        
@@ -214,6 +215,8 @@ class DashboardController extends Controller
             'childSubMenus'     => $childSubMenus,
             'stardateWeek'      => $seninDate,
             'enddateWeek'       => $sabtuDate,
+            'startingMonth'     => $startingMonth,
+            'endMonth'          => $endMonth,
         //!Sistem
 
         // Income

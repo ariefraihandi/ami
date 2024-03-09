@@ -143,7 +143,7 @@
                 <div class="dropdown">
                   <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true"aria-expanded="false"><i class="bx bx-dots-vertical-rounded"></i></button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -180,7 +180,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -221,7 +221,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -258,7 +258,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -299,14 +299,14 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
-              <span class="d-block">Pengeluaran {{$bulan}}</span>
+              <span class="d-block">Outcome {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
               <hr>
-              <span class="d-block">Pengeluaran {{$bulanLalu}}</span>
+              <span class="d-block">Outcome {{$bulanLalu}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($outcomeLastMount, 0, ',', '.') }}</h6>   
               @php
                 $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
@@ -336,7 +336,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
