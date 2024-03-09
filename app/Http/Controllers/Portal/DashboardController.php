@@ -166,7 +166,6 @@ class DashboardController extends Controller
                 
                 $outcomeMountly     = FinancialTransaction::getRangeOutTransonAmount($startingMonth, $today);  
                 $outcomeLastMount   = FinancialTransaction::getRangeOutTransonAmount($startPastMonth, $endPastMonth);  
-                $operational        = $outcomeMountly-$topUpMonthly;
                 $marginMonthly      = $incomeMonthly-$outcomeMountly;
                 $marginLastMonth    = $incomeLastMonth-$outcomeLastMount;
             //!Money
@@ -247,7 +246,6 @@ class DashboardController extends Controller
             'topUpMonthly'      => $topUpMonthly,
             'topUpLastMonth'    => $topUpLastMonth,
             
-            'operational'       => $operational,
             'outcomeMountly'    => $outcomeMountly,
             'outcomeLastMount'  => $outcomeLastMount,
             

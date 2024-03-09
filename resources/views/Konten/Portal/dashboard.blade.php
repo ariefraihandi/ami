@@ -303,11 +303,11 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">OP {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($operational, 0, ',', '.') }}</h6>   
-              <hr>
-              <span class="d-block">OP + Topup {{$bulan}}</span>
+              <span class="d-block">Pengeluaran {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
+              <hr>
+              <span class="d-block">Pengeluaran {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeLastMount, 0, ',', '.') }}</h6>   
               @php
                 $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
               @endphp
