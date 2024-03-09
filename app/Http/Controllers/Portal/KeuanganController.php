@@ -209,7 +209,7 @@ class KeuanganController extends Controller
     
         //Geting Saldo Sisa
             $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
-            $outcomeForSisa     = FinancialTransaction::getWeeklyOutTransonAmount($starting, $yesterday);
+            $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
             $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
             $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
             $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;        
@@ -599,13 +599,13 @@ class KeuanganController extends Controller
         $topupData              = FinancialTransaction::getTopup($startDate, $endDate);
 
         $incomeTotal            = FinancialTransaction::getWeeklyTransactionAmount($startDate, $endDate);
-        $outcomeTotal           = FinancialTransaction::getWeeklyOutTransonAmount($startDate, $endDate);
+        $outcomeTotal           = FinancialTransaction::getRangeOutTransonAmount($startDate, $endDate);
         $topup                  = FinancialTransaction::getWeeklyTopUpAmount($startDate, $endDate);
         $setorKas               = FinancialTransaction::getWeeklySetorKasAmount($startDate, $endDate);
 
         //Geting Saldo Sisa
             $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
-            $outcomeForSisa     = FinancialTransaction::getWeeklyOutTransonAmount($starting, $yesterday);
+            $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
             $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
             $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
             $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;
