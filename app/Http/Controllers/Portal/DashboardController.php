@@ -121,8 +121,7 @@ class DashboardController extends Controller
             $startingYear   = Carbon::now()->startOfYear();
             $startingMonth  = Carbon::now()->startOfMonth();
             $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
-            $endPastMonth = $startPastMonth->copy()->endOfMonth();
-            dd($startPastMonth, $endPastMonth);
+            $endPastMonth   = $startPastMonth->copy()->endOfMonth();
         //!Syistem        
        
         //Date Configuration
