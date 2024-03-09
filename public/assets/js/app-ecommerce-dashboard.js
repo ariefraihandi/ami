@@ -316,7 +316,7 @@
     activityAreaChart.render();
   }
 
-  const invLunChartChartEl = document.querySelector('#invLunChart'),
+  const invLunChartChartEl = document.querySelector('#incomeMonthlyChart'),
     invLunChartConfig = {
       chart: {
         height: 130,
@@ -327,7 +327,7 @@
         type: 'radialBar'
       },
       colors: [config.colors.success],
-      series: [incomeYearly],
+      series: [incomeMonthly],
       plotOptions: {
         radialBar: {
           startAngle: -90,
@@ -369,7 +369,7 @@
     invLunChartChart.render();
   }
   
-  const invPanChartEl = document.querySelector('#invPanChart'),
+  const invPanChartEl = document.querySelector('#bonMonthlyChart'),
     invPanChartConfig = {
       chart: {
         height: 130,
@@ -380,7 +380,7 @@
         type: 'radialBar'
       },
       colors: [config.colors.danger],
-      series: [invPan],
+      series: [bonMonthly],
       plotOptions: {
         radialBar: {
           startAngle: -90,
@@ -422,8 +422,61 @@
     invPanChart.render();
   }
 
-  const invBonChartChartEl = document.querySelector('#invBonChart'),
+  const invBonChartChartEl = document.querySelector('#setorkasChart'),
   invBonChartConfig = {
+    chart: {
+      height: 130,
+      sparkline: {
+        enabled: true
+      },
+      parentHeightOffset: 0,
+      type: 'radialBar'
+    },
+    colors: [config.colors.warning],
+    series: [setorkasMonthly],
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '55%'
+        },
+        track: {
+          background: config.colors_label.secondary
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            fontSize: '22px',
+            color: headingColor,
+            fontWeight: 500,
+            offsetY: 0
+          }
+        }
+      }
+    },
+    grid: {
+      show: false,
+      padding: {
+        left: -10,
+        right: -10,
+        top: -10
+      }
+    },
+    stroke: {
+      lineCap: 'round'
+    },
+    labels: ['Progress']
+  };
+  if (typeof invBonChartChartEl !== undefined && invBonChartChartEl !== null) {
+    const invBonChartChart = new ApexCharts(invBonChartChartEl, invBonChartConfig);
+    invBonChartChart.render();
+  }
+  
+  const topupChartChartEl = document.querySelector('#topupChart'),
+  topupChartConfig = {
     chart: {
       height: 130,
       sparkline: {
@@ -470,10 +523,116 @@
     },
     labels: ['Progress']
   };
-if (typeof invBonChartChartEl !== undefined && invBonChartChartEl !== null) {
-  const invBonChartChart = new ApexCharts(invBonChartChartEl, invBonChartConfig);
-  invBonChartChart.render();
-}
+  if (typeof topupChartChartEl !== undefined && topupChartChartEl !== null) {
+    const topupChart = new ApexCharts(topupChartChartEl, topupChartConfig);
+    topupChart.render();
+  }
+  
+  const outcomeChartEl = document.querySelector('#outcomeChart'),
+  outcomeConfig = {
+    chart: {
+      height: 130,
+      sparkline: {
+        enabled: true
+      },
+      parentHeightOffset: 0,
+      type: 'radialBar'
+    },
+    colors: [config.colors.danger],
+    series: [pengeluaran],
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '55%'
+        },
+        track: {
+          background: config.colors_label.secondary
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            fontSize: '22px',
+            color: headingColor,
+            fontWeight: 500,
+            offsetY: 0
+          }
+        }
+      }
+    },
+    grid: {
+      show: false,
+      padding: {
+        left: -10,
+        right: -10,
+        top: -10
+      }
+    },
+    stroke: {
+      lineCap: 'round'
+    },
+    labels: ['Progress']
+  };
+  if (typeof outcomeChartEl !== undefined && outcomeChartEl !== null) {
+    const outcomeChart = new ApexCharts(outcomeChartEl, outcomeConfig);
+    outcomeChart.render();
+  }
+  
+  const marginChartEl = document.querySelector('#marginChart'),
+  marginConfig = {
+    chart: {
+      height: 130,
+      sparkline: {
+        enabled: true
+      },
+      parentHeightOffset: 0,
+      type: 'radialBar'
+    },
+    colors: [config.colors.success],
+    series: [margin],
+    plotOptions: {
+      radialBar: {
+        startAngle: -90,
+        endAngle: 90,
+        hollow: {
+          size: '55%'
+        },
+        track: {
+          background: config.colors_label.secondary
+        },
+        dataLabels: {
+          name: {
+            show: false
+          },
+          value: {
+            fontSize: '22px',
+            color: headingColor,
+            fontWeight: 500,
+            offsetY: 0
+          }
+        }
+      }
+    },
+    grid: {
+      show: false,
+      padding: {
+        left: -10,
+        right: -10,
+        top: -10
+      }
+    },
+    stroke: {
+      lineCap: 'round'
+    },
+    labels: ['Progress']
+  };
+  if (typeof marginChartEl !== undefined && marginChartEl !== null) {
+    const marginChart = new ApexCharts(marginChartEl, marginConfig);
+    marginChart.render();
+  }
 
 
   // --------------------------------------------------------------------

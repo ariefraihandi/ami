@@ -71,7 +71,7 @@ class FinancialTransaction extends Model
                    ->sum('transaction_amount');
     }   
     
-    public static function getWeeklyOutTransonAmount($startDate, $endDate)
+    public static function getRangeOutTransonAmount($startDate, $endDate)
     {
         return self::whereBetween('transaction_date', [$startDate, $endDate])
                    ->whereIn('status', [4, 5])

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Date;
 use App\Models\Invoice;
 use App\Models\Customer;
 use App\Models\ItemInvoice;
@@ -107,18 +108,23 @@ class DashboardController extends Controller
                 return redirect('/login');
             }                
 
-            $accessMenus = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+            $accessMenus    = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
             $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
             $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
 
-            $menus = Menu::whereIn('id', $accessMenus)->get();
-            $subMenus = MenuSub::whereIn('id', $accessSubmenus)->get();
-            $childSubMenus = MenuSubsChild::whereIn('id', $accessChildren)->get();
-            $roleData = UserRole::where('id', $user->role)->first();
+            $menus          = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
+            $roleData       = UserRole::where('id', $user->role)->first();
+            $bulan          = Date::now()->locale('id')->monthName;
+            $bulanLalu      = Date::now()->subMonth()->locale('id')->monthName;
+            $startingYear   = Carbon::now()->startOfYear();
+            $startingMonth  = Carbon::now()->startOfMonth();
+            $startPastMonth = $startingMonth->subMonth()->startOfMonth();
+            $endPastMonth   = $startingMonth->subMonth()->endOfMonth();
         //!Syistem        
        
         //Date Configuration
-            $startingYear   = Carbon::now()->startOfYear();
             $yearStart      = $startingYear->toDateString();
             $today          = Carbon::now();
             $yesterday      = $today->copy()->subDay();
@@ -142,11 +148,33 @@ class DashboardController extends Controller
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
         $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
         $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
-        $incomeYearly       = FinancialTransaction::getWeeklyTransactionAmount($startingYear, $today);
-        $setorKas           = FinancialTransaction::getWeeklySetorKasAmount($startingYear, $today);        
-        $topUp           = FinancialTransaction::getWeeklyTopUpAmount($startingYear, $today);        
+        
+        
         // $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
-      
+        
+        
+        //Bulanan
+            //Money
+                $incomeMonthly      = FinancialTransaction::getWeeklyTransactionAmount($startingMonth, $today);
+                $incomeLastMonth      = FinancialTransaction::getWeeklyTransactionAmount($startPastMonth, $endPastMonth);
+                $totalInvMouthly    = Invoice::getInv($startingMonth, $today)->sum('total_amount');
+                $totalBonMonthly    = Invoice::getBon($startingMonth, $today);
+                $setorKasMonthly    = FinancialTransaction::getWeeklySetorKasAmount($startingMonth, $today);        
+                $setorKasLastMonth  = FinancialTransaction::getWeeklySetorKasAmount($startPastMonth, $endPastMonth);     
+                $topUpMonthly       = FinancialTransaction::getWeeklyTopUpAmount($startingMonth, $today);           
+                $topUpLastMonth     = FinancialTransaction::getWeeklyTopUpAmount($startPastMonth, $endPastMonth);  
+                $outcomeMountly     = FinancialTransaction::getRangeOutTransonAmount($startingMonth, $today);  
+                $outcomeLastMount   = FinancialTransaction::getRangeOutTransonAmount($startPastMonth, $endPastMonth);  
+                $operational        = $outcomeMountly-$topUpMonthly;
+                $marginMonthly      = $incomeMonthly-$outcomeMountly;
+                $marginLastMonth    = $incomeLastMonth-$outcomeLastMount;
+            //!Money
+            //Count
+                $getInvMonthly      = Invoice::getInv($startingMonth, $today)->count();
+                $invBonMonthly      = Invoice::getCountInvBon($startingMonth, $today);
+            //!Count
+        //!Bulanan
+
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
         $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
 
@@ -158,18 +186,18 @@ class DashboardController extends Controller
         $totOutcomeKam      = FinancialTransaction::getOutTransAmount($kamisDate);
         $totOutcomeJum      = FinancialTransaction::getOutTransAmount($jumatDate);
         $totOutcomeSab      = FinancialTransaction::getOutTransAmount($sabtuDate);
-        $outcomeWeekly      = FinancialTransaction::getWeeklyOutTransonAmount($seninDate, $sabtuDate);
-        $outcomelastWeek    = FinancialTransaction::getWeeklyOutTransonAmount($startLast, $endLast);
+        $outcomeWeekly      = FinancialTransaction::getRangeOutTransonAmount($seninDate, $sabtuDate);
+        $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);
 
-        $getInvYear         = Invoice::getInv($startingYear, $today)->count();
-        $getAllIncYear      = Invoice::getInv($startingYear, $today)->sum('total_amount');
-        $getSUmBonYear      = Invoice::getBon($startingYear, $today);
+        
+        
+        
         $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
         $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
         $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
         $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
         $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
-        $invBon             = Invoice::getCountInvBon($startingYear, $today);
+        
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
         $sisaKasTotal         = $fixedTotal-$setorKasWeek;
@@ -199,9 +227,32 @@ class DashboardController extends Controller
             'totIncomeSab'      => $totIncomeSab,
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
-            'incomeYearly'      => $incomeYearly,
-            'getAllIncYear'     => $getAllIncYear,
-        //!Income            
+            
+        //!Income      
+            
+        // Data Bulanan
+            'bulan'             => $bulan,
+            'bulanLalu'         => $bulanLalu,
+            'totalInvMouthly'   => $totalInvMouthly,
+            'incomeMonthly'     => $incomeMonthly,
+            'totalBonMonthly'   => $totalBonMonthly,
+
+            'getInvMonthly'     => $getInvMonthly,
+            'invBonMonthly'     => $invBonMonthly,
+
+            'setorKasMonthly'   => $setorKasMonthly,
+            'setorKasLastMonth' => $setorKasLastMonth,
+
+            'topUpMonthly'      => $topUpMonthly,
+            'topUpLastMonth'    => $topUpLastMonth,
+            
+            'operational'       => $operational,
+            'outcomeMountly'    => $outcomeMountly,
+            'outcomeLastMount'  => $outcomeLastMount,
+            
+            'marginMonthly'     => $marginMonthly,
+            'marginLastMonth'   => $marginLastMonth,
+        //! Data Bulanan 
         
         // Outcome            
             'outcomeTotal'      => $outcomeTotal,
@@ -215,17 +266,16 @@ class DashboardController extends Controller
             'outcomeWeekly'     => $outcomeWeekly,
             'outcomelastWeek'   => $outcomelastWeek,
         //!Outcome    
-            'setorKas'          => $setorKas,
-            'topUp'            => $topUp,
+            
+          
         
         // Invoice
-            'getInvYear'        => $getInvYear,
-            'getSumBonYear'     => $getSUmBonYear,
+            
             'invLunLastWeek'    => $invLunLastWeek,
             'invPanWeek'        => $invPanWeek,
             'invPanLastWeek'    => $invPanLastWeek,
             'invBonWeek'        => $invBonWeek,
-            'invBon'            => $invBon,
+            
         //!Invoice
         ];
 

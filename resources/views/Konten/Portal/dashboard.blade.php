@@ -141,30 +141,22 @@
                     class="rounded" />
                 </div>
                 <div class="dropdown">
-                  <button
-                    class="btn p-0"
-                    type="button"
-                    id="cardOpt6"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
+                  <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true"aria-expanded="false"><i class="bx bx-dots-vertical-rounded"></i></button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
                     <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
-              <span class="d-block">Yearly Income</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($incomeYearly, 0, ',', '.') }}</h6>
+              <span class="d-block">Income {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($incomeMonthly, 0, ',', '.') }}</h6>
               <hr> 
-              <span class="d-block">Yearly Invoice</span>
-              <h6 class="card-title mb-1">{{$getInvYear}}</h6>
+              <span class="d-block">Jumlah Invoice</span>
+              <h6 class="card-title mb-1">{{$getInvMonthly}}</h6>
                 @php
-                  $percentageDifference = ($getAllIncYear == 0) ? 0 : ($incomeYearly / $getAllIncYear) * 100;
+                  $incomeMounthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($incomeMonthly / $totalInvMouthly) * 100;
                 @endphp 
               </div>
-                <div id="invLunChart" class="mb-2"></div>            
+                <div id="incomeMonthlyChart" class="mb-2"></div>            
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -193,15 +185,15 @@
                 </div>
               </div>
               @php
-                $percentageDiff = ($getSumBonYear == 0) ? 0 : ($getSumBonYear / 50000000) * 100;                                
+                $bonMonthlyPercentage = ($totalBonMonthly == 0) ? 0 : ($totalBonMonthly / 50000000) * 100;                                
               @endphp              
-              <span class="d-block">Bon Konsumen</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($getSumBonYear, 0, ',', '.') }}</h6>
+              <span class="d-block">Bon Inv {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($totalBonMonthly, 0, ',', '.') }}</h6>
               <hr>
-              <span class="d-block">Invoice Bon</span>
-              <h6 class="card-title mb-1">{{$invBon}}</h6>    
+              <span class="d-block">Jumlah Invoice</span>
+              <h6 class="card-title mb-1">{{$invBonMonthly}}</h6>    
             </div>
-            <div id="invPanChart" class="mb-2"></div>          
+            <div id="bonMonthlyChart" class="mb-2"></div>          
             </div>
           </div>
         </div>
@@ -233,18 +225,59 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Setor Kas</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6>          
+              <span class="d-block">Setor Kas {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasMonthly, 0, ',', '.') }}</h6>          
               <hr>
-              <span class="d-block">Top Up</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($topUp, 0, ',', '.') }}</h6>          
+              <span class="d-block">Setor Kas {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasLastMonth, 0, ',', '.') }}</h6>          
             </div>
-            @php
-              $percentage = ($setorKas == 0) ? 0 : ($topUp / $setorKas) * 100;
-            @endphp
-            <div id="invBonChart" class="mb-2"></div>
+              @php
+                  $setorkasPercentage = ($setorKasMonthly == 0) ? 0 : (($setorKasMonthly - $setorKasLastMonth) / $setorKasMonthly) * 100;
+              @endphp
+            <div id="setorkasChart" class="mb-2"></div>
           </div>
         </div>
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/income-up-warning.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Top Up {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($topUpMonthly, 0, ',', '.') }}</h6>   
+              <hr>
+              <span class="d-block">Top Up {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($topUpLastMonth, 0, ',', '.') }}</h6>   
+              @php
+                $topupPercentage = ($topUpLastMonth == 0) ? 0 : (($topUpMonthly - $topUpLastMonth) / $topUpLastMonth) * 100;
+              @endphp
+            </div>
+            <div id="topupChart" class="mb-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 col-lg-4">
+      <div class="row">        
         <div class="col-lg-6 col-md-3 col-6 mb-4">
           <div class="card">
             <div class="card-body">
@@ -270,24 +303,16 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Pengeluaran</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($setorKas, 0, ',', '.') }}</h6> 
+              <span class="d-block">OP {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($operational, 0, ',', '.') }}</h6>   
+              <hr>
+              <span class="d-block">OP + Topup {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
+              @php
+                $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
+              @endphp
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12 col-lg-4">
-      <div class="row">        
-        <div class="col-lg-6 col-md-3 col-6 mb-4">
-          <div class="card">
-            <div class="card-body pb-0">
-              <span class="d-block fw-medium">Expenses</span>
-            </div>
-            <div id="expensesChart" class="mb-2"></div>
-            <div class="p-3 pt-2">
-              <small class="text-muted d-block text-center">$21k Expenses more than last month</small>
-            </div>
+            <div id="outcomeChart" class="mb-2"></div>
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -296,7 +321,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/briefcase.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/wallet.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -304,22 +329,27 @@
                   <button
                     class="btn p-0"
                     type="button"
-                    id="cardOpt1"
+                    id="cardOpt6"
                     data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false">
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
-                  <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt1">
-                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $stardateWeek }}&endDate={{ $enddateWeek }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
-              <span class="d-block">Transactions</span>
-              <h4 class="card-title mb-1">$14,857</h4>
-              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.14%</small>
+              <span class="d-block">Margin {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($marginMonthly, 0, ',', '.') }}</h6>   
+              <hr>
+              <span class="d-block">Margin {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($marginLastMonth, 0, ',', '.') }}</h6>   
+              @php
+                $marginPercentage = ($marginLastMonth == 0) ? 0 : (($marginMonthly - $marginLastMonth) / $marginLastMonth) * 100;
+              @endphp
             </div>
+            <div id="marginChart" class="mb-2"></div>
           </div>
         </div>
       </div>
@@ -1139,9 +1169,12 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
-  var incomeYearly = {{ number_format($percentageDifference, 0, '.', '') }};
-  var invPan = {{ number_format($percentageDiff, 0, '.', '') }};
-  var topup = {{ number_format($percentage, 0, '.', '') }};
+  var incomeMonthly     = {{ number_format($incomeMounthlyPercentage, 0, '.', '') }};
+  var bonMonthly        = {{ number_format($bonMonthlyPercentage, 0, '.', '') }};
+  var setorkasMonthly   = {{ number_format($setorkasPercentage, 0, '.', '') }};
+  var topup             = {{ number_format($topupPercentage, 0, '.', '') }};
+  var pengeluaran       = {{ number_format($lastMountOutPercentage, 0, '.', '') }};
+  var margin            = {{ number_format($marginPercentage, 0, '.', '') }};
   
   
 </script>
