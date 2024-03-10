@@ -798,7 +798,7 @@
             colors: labelColor
           }
         },
-        min: -10000000,
+        min: -20000000,
         max: 50000000,
         tickAmount: 5
       }
