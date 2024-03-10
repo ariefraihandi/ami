@@ -50,7 +50,7 @@ class FinancialTransaction extends Model
                    ->sum('transaction_amount');
     }
     
-    public static function getWeeklyTransactionAmount($startDate, $endDate)
+    public static function getIncomeRangeAmount($startDate, $endDate)
     {
         return self::whereBetween('transaction_date', [$startDate, $endDate])
                    ->whereIn('status', [1, 2, 3])
@@ -77,6 +77,25 @@ class FinancialTransaction extends Model
                    ->whereIn('status', [4, 5])
                    ->sum('transaction_amount');
     }  
+   
+    public static function getMarginByRange($startDate, $endDate)
+    {
+        // Menghitung jumlah pendapatan dari transaksi dengan status 1, 2, atau 3
+        $income = self::whereBetween('transaction_date', [$startDate, $endDate])
+                    ->whereIn('status', [1, 2, 3])
+                    ->sum('transaction_amount');
+
+        // Menghitung jumlah biaya dari transaksi dengan status 4 atau 5
+        $expenses = self::whereBetween('transaction_date', [$startDate, $endDate])
+                        ->whereIn('status', [4, 5])
+                        ->sum('transaction_amount');
+
+        // Menghitung margin
+        $margin = $income - $expenses;
+
+        return $margin;
+    }
+
 //!Sum 
 
     public static function getSetor($startDate, $endDate)

@@ -1169,6 +1169,19 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
+  var incomeJanYear   = {{ $incomeJanYear }};   
+  var incomeFebYear   = {{ $incomeFebYear }};   
+  var incomeMarYear   = {{ $incomeMarYear }};   
+  var incomeAprYear   = {{ $incomeAprYear }};   
+  var incomeMayYear   = {{ $incomeMayYear }};   
+  var incomeJunYear   = {{ $incomeJunYear }};   
+  var incomeJulYear   = {{ $incomeJulYear }};   
+  var incomeAugYear   = {{ $incomeAugYear }};   
+  var incomeSepYear   = {{ $incomeSepYear }};   
+  var incomeOctYear   = {{ $incomeOctYear }};   
+  var incomeNovYear   = {{ $incomeNovYear }};   
+  var incomeDecYear   = {{ $incomeDecYear }};   
+  
   var incomeMonthly     = {{ number_format($incomeMounthlyPercentage, 0, '.', '') }};
   var bonMonthly        = {{ number_format($bonMonthlyPercentage, 0, '.', '') }};
   var setorkasMonthly   = {{ number_format($setorkasPercentage, 0, '.', '') }};

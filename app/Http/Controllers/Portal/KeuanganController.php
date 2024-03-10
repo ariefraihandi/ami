@@ -208,7 +208,7 @@ class KeuanganController extends Controller
         $topupYesterday         = FinancialTransaction::getDayliTopUpAmount($yesterday);
     
         //Geting Saldo Sisa
-            $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
+            $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
             $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
             $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
             $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
@@ -598,13 +598,13 @@ class KeuanganController extends Controller
         $setorData              = FinancialTransaction::getSetor($startDate, $endDate);
         $topupData              = FinancialTransaction::getTopup($startDate, $endDate);
 
-        $incomeTotal            = FinancialTransaction::getWeeklyTransactionAmount($startDate, $endDate);
+        $incomeTotal            = FinancialTransaction::getIncomeRangeAmount($startDate, $endDate);
         $outcomeTotal           = FinancialTransaction::getRangeOutTransonAmount($startDate, $endDate);
         $topup                  = FinancialTransaction::getWeeklyTopUpAmount($startDate, $endDate);
         $setorKas               = FinancialTransaction::getWeeklySetorKasAmount($startDate, $endDate);
 
         //Geting Saldo Sisa
-            $incomeForSisa      = FinancialTransaction::getWeeklyTransactionAmount($starting, $yesterday);
+            $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
             $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
             $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
             $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);

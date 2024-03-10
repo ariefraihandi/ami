@@ -122,21 +122,100 @@ class DashboardController extends Controller
             $startingMonth  = Carbon::now()->startOfMonth();
             $endMonth       = Carbon::now()->endOfMonth();
             $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
-            $endPastMonth   = $startPastMonth->copy()->endOfMonth();
+            $endPastMonth   = $startPastMonth->copy()->endOfMonth();            
+            $currentYear    = Carbon::now()->year;
+            $lastYear       = Carbon::now()->subYear()->year;
         //!Syistem        
        
         //Date Configuration
-            $yearStart      = $startingYear->toDateString();
-            $today          = Carbon::now();
-            $yesterday      = $today->copy()->subDay();
-            $seninDate      = $today->copy()->startOfWeek();
-            $selasaDate     = $seninDate->copy()->addDay();
-            $rabuDate       = $seninDate->copy()->addDays(2);
-            $kamisDate      = $seninDate->copy()->addDays(3);
-            $jumatDate      = $seninDate->copy()->addDays(4);
-            $sabtuDate      = $seninDate->copy()->addDays(5);
-            $startLast      = $seninDate->copy()->subWeek();
-            $endLast        = $sabtuDate->copy()->subWeek();
+            $yearStart              = $startingYear->toDateString();
+            $today                  = Carbon::now();
+            $yesterday              = $today->copy()->subDay();
+            
+            //Mingguan
+                $seninDate              = $today->copy()->startOfWeek();
+                $selasaDate             = $seninDate->copy()->addDay();
+                $rabuDate               = $seninDate->copy()->addDays(2);
+                $kamisDate              = $seninDate->copy()->addDays(3);
+                $jumatDate              = $seninDate->copy()->addDays(4);
+                $sabtuDate              = $seninDate->copy()->addDays(5);
+                $startLast              = $seninDate->copy()->subWeek();
+                $endLast                = $sabtuDate->copy()->subWeek();
+            //!Mingguan
+
+            // Bulanan
+                $janStartDateYear       = Carbon::create($currentYear, 1, 1)->toDateString();
+                $janEndDateYear         = Carbon::create($currentYear, 1, 1)->endOfMonth()->toDateString();
+
+                $janStartDateLastYear   = Carbon::create($lastYear, 1, 1)->toDateString();
+                $janEndDateLastYear     = Carbon::create($lastYear, 1, 1)->endOfMonth()->toDateString();
+            
+                $febStartDateYear       = Carbon::create($currentYear, 2, 1)->toDateString();
+                $febEndDateYear         = Carbon::create($currentYear, 2, 1)->endOfMonth()->toDateString();
+
+                $febStartDateLastYear   = Carbon::create($lastYear, 2, 1)->toDateString();
+                $febEndDateLastYear     = Carbon::create($lastYear, 2, 1)->endOfMonth()->toDateString();
+
+                $marStartDateYear       = Carbon::create($currentYear, 3, 1)->toDateString();
+                $marEndDateYear         = Carbon::create($currentYear, 3, 1)->endOfMonth()->toDateString();
+
+                $marStartDateLastYear   = Carbon::create($lastYear, 3, 1)->toDateString();
+                $marEndDateLastYear     = Carbon::create($lastYear, 3, 1)->endOfMonth()->toDateString();
+
+                $aprStartDateYear       = Carbon::create($currentYear, 4, 1)->toDateString();
+                $aprEndDateYear         = Carbon::create($currentYear, 4, 1)->endOfMonth()->toDateString();
+
+                $aprStartDateLastYear   = Carbon::create($lastYear, 4, 1)->toDateString();
+                $aprEndDateLastYear     = Carbon::create($lastYear, 4, 1)->endOfMonth()->toDateString();
+
+                $mayStartDateYear       = Carbon::create($currentYear, 5, 1)->toDateString();
+                $mayEndDateYear         = Carbon::create($currentYear, 5, 1)->endOfMonth()->toDateString();
+
+                $mayStartDateLastYear   = Carbon::create($lastYear, 5, 1)->toDateString();
+                $mayEndDateLastYear     = Carbon::create($lastYear, 5, 1)->endOfMonth()->toDateString();
+
+                $junStartDateYear       = Carbon::create($currentYear, 6, 1)->toDateString();
+                $junEndDateYear         = Carbon::create($currentYear, 6, 1)->endOfMonth()->toDateString();
+
+                $junStartDateLastYear   = Carbon::create($lastYear, 6, 1)->toDateString();
+                $junEndDateLastYear     = Carbon::create($lastYear, 6, 1)->endOfMonth()->toDateString();
+
+                $julStartDateYear       = Carbon::create($currentYear, 7, 1)->toDateString();
+                $julEndDateYear         = Carbon::create($currentYear, 7, 1)->endOfMonth()->toDateString();
+
+                $julStartDateLastYear   = Carbon::create($lastYear, 7, 1)->toDateString();
+                $julEndDateLastYear     = Carbon::create($lastYear, 7, 1)->endOfMonth()->toDateString();
+
+                $augStartDateYear       = Carbon::create($currentYear, 8, 1)->toDateString();
+                $augEndDateYear         = Carbon::create($currentYear, 8, 1)->endOfMonth()->toDateString();
+
+                $augStartDateLastYear   = Carbon::create($lastYear, 8, 1)->toDateString();
+                $augEndDateLastYear     = Carbon::create($lastYear, 8, 1)->endOfMonth()->toDateString();
+
+                $sepStartDateYear       = Carbon::create($currentYear, 9, 1)->toDateString();
+                $sepEndDateYear         = Carbon::create($currentYear, 9, 1)->endOfMonth()->toDateString();
+
+                $sepStartDateLastYear   = Carbon::create($lastYear, 9, 1)->toDateString();
+                $sepEndDateLastYear     = Carbon::create($lastYear, 9, 1)->endOfMonth()->toDateString();
+
+                $octStartDateYear       = Carbon::create($currentYear, 10, 1)->toDateString();
+                $octEndDateYear         = Carbon::create($currentYear, 10, 1)->endOfMonth()->toDateString();
+
+                $octStartDateLastYear   = Carbon::create($lastYear, 10, 1)->toDateString();
+                $octEndDateLastYear     = Carbon::create($lastYear, 10, 1)->endOfMonth()->toDateString();
+
+                $novStartDateYear       = Carbon::create($currentYear, 11, 1)->toDateString();
+                $novEndDateYear         = Carbon::create($currentYear, 11, 1)->endOfMonth()->toDateString();
+
+                $novStartDateLastYear   = Carbon::create($lastYear, 11, 1)->toDateString();
+                $novEndDateLastYear     = Carbon::create($lastYear, 11, 1)->endOfMonth()->toDateString();
+
+                $decStartDateYear       = Carbon::create($currentYear, 12, 1)->toDateString();
+                $decEndDateYear         = Carbon::create($currentYear, 12, 1)->endOfMonth()->toDateString();
+
+                $decStartDateLastYear   = Carbon::create($lastYear, 12, 1)->toDateString();
+                $decEndDateLastYear     = Carbon::create($lastYear, 12, 1)->endOfMonth()->toDateString();
+            //!Bulanan
         //!Date Configuration        
         
         $incomeTotal        = FinancialTransaction::getTransactionAmount($today);
@@ -147,17 +226,17 @@ class DashboardController extends Controller
         $totIncomeKam       = FinancialTransaction::getTransactionAmount($kamisDate);
         $totIncomeJum       = FinancialTransaction::getTransactionAmount($jumatDate);
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
-        $incomeWeekly       = FinancialTransaction::getWeeklyTransactionAmount($seninDate, $sabtuDate);
-        $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
+        $incomeWeekly       = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
+        $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
         
         
-        // $incomelastWeek     = FinancialTransaction::getWeeklyTransactionAmount($startLast, $endLast);
+        // $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
         
         
         //Bulanan
             //Money
-                $incomeMonthly      = FinancialTransaction::getWeeklyTransactionAmount($startingMonth, $today);
-                $incomeLastMonth      = FinancialTransaction::getWeeklyTransactionAmount($startPastMonth, $endPastMonth);
+                $incomeMonthly      = FinancialTransaction::getIncomeRangeAmount($startingMonth, $today);
+                $incomeLastMonth      = FinancialTransaction::getIncomeRangeAmount($startPastMonth, $endPastMonth);
                 $totalInvMouthly    = Invoice::getInv($startingMonth, $today)->sum('total_amount');
                 $totalBonMonthly    = Invoice::getBon($startingMonth, $today);
                 $setorKasMonthly    = FinancialTransaction::getWeeklySetorKasAmount($startingMonth, $today);        
@@ -174,6 +253,32 @@ class DashboardController extends Controller
                 $getInvMonthly      = Invoice::getInv($startingMonth, $today)->count();
                 $invBonMonthly      = Invoice::getCountInvBon($startingMonth, $today);
             //!Count
+            //Monthly Income
+                $incomeJanYear      = FinancialTransaction::getMarginByRange($janStartDateYear, $janEndDateYear);
+                $incomeJanLastYear  = FinancialTransaction::getMarginByRange($janStartDateLastYear, $janEndDateLastYear);
+                $incomeFebYear      = FinancialTransaction::getMarginByRange($febStartDateYear, $febEndDateYear);
+                $incomeFebLastYear  = FinancialTransaction::getMarginByRange($febStartDateLastYear, $febEndDateLastYear);
+                $incomeMarYear      = FinancialTransaction::getMarginByRange($marStartDateYear, $marEndDateYear);
+                $incomeMarLastYear  = FinancialTransaction::getMarginByRange($marStartDateLastYear, $marEndDateLastYear);
+                $incomeAprYear      = FinancialTransaction::getMarginByRange($aprStartDateYear, $aprEndDateYear);
+                $incomeAprLastYear  = FinancialTransaction::getMarginByRange($aprStartDateLastYear, $aprEndDateLastYear);
+                $incomeMayYear      = FinancialTransaction::getMarginByRange($mayStartDateYear, $mayEndDateYear);
+                $incomeMayLastYear  = FinancialTransaction::getMarginByRange($mayStartDateLastYear, $mayEndDateLastYear);
+                $incomeJunYear      = FinancialTransaction::getMarginByRange($junStartDateYear, $junEndDateYear);
+                $incomeJunLastYear  = FinancialTransaction::getMarginByRange($junStartDateLastYear, $junEndDateLastYear);
+                $incomeJulYear      = FinancialTransaction::getMarginByRange($julStartDateYear, $julEndDateYear);
+                $incomeJulLastYear  = FinancialTransaction::getMarginByRange($julStartDateLastYear, $julEndDateLastYear);
+                $incomeAugYear      = FinancialTransaction::getMarginByRange($augStartDateYear, $augEndDateYear);
+                $incomeAugLastYear  = FinancialTransaction::getMarginByRange($augStartDateLastYear, $augEndDateLastYear);
+                $incomeSepYear      = FinancialTransaction::getMarginByRange($sepStartDateYear, $sepEndDateYear);
+                $incomeSepLastYear  = FinancialTransaction::getMarginByRange($sepStartDateLastYear, $sepEndDateLastYear);
+                $incomeOctYear      = FinancialTransaction::getMarginByRange($octStartDateYear, $octEndDateYear);
+                $incomeOctLastYear  = FinancialTransaction::getMarginByRange($octStartDateLastYear, $octEndDateLastYear);
+                $incomeNovYear      = FinancialTransaction::getMarginByRange($novStartDateYear, $novEndDateYear);
+                $incomeNovLastYear  = FinancialTransaction::getMarginByRange($novStartDateLastYear, $novEndDateLastYear);
+                $incomeDecYear      = FinancialTransaction::getMarginByRange($decStartDateYear, $decEndDateYear);
+                $incomeDecLastYear  = FinancialTransaction::getMarginByRange($decStartDateLastYear, $decEndDateLastYear);
+            //!Monthly Income
         //!Bulanan
 
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
@@ -239,21 +344,30 @@ class DashboardController extends Controller
             'totalInvMouthly'   => $totalInvMouthly,
             'incomeMonthly'     => $incomeMonthly,
             'totalBonMonthly'   => $totalBonMonthly,
-
             'getInvMonthly'     => $getInvMonthly,
             'invBonMonthly'     => $invBonMonthly,
-
             'setorKasMonthly'   => $setorKasMonthly,
             'setorKasLastMonth' => $setorKasLastMonth,
-
             'topUpMonthly'      => $topUpMonthly,
             'topUpLastMonth'    => $topUpLastMonth,
-            
             'outcomeMountly'    => $outcomeMountly,
             'outcomeLastMount'  => $outcomeLastMount,
-            
             'marginMonthly'     => $marginMonthly,
             'marginLastMonth'   => $marginLastMonth,
+            //icomeMonthlyYear
+                'incomeJanYear'  => $incomeJanYear, 
+                'incomeFebYear'  => $incomeFebYear, 
+                'incomeMarYear'  => $incomeMarYear, 
+                'incomeAprYear'  => $incomeAprYear, 
+                'incomeMayYear'  => $incomeMayYear, 
+                'incomeJunYear'  => $incomeJunYear, 
+                'incomeJulYear'  => $incomeJulYear, 
+                'incomeAugYear'  => $incomeAugYear, 
+                'incomeSepYear'  => $incomeSepYear, 
+                'incomeOctYear'  => $incomeOctYear, 
+                'incomeNovYear'  => $incomeNovYear, 
+                'incomeDecYear'  => $incomeDecYear, 
+            //!icomeMonthlyYear
         //! Data Bulanan 
         
         // Outcome            

@@ -737,7 +737,7 @@
       },
       series: [
         {
-          data: [3350, 3350, 4800, 4800, 2950, 2950, 1800, 1800, 3750, 3750, 5700, 5700]
+          data: [incomeJanYear, incomeFebYear, incomeMarYear, incomeAprYear, incomeMayYear, incomeJunYear, incomeJulYear, incomeAugYear, incomeSepYear, incomeOctYear, incomeNovYear, incomeDecYear]
         }
       ],
       dataLabels: {
@@ -791,15 +791,15 @@
         labels: {
           offsetX: -15,
           formatter: function (val) {
-            return '$' + parseInt(val / 1000) + 'k';
+            return 'Rp.' + parseInt(val) + ',-';
           },
           style: {
             fontSize: '13px',
             colors: labelColor
           }
         },
-        min: 1000,
-        max: 6000,
+        min: -10000000,
+        max: 50000000,
         tickAmount: 5
       }
     };
