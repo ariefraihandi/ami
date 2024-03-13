@@ -890,8 +890,8 @@
 
   // Conversion rate Line Chart
   // --------------------------------------------------------------------
-  const expensesBarChartEl = document.querySelector('#expensesBarChart'),
-    expensesBarChartConfig = {
+  const pendapatanBarChartEl = document.querySelector('#pendapatanBarChart'),
+    pendapatanBarChartConfig = {
       series: [
         {
           name: bulan,
@@ -916,7 +916,7 @@
           startingShape: 'rounded'
         }
       },
-      colors: [config.colors.primary, config.colors.warning],
+      colors: [config.colors.primary, config.colors.info],
       dataLabels: {
         enabled: false
       },
@@ -1043,9 +1043,167 @@
         }
       }
     };
-  if (typeof expensesBarChartEl !== undefined && expensesBarChartEl !== null) {
-    const expensesBarChart = new ApexCharts(expensesBarChartEl, expensesBarChartConfig);
-    expensesBarChart.render();
+  if (typeof pendapatanBarChartEl !== undefined && pendapatanBarChartEl !== null) {
+    const pendapatanBarChart = new ApexCharts(pendapatanBarChartEl, pendapatanBarChartConfig);
+    pendapatanBarChart.render();
+  }
+  
+  const marginBarChartEl = document.querySelector('#marginBarChart'),
+    marginBarChartConfig = {
+      series: [
+        {
+          name: bulan,
+          data: [marginWeek1, marginWeek2, marginWeek3, marginWeek4]
+        },
+        {
+          name: bulanLalu,
+          data: [-margPastWeek1, -margPastWeek2, -margPastWeek3, -margPastWeek4]
+        }
+      ],
+      chart: {
+        height: 150,
+        stacked: true,
+        type: 'bar',
+        toolbar: { show: false }
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: '40%',
+          borderRadius: 5,
+          startingShape: 'rounded'
+        }
+      },
+      colors: [config.colors.success, config.colors.warning],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        width: 2,
+        lineCap: 'round',
+        colors: [cardColor]
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        show: false,
+        padding: {
+          top: -10
+        }
+      },
+      xaxis: {
+        show: false,
+        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        labels: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        }
+      },
+      yaxis: {
+        show: false
+      },
+      responsive: [
+        {
+          breakpoint: 1440,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+                columnWidth: '60%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 1300,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+                columnWidth: '70%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 1200,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 4,
+                columnWidth: '50%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 1040,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 4,
+                columnWidth: '60%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 991,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 4,
+                columnWidth: '40%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+                columnWidth: '60%'
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            plotOptions: {
+              bar: {
+                borderRadius: 5,
+                columnWidth: '70%'
+              }
+            }
+          }
+        }
+      ],
+      states: {
+        hover: {
+          filter: {
+            type: 'none'
+          }
+        },
+        active: {
+          filter: {
+            type: 'none'
+          }
+        }
+      }
+    };
+  if (typeof marginBarChartEl !== undefined && marginBarChartEl !== null) {
+    const marginBarChart = new ApexCharts(marginBarChartEl, marginBarChartConfig);
+    marginBarChart.render();
   }
 
   // Total Balance - Line Chart

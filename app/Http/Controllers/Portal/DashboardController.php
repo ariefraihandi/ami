@@ -254,18 +254,42 @@ class DashboardController extends Controller
         // $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
         
         //Mingguan
-            $incomeWeek1    = FinancialTransaction::getIncomeRangeAmount($startWeek1, $endWeek1);
-            $incomeWeek2    = FinancialTransaction::getIncomeRangeAmount($startWeek2, $endWeek2);
-            $incomeWeek3    = FinancialTransaction::getIncomeRangeAmount($startWeek3, $endWeek3);
-            $incomeWeek4    = FinancialTransaction::getIncomeRangeAmount($startWeek4, $endWeek4);
-            
-            $incomeWeekly       = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
-            $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
-            
-            $incPastWeek1   = FinancialTransaction::getIncomeRangeAmount($startPaWeek1, $endPaWeek1);
-            $incPastWeek2   = FinancialTransaction::getIncomeRangeAmount($startPaWeek2, $endPaWeek2);
-            $incPastWeek3   = FinancialTransaction::getIncomeRangeAmount($startPaWeek3, $endPaWeek3);
-            $incPastWeek4   = FinancialTransaction::getIncomeRangeAmount($startPaWeek4, $endPaWeek4);
+            //Income
+                $incomeWeek1    = FinancialTransaction::getIncomeRangeAmount($startWeek1, $endWeek1);
+                $incomeWeek2    = FinancialTransaction::getIncomeRangeAmount($startWeek2, $endWeek2);
+                $incomeWeek3    = FinancialTransaction::getIncomeRangeAmount($startWeek3, $endWeek3);
+                $incomeWeek4    = FinancialTransaction::getIncomeRangeAmount($startWeek4, $endWeek4);
+                
+                $incomeWeekly   = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
+                $incomelastWeek = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
+                
+                $incPastWeek1   = FinancialTransaction::getIncomeRangeAmount($startPaWeek1, $endPaWeek1);
+                $incPastWeek2   = FinancialTransaction::getIncomeRangeAmount($startPaWeek2, $endPaWeek2);
+                $incPastWeek3   = FinancialTransaction::getIncomeRangeAmount($startPaWeek3, $endPaWeek3);
+                $incPastWeek4   = FinancialTransaction::getIncomeRangeAmount($startPaWeek4, $endPaWeek4);
+            //!Income
+            //Outcome
+                $outcomeWeek1   = FinancialTransaction::getRangeOutTransonAmount($startWeek1, $endWeek1);  
+                $outcomeWeek2   = FinancialTransaction::getRangeOutTransonAmount($startWeek2, $endWeek2);  
+                $outcomeWeek3   = FinancialTransaction::getRangeOutTransonAmount($startWeek3, $endWeek3);  
+                $outcomeWeek4   = FinancialTransaction::getRangeOutTransonAmount($startWeek4, $endWeek4);  
+                
+                $outPastWeek1   = FinancialTransaction::getRangeOutTransonAmount($startPaWeek1, $endPaWeek1);  
+                $outPastWeek2   = FinancialTransaction::getRangeOutTransonAmount($startPaWeek2, $endPaWeek2);  
+                $outPastWeek3   = FinancialTransaction::getRangeOutTransonAmount($startPaWeek3, $endPaWeek3);  
+                $outPastWeek4   = FinancialTransaction::getRangeOutTransonAmount($startPaWeek4, $endPaWeek4);  
+            //!Outcome
+            //Margin
+                $marginWeek1    = $incomeWeek1-$outcomeWeek1;
+                $marginWeek2    = $incomeWeek2-$outcomeWeek2;
+                $marginWeek3    = $incomeWeek3-$outcomeWeek3;
+                $marginWeek4    = $incomeWeek4-$outcomeWeek4;
+                
+                $margPastWeek1  = $incPastWeek1-$outPastWeek1;
+                $margPastWeek2  = $incPastWeek2-$outPastWeek2;
+                $margPastWeek3  = $incPastWeek3-$outPastWeek3;
+                $margPastWeek4  = $incPastWeek4-$outPastWeek4;
+            //!Margin
         //!Mingguan
         //Bulanan
             //Money
@@ -384,9 +408,6 @@ class DashboardController extends Controller
             'totIncomeKam'      => $totIncomeKam,
             'totIncomeJum'      => $totIncomeJum,
             'totIncomeSab'      => $totIncomeSab,
-            
-            
-            
             //!Income      
             
         //Data Mingguan
@@ -401,6 +422,18 @@ class DashboardController extends Controller
             'incPastWeek2'   => $incPastWeek2,
             'incPastWeek3'   => $incPastWeek3,
             'incPastWeek4'   => $incPastWeek4,
+            
+            'marginWeek1'    => $marginWeek1,
+            'marginWeek2'    => $marginWeek2,
+            'marginWeek3'    => $marginWeek3,
+            'marginWeek4'    => $marginWeek4,
+            
+            'margPastWeek1'  => $margPastWeek1,
+            'margPastWeek2'  => $margPastWeek2,
+            'margPastWeek3'  => $margPastWeek3,
+            'margPastWeek4'  => $margPastWeek4,
+
+            
         //!Data Mingguan
         
         // Data Bulanan

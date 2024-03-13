@@ -215,9 +215,9 @@
                   <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
                     </div>
                   </div>
-                  <span class="badge bg-label-secondary rounded-pill">2021 Year</span>
+                  <span class="badge bg-label-secondary rounded-pill">{{$bulan}}</span>
                 </div>
-                <div id="expensesBarChart"></div>
+                <div id="pendapatanBarChart"></div>
               </div>
             </div>
           </div>
@@ -416,7 +416,38 @@
             </div>
           </div>
         </div>
-       
+        <div class="col-12 col-md-6 col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between gap-3">
+                <div class="d-flex align-items-start flex-column justify-content-between">
+                  <div class="card-title">
+                    <h5 class="mb-0">Margin Mingguan</h5>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <div class="mt-auto">
+                      <h5 class="mb-0">{{ number_format($incomeWeekly, 0, ',', '.') }}</h5>
+                      @php
+                      if ($incomeLastWeek != 0) {
+                          $percentChange = ($incomeWeekly - $incomeLastWeek) / $incomeLastWeek * 100;
+                      } else {
+                          $percentChange = 0; // Atau nilai default yang Anda tentukan
+                  }
+                  
+                  $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                  $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
+                  @endphp
+                  
+                  <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
+                    </div>
+                  </div>
+                  <span class="badge bg-label-secondary rounded-pill">{{$bulan}}</span>
+                </div>
+                <div id="marginBarChart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-md-12 col-lg-4">
@@ -1339,6 +1370,16 @@
   var incPastWeek2 = {{ number_format($incPastWeek2, 0, '.', '') }};
   var incPastWeek3 = {{ number_format($incPastWeek3, 0, '.', '') }};
   var incPastWeek4 = {{ number_format($incPastWeek4, 0, '.', '') }};
+  
+  var marginWeek1 = {{ number_format($marginWeek1, 0, '.', '') }};
+  var marginWeek2 = {{ number_format($marginWeek2, 0, '.', '') }};
+  var marginWeek3 = {{ number_format($marginWeek3, 0, '.', '') }};
+  var marginWeek4 = {{ number_format($marginWeek4, 0, '.', '') }};
+  
+  var margPastWeek1 = {{ number_format($margPastWeek1, 0, '.', '') }};
+  var margPastWeek2 = {{ number_format($margPastWeek2, 0, '.', '') }};
+  var margPastWeek3 = {{ number_format($margPastWeek3, 0, '.', '') }};
+  var margPastWeek4 = {{ number_format($margPastWeek4, 0, '.', '') }};
 
 
   var incomeThisMonth = {{ number_format($incomeThisMonth, 0, '.', '') }};
