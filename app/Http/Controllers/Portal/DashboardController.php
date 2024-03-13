@@ -248,8 +248,7 @@ class DashboardController extends Controller
         $totIncomeKam       = FinancialTransaction::getTransactionAmount($kamisDate);
         $totIncomeJum       = FinancialTransaction::getTransactionAmount($jumatDate);
         $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
-        $incomeWeekly       = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
-        $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
+      
         
         
         // $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
@@ -260,7 +259,8 @@ class DashboardController extends Controller
             $incomeWeek3    = FinancialTransaction::getIncomeRangeAmount($startWeek3, $endWeek3);
             $incomeWeek4    = FinancialTransaction::getIncomeRangeAmount($startWeek4, $endWeek4);
             
-            $thiWeekIncome  = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
+            $incomeWeekly       = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
+            $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
             
             $incPastWeek1   = FinancialTransaction::getIncomeRangeAmount($startPaWeek1, $endPaWeek1);
             $incPastWeek2   = FinancialTransaction::getIncomeRangeAmount($startPaWeek2, $endPaWeek2);
@@ -384,13 +384,14 @@ class DashboardController extends Controller
             'totIncomeKam'      => $totIncomeKam,
             'totIncomeJum'      => $totIncomeJum,
             'totIncomeSab'      => $totIncomeSab,
-            'incomeWeekly'      => $incomeWeekly,
-            'incomeLastWeek'    => $incomelastWeek,
+            
+            
             
             //!Income      
             
         //Data Mingguan
-            'thiWeekIncome'  => $thiWeekIncome,
+            'incomeWeekly'   => $incomeWeekly,
+            'incomeLastWeek' => $incomelastWeek,            
             'incomeWeek1'    => $incomeWeek1,
             'incomeWeek2'    => $incomeWeek2,
             'incomeWeek3'    => $incomeWeek3,

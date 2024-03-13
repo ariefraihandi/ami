@@ -200,9 +200,19 @@
                   </div>
                   <div class="d-flex justify-content-between">
                     <div class="mt-auto">
-                      <h5 class="mb-0">{{ number_format($thiWeekIncome, 0, ',', '.') }}</h5>
-                      <small class="text-danger text-nowrap fw-medium"
-                        ><i class="bx bx-down-arrow-alt"></i> 8.2%</small>
+                      <h5 class="mb-0">{{ number_format($incomeWeekly, 0, ',', '.') }}</h5>
+                      @php
+                      if ($incomeLastWeek != 0) {
+                          $percentChange = ($incomeWeekly - $incomeLastWeek) / $incomeLastWeek * 100;
+                      } else {
+                          $percentChange = 0; // Atau nilai default yang Anda tentukan
+                  }
+                  
+                  $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                  $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
+                  @endphp
+                  
+                  <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
                     </div>
                   </div>
                   <span class="badge bg-label-secondary rounded-pill">2021 Year</span>
