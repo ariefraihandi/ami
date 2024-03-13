@@ -608,9 +608,7 @@ class KeuanganController extends Controller
             $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
             $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
             $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
-            $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;
-
-            // dd($starting, $yesterday);
+            $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;          
         //!Geting Saldo Sisa
 
         $income             = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])

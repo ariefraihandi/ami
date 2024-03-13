@@ -377,7 +377,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income-danger.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/wallet-up-round.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -397,10 +397,10 @@
                 </div>
               </div>
               <span class="d-block">Sisa Kas {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
+              <h6 class="card-title mb-1">Rp. {{ number_format($sisaSaldo, 0, ',', '.') }}</h6>   
             
               @php
-                $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
+                $lastMountOutPercentage = ($sisaSaldoPast == 0) ? 0 : (($sisaSaldo - $sisaSaldoPast) / $sisaSaldoPast) * 100;
               @endphp
               <div id="outcomeChart" class="mb-2"></div>
             </div>
@@ -1320,6 +1320,17 @@
   var duaBulanLalu    = {!! json_encode($duaBulanLalu) !!};
 
   
+  var incomeWeek1 = {{ number_format($incomeWeek1, 0, '.', '') }};
+  var incomeWeek2 = {{ number_format($incomeWeek2, 0, '.', '') }};
+  var incomeWeek3 = {{ number_format($incomeWeek3, 0, '.', '') }};
+  var incomeWeek4 = {{ number_format($incomeWeek4, 0, '.', '') }};
+  
+  var incPastWeek1 = {{ number_format($incPastWeek1, 0, '.', '') }};
+  var incPastWeek2 = {{ number_format($incPastWeek2, 0, '.', '') }};
+  var incPastWeek3 = {{ number_format($incPastWeek3, 0, '.', '') }};
+  var incPastWeek4 = {{ number_format($incPastWeek4, 0, '.', '') }};
+
+
   var incomeThisMonth = {{ number_format($incomeThisMonth, 0, '.', '') }};
   var incomeLastMonth = {{ number_format($incomeLastMonth, 0, '.', '') }};
   var incomweToMonth  = {{ number_format($incomweToMonth, 0, '.', '') }};

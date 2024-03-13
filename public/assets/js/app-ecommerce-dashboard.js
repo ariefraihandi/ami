@@ -422,111 +422,7 @@
     invPanChart.render();
   }
 
-  const invBonChartChartEl = document.querySelector('#setorkasChart'),
-  invBonChartConfig = {
-    chart: {
-      height: 130,
-      sparkline: {
-        enabled: true
-      },
-      parentHeightOffset: 0,
-      type: 'radialBar'
-    },
-    colors: [config.colors.warning],
-    series: [setorkasMonthly],
-    plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: {
-          size: '55%'
-        },
-        track: {
-          background: config.colors_label.secondary
-        },
-        dataLabels: {
-          name: {
-            show: false
-          },
-          value: {
-            fontSize: '22px',
-            color: headingColor,
-            fontWeight: 500,
-            offsetY: 0
-          }
-        }
-      }
-    },
-    grid: {
-      show: false,
-      padding: {
-        left: -10,
-        right: -10,
-        top: -10
-      }
-    },
-    stroke: {
-      lineCap: 'round'
-    },
-    labels: ['Progress']
-  };
-  if (typeof invBonChartChartEl !== undefined && invBonChartChartEl !== null) {
-    const invBonChartChart = new ApexCharts(invBonChartChartEl, invBonChartConfig);
-    invBonChartChart.render();
-  }
-  
-  const topupChartChartEl = document.querySelector('#topupChart'),
-  topupChartConfig = {
-    chart: {
-      height: 130,
-      sparkline: {
-        enabled: true
-      },
-      parentHeightOffset: 0,
-      type: 'radialBar'
-    },
-    colors: [config.colors.warning],
-    series: [topup],
-    plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: {
-          size: '55%'
-        },
-        track: {
-          background: config.colors_label.secondary
-        },
-        dataLabels: {
-          name: {
-            show: false
-          },
-          value: {
-            fontSize: '22px',
-            color: headingColor,
-            fontWeight: 500,
-            offsetY: 0
-          }
-        }
-      }
-    },
-    grid: {
-      show: false,
-      padding: {
-        left: -10,
-        right: -10,
-        top: -10
-      }
-    },
-    stroke: {
-      lineCap: 'round'
-    },
-    labels: ['Progress']
-  };
-  if (typeof topupChartChartEl !== undefined && topupChartChartEl !== null) {
-    const topupChart = new ApexCharts(topupChartChartEl, topupChartConfig);
-    topupChart.render();
-  }
+
   
   const outcomeChartEl = document.querySelector('#outcomeChart'),
   outcomeConfig = {
@@ -998,12 +894,12 @@
     expensesBarChartConfig = {
       series: [
         {
-          name: '2021',
-          data: [15, 37, 14, 30]
+          name: bulan,
+          data: [incomeWeek1, incomeWeek2, incomeWeek3, incomeWeek4]
         },
         {
-          name: '2020',
-          data: [-33, -23, -29, -32, ]
+          name: bulanLalu,
+          data: [-incPastWeek1, -incPastWeek2, -incPastWeek3, -incPastWeek4, ]
         }
       ],
       chart: {
@@ -1041,7 +937,7 @@
       },
       xaxis: {
         show: false,
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        categories: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
         labels: {
           show: false
         },

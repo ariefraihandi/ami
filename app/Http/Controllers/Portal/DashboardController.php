@@ -116,6 +116,7 @@ class DashboardController extends Controller
             $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
             $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData       = UserRole::where('id', $user->role)->first();
+            $starting       = Carbon::createFromDate(2023, 12, 1);
             $bulan          = Carbon::now()->locale('id')->monthName;
             $bulanLalu      = Carbon::now()->subMonth()->locale('id')->monthName;
             $duaBulanLalu   = Carbon::now()->subMonths(2)->locale('id')->monthName;
@@ -128,6 +129,24 @@ class DashboardController extends Controller
             $endTwoMonth    = $startTwoMonth->copy()->endOfMonth();           
             $currentYear    = Carbon::now()->year;
             $lastYear       = Carbon::now()->subYear()->year;
+            
+            $startWeek1     = $startingMonth->copy()->startOfWeek();
+            $endWeek1       = $startingMonth->copy()->startOfWeek()->addDays(6);    
+            $startWeek2     = $startWeek1->copy()->addWeek();
+            $endWeek2       = $startWeek2->copy()->addDays(6);
+            $startWeek3     = $startWeek2->copy()->addWeek();
+            $endWeek3       = $startWeek3->copy()->addDays(6);
+            $startWeek4     = $startWeek3->copy()->addWeek();
+            $endWeek4       = $startWeek4->copy()->addDays(6);            
+            
+            $startPaWeek1   = $startPastMonth->copy()->startOfWeek();
+            $endPaWeek1     = $startPastMonth->copy()->startOfWeek()->addDays(6);    
+            $startPaWeek2   = $startPaWeek1->copy()->addWeek();
+            $endPaWeek2     = $startPaWeek2->copy()->addDays(6);
+            $startPaWeek3   = $startPaWeek2->copy()->addWeek();
+            $endPaWeek3     = $startPaWeek3->copy()->addDays(6);
+            $startPaWeek4   = $startPaWeek3->copy()->addWeek();
+            $endPaWeek4     = $startPaWeek4->copy()->addDays(6);            
         //!Syistem        
        
         //Date Configuration
@@ -235,7 +254,17 @@ class DashboardController extends Controller
         
         // $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
         
-        
+        //Mingguan
+            $incomeWeek1    = FinancialTransaction::getIncomeRangeAmount($startWeek1, $endWeek1);
+            $incomeWeek2    = FinancialTransaction::getIncomeRangeAmount($startWeek2, $endWeek2);
+            $incomeWeek3    = FinancialTransaction::getIncomeRangeAmount($startWeek3, $endWeek3);
+            $incomeWeek4    = FinancialTransaction::getIncomeRangeAmount($startWeek4, $endWeek4);
+            
+            $incPastWeek1   = FinancialTransaction::getIncomeRangeAmount($startPaWeek1, $endPaWeek1);
+            $incPastWeek2   = FinancialTransaction::getIncomeRangeAmount($startPaWeek2, $endPaWeek2);
+            $incPastWeek3   = FinancialTransaction::getIncomeRangeAmount($startPaWeek3, $endPaWeek3);
+            $incPastWeek4   = FinancialTransaction::getIncomeRangeAmount($startPaWeek4, $endPaWeek4);
+        //!Mingguan
         //Bulanan
             //Money
                 $incomeThisMonth    = FinancialTransaction::getIncomeRangeAmount($startingMonth, $today);
@@ -287,6 +316,22 @@ class DashboardController extends Controller
                 $incomeDecLastYear  = FinancialTransaction::getMarginByRange($decStartDateLastYear, $decEndDateLastYear);
             //!Monthly Income
         //!Bulanan
+
+        //Geting Saldo Sisa This Month
+          $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $today);
+          $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $today);
+          $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $today);
+          $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $today);
+          $sisaSaldo          = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;          
+        //!Geting Saldo Sisa This Month
+        
+        //Geting Saldo Sisa This Month
+          $incomeForSisaPast  = FinancialTransaction::getIncomeRangeAmount($starting, $today);
+          $outcomeForSisaPast = FinancialTransaction::getRangeOutTransonAmount($starting, $today);
+          $topupForSisaPast   = FinancialTransaction::getWeeklyTopUpAmount($starting, $today);
+          $setorKasForPast    = FinancialTransaction::getWeeklySetorKasAmount($starting, $today);
+          $sisaSaldoPast      = $incomeForSisaPast+$topupForSisaPast-$outcomeForSisaPast-$setorKasForPast;          
+        //!Geting Saldo Sisa This Month
 
         $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
         $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
@@ -340,13 +385,28 @@ class DashboardController extends Controller
             'incomeWeekly'      => $incomeWeekly,
             'incomeLastWeek'    => $incomelastWeek,
             
-        //!Income      
+            //!Income      
             
+        //Data Mingguan
+            'incomeWeek1'    => $incomeWeek1,
+            'incomeWeek2'    => $incomeWeek2,
+            'incomeWeek3'    => $incomeWeek3,
+            'incomeWeek4'    => $incomeWeek4,
+            
+            'incPastWeek1'   => $incPastWeek1,
+            'incPastWeek2'   => $incPastWeek2,
+            'incPastWeek3'   => $incPastWeek3,
+            'incPastWeek4'   => $incPastWeek4,
+        //!Data Mingguan
+        
         // Data Bulanan
             'bulan'             => $bulan,
             'bulanLalu'         => $bulanLalu,
             'duaBulanLalu'      => $duaBulanLalu,
             'totalInvMouthly'   => $totalInvMouthly,
+            
+            'sisaSaldo'         => $sisaSaldo,
+            'sisaSaldoPast'     => $sisaSaldoPast,
 
             'incomeThisMonth'   => $incomeThisMonth,
             'incomeLastMonth'   => $incomeLastMonth,
@@ -357,8 +417,7 @@ class DashboardController extends Controller
 
             'totalInvPaid'      => $totalInvPaid,
             'totalBonMonthly'   => $totalBonMonthly,
-            // 'getInvMonthly'     => $getInvMonthly,
-            // 'invBonMonthly'     => $invBonMonthly,
+
             'setorKasMonthly'   => $setorKasMonthly,
             'setorKasLastMonth' => $setorKasLastMonth,
 
