@@ -260,6 +260,8 @@ class DashboardController extends Controller
             $incomeWeek3    = FinancialTransaction::getIncomeRangeAmount($startWeek3, $endWeek3);
             $incomeWeek4    = FinancialTransaction::getIncomeRangeAmount($startWeek4, $endWeek4);
             
+            $thiWeekIncome  = FinancialTransaction::getIncomeRangeAmount($seninDate, $sabtuDate);
+            
             $incPastWeek1   = FinancialTransaction::getIncomeRangeAmount($startPaWeek1, $endPaWeek1);
             $incPastWeek2   = FinancialTransaction::getIncomeRangeAmount($startPaWeek2, $endPaWeek2);
             $incPastWeek3   = FinancialTransaction::getIncomeRangeAmount($startPaWeek3, $endPaWeek3);
@@ -388,6 +390,7 @@ class DashboardController extends Controller
             //!Income      
             
         //Data Mingguan
+            'thiWeekIncome'  => $thiWeekIncome,
             'incomeWeek1'    => $incomeWeek1,
             'incomeWeek2'    => $incomeWeek2,
             'incomeWeek3'    => $incomeWeek3,

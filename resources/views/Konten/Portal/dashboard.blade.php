@@ -200,7 +200,7 @@
                   </div>
                   <div class="d-flex justify-content-between">
                     <div class="mt-auto">
-                      <h3 class="mb-0">$84.7k</h3>
+                      <h5 class="mb-0">{{ number_format($thiWeekIncome, 0, ',', '.') }}</h5>
                       <small class="text-danger text-nowrap fw-medium"
                         ><i class="bx bx-down-arrow-alt"></i> 8.2%</small>
                     </div>

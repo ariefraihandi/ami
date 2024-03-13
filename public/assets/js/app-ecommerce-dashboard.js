@@ -434,7 +434,7 @@
       parentHeightOffset: 0,
       type: 'radialBar'
     },
-    colors: [config.colors.danger],
+    colors: [config.colors.primary],
     series: [pengeluaran],
     plotOptions: {
       radialBar: {
