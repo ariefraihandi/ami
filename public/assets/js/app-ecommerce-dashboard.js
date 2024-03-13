@@ -966,15 +966,17 @@
       },
       series: [
         {
-          data: [137, 210, 160, 245]
+          name: 'Income',
+          data: [incomweToMonth, incomeLastMonth, incomeThisMonth]
         }
       ],
       xaxis: {
         show: false,
-        lines: {
+        categories: [duaBulanLalu, bulanLalu, bulan],
+        labels: {
           show: false
         },
-        labels: {
+        axisTicks: {
           show: false
         },
         axisBorder: {
@@ -997,11 +999,11 @@
       series: [
         {
           name: '2021',
-          data: [15, 37, 14, 30, 38, 30, 20, 13, 14, 23]
+          data: [15, 37, 14, 30]
         },
         {
           name: '2020',
-          data: [-33, -23, -29, -21, -25, -21, -23, -19, -37, -22]
+          data: [-33, -23, -29, -32, ]
         }
       ],
       chart: {

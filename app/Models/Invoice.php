@@ -33,6 +33,19 @@ class Invoice extends Model
                 ->where('total_amount', '!=', 0.00)
                 ->get(); 
     }
+    
+    public static function getInvPaid($startDate, $endDate)
+    {
+        $result = self::whereBetween('created_at', [$startDate, $endDate])
+                ->where('total_amount', '!=', 0.00)
+                ->where('panjar_amount', '!=', 0.00)
+                ->selectRaw('SUM(CASE WHEN status = 2 THEN total_amount ELSE 0 END) AS total_paid,
+                              SUM(CASE WHEN status = 1 THEN panjar_amount ELSE 0 END) AS total_panjar')
+                ->first(); 
+    
+        return $result->total_paid + $result->total_panjar;
+    }
+    
 
     public static function getBon($startDate, $endDate)
     {

@@ -116,13 +116,16 @@ class DashboardController extends Controller
             $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
             $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData       = UserRole::where('id', $user->role)->first();
-            $bulan          = Date::now()->locale('id')->monthName;
-            $bulanLalu      = Date::now()->subMonth()->locale('id')->monthName;
+            $bulan          = Carbon::now()->locale('id')->monthName;
+            $bulanLalu      = Carbon::now()->subMonth()->locale('id')->monthName;
+            $duaBulanLalu   = Carbon::now()->subMonths(2)->locale('id')->monthName;
             $startingYear   = Carbon::now()->startOfYear();
             $startingMonth  = Carbon::now()->startOfMonth();
             $endMonth       = Carbon::now()->endOfMonth();
             $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
-            $endPastMonth   = $startPastMonth->copy()->endOfMonth();            
+            $endPastMonth   = $startPastMonth->copy()->endOfMonth();      
+            $startTwoMonth  = $startingMonth->copy()->subMonths(2)->startOfMonth();
+            $endTwoMonth    = $startTwoMonth->copy()->endOfMonth();           
             $currentYear    = Carbon::now()->year;
             $lastYear       = Carbon::now()->subYear()->year;
         //!Syistem        
@@ -235,8 +238,10 @@ class DashboardController extends Controller
         
         //Bulanan
             //Money
-                $incomeMonthly      = FinancialTransaction::getIncomeRangeAmount($startingMonth, $today);
-                $incomeLastMonth      = FinancialTransaction::getIncomeRangeAmount($startPastMonth, $endPastMonth);
+                $incomeThisMonth    = FinancialTransaction::getIncomeRangeAmount($startingMonth, $today);
+                $incomeLastMonth    = FinancialTransaction::getIncomeRangeAmount($startPastMonth, $endPastMonth);
+                $incomeTwoMonth     = FinancialTransaction::getIncomeRangeAmount($startTwoMonth, $endTwoMonth);
+                $totalInvPaid       = Invoice::getInvPaid($startingMonth, $today);               
                 $totalInvMouthly    = Invoice::getInv($startingMonth, $today)->sum('total_amount');
                 $totalBonMonthly    = Invoice::getBon($startingMonth, $today);
                 $setorKasMonthly    = FinancialTransaction::getWeeklySetorKasAmount($startingMonth, $today);        
@@ -246,12 +251,14 @@ class DashboardController extends Controller
                 
                 $outcomeMountly     = FinancialTransaction::getRangeOutTransonAmount($startingMonth, $today);  
                 $outcomeLastMount   = FinancialTransaction::getRangeOutTransonAmount($startPastMonth, $endPastMonth);  
-                $marginMonthly      = $incomeMonthly-$outcomeMountly;
+                $marginMonthly      = $incomeThisMonth-$outcomeMountly;
                 $marginLastMonth    = $incomeLastMonth-$outcomeLastMount;
+                $operationalThisMo  = $outcomeMountly-$topUpMonthly;
+                $operationalLastMo  = $outcomeLastMount-$topUpLastMonth;
             //!Money
             //Count
-                $getInvMonthly      = Invoice::getInv($startingMonth, $today)->count();
-                $invBonMonthly      = Invoice::getCountInvBon($startingMonth, $today);
+                // $getInvMonthly      = Invoice::getInv($startingMonth, $today)->count();
+                // $invBonMonthly      = Invoice::getCountInvBon($startingMonth, $today);
             //!Count
             //Monthly Income
                 $incomeJanYear      = FinancialTransaction::getMarginByRange($janStartDateYear, $janEndDateYear);
@@ -293,10 +300,7 @@ class DashboardController extends Controller
         $totOutcomeJum      = FinancialTransaction::getOutTransAmount($jumatDate);
         $totOutcomeSab      = FinancialTransaction::getOutTransAmount($sabtuDate);
         $outcomeWeekly      = FinancialTransaction::getRangeOutTransonAmount($seninDate, $sabtuDate);
-        $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);
-
-        
-        
+        $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);        
         
         $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
         $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
@@ -341,17 +345,29 @@ class DashboardController extends Controller
         // Data Bulanan
             'bulan'             => $bulan,
             'bulanLalu'         => $bulanLalu,
+            'duaBulanLalu'      => $duaBulanLalu,
             'totalInvMouthly'   => $totalInvMouthly,
-            'incomeMonthly'     => $incomeMonthly,
+
+            'incomeThisMonth'   => $incomeThisMonth,
+            'incomeLastMonth'   => $incomeLastMonth,
+            'incomweToMonth'    => $incomeTwoMonth,
+            
+            'operationalThisMo' => $operationalThisMo,
+            'operationalLastMo' => $operationalLastMo,
+
+            'totalInvPaid'      => $totalInvPaid,
             'totalBonMonthly'   => $totalBonMonthly,
-            'getInvMonthly'     => $getInvMonthly,
-            'invBonMonthly'     => $invBonMonthly,
+            // 'getInvMonthly'     => $getInvMonthly,
+            // 'invBonMonthly'     => $invBonMonthly,
             'setorKasMonthly'   => $setorKasMonthly,
             'setorKasLastMonth' => $setorKasLastMonth,
+
             'topUpMonthly'      => $topUpMonthly,
             'topUpLastMonth'    => $topUpLastMonth,
+            
             'outcomeMountly'    => $outcomeMountly,
             'outcomeLastMount'  => $outcomeLastMount,
+
             'marginMonthly'     => $marginMonthly,
             'marginLastMonth'   => $marginLastMonth,
             //icomeMonthlyYear

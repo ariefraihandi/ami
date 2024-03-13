@@ -136,7 +136,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-success.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -147,16 +147,13 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Income {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($incomeMonthly, 0, ',', '.') }}</h6>
-              <hr> 
-              <span class="d-block">Jumlah Invoice</span>
-              <h6 class="card-title mb-1">{{$getInvMonthly}}</h6>
+              <span class="d-block">Income Inv {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($totalInvPaid, 0, ',', '.') }}</h6>                            
                 @php
-                  $incomeMounthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($incomeMonthly / $totalInvMouthly) * 100;
-                @endphp 
-              </div>
+                  $incomeMounthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($totalInvPaid / $totalInvMouthly) * 100;
+                @endphp                 
                 <div id="incomeMonthlyChart" class="mb-2"></div>            
+              </div>
           </div>
         </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
@@ -165,7 +162,7 @@
               <div class="card-title d-flex align-items-start justify-content-between">
                 <div class="avatar flex-shrink-0">
                   <img
-                    src="{{ asset('assets') }}/img/icons/unicons/upaid.png"
+                    src="{{ asset('assets') }}/img/icons/unicons/inv-danger.png"
                     alt="Credit Card"
                     class="rounded" />
                 </div>
@@ -189,132 +186,157 @@
               @endphp              
               <span class="d-block">Bon Inv {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalBonMonthly, 0, ',', '.') }}</h6>
-              <hr>
-              <span class="d-block">Jumlah Invoice</span>
-              <h6 class="card-title mb-1">{{$invBonMonthly}}</h6>    
-            </div>
-            <div id="bonMonthlyChart" class="mb-2"></div>          
+              <div id="bonMonthlyChart" class="mb-2"></div>          
             </div>
           </div>
         </div>
-      </div>    
-    <div class="col-md-12 col-lg-4">
-      <div class="row">        
-        <div class="col-lg-6 col-md-3 col-6 mb-4">
+        <div class="col-12 col-md-6 col-lg-12 mb-4">
           <div class="card">
             <div class="card-body">
-              <div class="card-title d-flex align-items-start justify-content-between">
-                <div class="avatar flex-shrink-0">
-                  <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income-warning.png"
-                    alt="Credit Card"
-                    class="rounded" />
-                </div>
-                <div class="dropdown">
-                  <button
-                    class="btn p-0"
-                    type="button"
-                    id="cardOpt6"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+              <div class="d-flex justify-content-between gap-3">
+                <div class="d-flex align-items-start flex-column justify-content-between">
+                  <div class="card-title">
+                    <h5 class="mb-0">Pendapatan Mingguan</h5>
                   </div>
-                </div>
-              </div>
-              <span class="d-block">Setor Kas {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasMonthly, 0, ',', '.') }}</h6>          
-              <hr>
-              <span class="d-block">Setor Kas {{$bulanLalu}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasLastMonth, 0, ',', '.') }}</h6>          
-            </div>
-              @php
-                  $setorkasPercentage = ($setorKasMonthly == 0) ? 0 : (($setorKasMonthly - $setorKasLastMonth) / $setorKasMonthly) * 100;
-              @endphp
-            <div id="setorkasChart" class="mb-2"></div>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-3 col-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title d-flex align-items-start justify-content-between">
-                <div class="avatar flex-shrink-0">
-                  <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income-up-warning.png"
-                    alt="Credit Card"
-                    class="rounded" />
-                </div>
-                <div class="dropdown">
-                  <button
-                    class="btn p-0"
-                    type="button"
-                    id="cardOpt6"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                  <div class="d-flex justify-content-between">
+                    <div class="mt-auto">
+                      <h3 class="mb-0">$84.7k</h3>
+                      <small class="text-danger text-nowrap fw-medium"
+                        ><i class="bx bx-down-arrow-alt"></i> 8.2%</small>
+                    </div>
                   </div>
+                  <span class="badge bg-label-secondary rounded-pill">2021 Year</span>
                 </div>
+                <div id="expensesBarChart"></div>
               </div>
-              <span class="d-block">Top Up {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($topUpMonthly, 0, ',', '.') }}</h6>   
-              <hr>
-              <span class="d-block">Top Up {{$bulanLalu}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($topUpLastMonth, 0, ',', '.') }}</h6>   
-              @php
-                $topupPercentage = ($topUpLastMonth == 0) ? 0 : (($topUpMonthly - $topUpLastMonth) / $topUpLastMonth) * 100;
-              @endphp
             </div>
-            <div id="topupChart" class="mb-2"></div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-12 col-lg-4">
-      <div class="row">        
-        <div class="col-lg-6 col-md-3 col-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="card-title d-flex align-items-start justify-content-between">
-                <div class="avatar flex-shrink-0">
-                  <img
-                    src="{{ asset('assets') }}/img/icons/unicons/income-danger.png"
-                    alt="Credit Card"
-                    class="rounded" />
-                </div>
-                <div class="dropdown">
-                  <button
-                    class="btn p-0"
-                    type="button"
-                    id="cardOpt6"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false">
-                    <i class="bx bx-dots-vertical-rounded"></i>
-                  </button>
-                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
-                  </div>
-                </div>
-              </div>
-              <span class="d-block">Outcome {{$bulan}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
-              <hr>
-              <span class="d-block">Outcome {{$bulanLalu}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeLastMount, 0, ',', '.') }}</h6>   
-              @php
-                $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
-              @endphp
+    </div>    
+     <!-- Conversion rate -->
+     <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-header d-flex align-items-center justify-content-between">
+          <div class="card-title mb-0">
+            <h5 class="m-0 me-2">Pendapatan {{$bulan}}</h5>
+            <small class="text-muted">Compared To Last Month</small>
+          </div>
+          <div class="dropdown">
+            <button
+              class="btn p-0"
+              type="button"
+              id="conversionRate"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="conversionRate">
+              <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
             </div>
-            <div id="outcomeChart" class="mb-2"></div>
           </div>
         </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex flex-row align-items-center gap-1 mb-4">
+              <h4 class="mb-2">{{ number_format($incomeThisMonth, 0, ',', '.') }}</h4>
+              @php
+                $incomeGrowthPercentage = ($incomeLastMonth == 0) ? 0 : (($incomeThisMonth - $incomeLastMonth) / $incomeLastMonth) * 100;
+                $iconClass = ($incomeGrowthPercentage >= 0) ? 'bx-chevron-up text-success' : 'bx-chevron-down text-danger';
+                $growthPercentage = abs($incomeGrowthPercentage); 
+              @endphp
+              <small class="fw-medium">
+                <i class="bx {{ $iconClass }}"></i>
+                {{ number_format($growthPercentage, 1) }}%
+              </small>
+            </div>
+            <div id="conversionRateChart"></div>
+          </div>
+          <ul class="p-0 m-0">
+            @php
+              $OprPercentage = ($operationalLastMo == 0) ? 0 : (($operationalThisMo - $operationalLastMo) / $operationalLastMo) * 100;
+            @endphp
+            <li class="d-flex mb-4">
+              <div class="d-flex w-100 flex-wrap justify-content-between gap-2">
+                  <div class="me-2">
+                      <h6 class="mb-0">Operational {{$bulan}}</h6>
+                      <small class="text-muted">Rp. {{ number_format($operationalThisMo, 0, ',', '.') }}</small>
+                  </div>
+                  <div class="user-progress">                  
+                      @if($OprPercentage >= 0)
+                          <i class="bx bx-up-arrow-alt text-success me-2"></i>
+                      @else
+                          <i class="bx bx-down-arrow-alt text-danger me-2"></i>
+                      @endif
+                      <span>{{ number_format(abs($OprPercentage), 1) }}%</span>
+                  </div>
+              </div>
+            </li>
+            @php
+              $topUpPercentage = ($topUpLastMonth == 0) ? 0 : (($topUpMonthly - $topUpLastMonth) / $topUpLastMonth) * 100;
+            @endphp
+            <li class="d-flex mb-4">
+              <div class="d-flex w-100 flex-wrap justify-content-between gap-2">
+                  <div class="me-2">
+                      <h6 class="mb-0">Top Up {{$bulan}}</h6>
+                      <small class="text-muted">Rp. {{ number_format($topUpMonthly, 0, ',', '.') }}</small>
+                  </div>
+                  <div class="user-progress">
+                      @if($topUpPercentage >= 0)
+                          <i class="bx bx-up-arrow-alt text-success me-2"></i>
+                      @else
+                          <i class="bx bx-down-arrow-alt text-danger me-2"></i>
+                      @endif
+                      <span>{{ number_format(abs($topUpPercentage), 1) }}%</span>
+                  </div>
+              </div>
+            </li>
+            @php
+              $outcomePercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
+            @endphp
+            <li class="d-flex mb-4">
+              <div class="d-flex w-100 flex-wrap justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Pengeluaran {{$bulan}}</h6>
+                  <small class="text-muted">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</small>
+                </div>
+                <div class="user-progress">
+                  @if($outcomePercentage >= 0)
+                      <i class="bx bx-up-arrow-alt text-danger me-2"></i>
+                  @else
+                      <i class="bx bx-down-arrow-alt text-success me-2"></i>
+                  @endif
+                  <span>{{ number_format(abs($outcomePercentage), 1) }}%</span>
+                </div>
+              </div>
+            </li>  
+            @php
+              $setorkasPercentage = ($setorKasLastMonth == 0) ? 0 : (($setorKasMonthly - $setorKasLastMonth) / $setorKasLastMonth) * 100;
+            @endphp          
+            <li class="d-flex mb-4">
+              <div class="d-flex w-100 flex-wrap justify-content-between gap-2">
+                <div class="me-2">
+                  <h6 class="mb-0">Setor Kas {{$bulan}}</h6>
+                  <small class="text-muted">Rp. {{ number_format($setorKasMonthly, 0, ',', '.') }}</small>
+                </div>
+                <div class="user-progress">
+                  @if($setorkasPercentage >= 0)
+                      <i class="bx bx-up-arrow-alt text-danger me-2"></i>
+                  @else
+                      <i class="bx bx-down-arrow-alt text-success me-2"></i>
+                  @endif
+                  <span>{{ number_format(abs($setorkasPercentage), 1) }}%</span>
+                </div>
+              </div>
+            </li>            
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--/ Conversion rate -->
+    <div class="col-md-12 col-lg-4">
+      <div class="row">  
         <div class="col-lg-6 col-md-3 col-6 mb-4">
           <div class="card">
             <div class="card-body">
@@ -342,16 +364,49 @@
               </div>
               <span class="d-block">Margin {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($marginMonthly, 0, ',', '.') }}</h6>   
-              <hr>
-              <span class="d-block">Margin {{$bulanLalu}}</span>
-              <h6 class="card-title mb-1">Rp. {{ number_format($marginLastMonth, 0, ',', '.') }}</h6>   
               @php
                 $marginPercentage = ($marginLastMonth == 0) ? 0 : (($marginMonthly - $marginLastMonth) / $marginLastMonth) * 100;
               @endphp
-            </div>
             <div id="marginChart" class="mb-2"></div>
+            </div>
+          </div>
+        </div>      
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/income-danger.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Sisa Kas {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($outcomeMountly, 0, ',', '.') }}</h6>   
+            
+              @php
+                $lastMountOutPercentage = ($outcomeLastMount == 0) ? 0 : (($outcomeMountly - $outcomeLastMount) / $outcomeLastMount) * 100;
+              @endphp
+              <div id="outcomeChart" class="mb-2"></div>
+            </div>
           </div>
         </div>
+       
       </div>
     </div>
     <div class="col-md-12 col-lg-4">
@@ -582,7 +637,7 @@
     <!--/ Performance -->
 
     <!-- Conversion rate -->
-    <div class="col-md-6 col-lg-4 mb-4">
+    {{-- <div class="col-md-6 col-lg-4 mb-4">
       <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
           <div class="card-title mb-0">
@@ -665,6 +720,85 @@
           </ul>
         </div>
       </div>
+    </div> --}}
+    {{-- //aw --}}
+    <div class="col-md-12 col-lg-4">
+      <div class="row">        
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/income-success.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Pendapatan {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasMonthly, 0, ',', '.') }}</h6>          
+              <hr>
+              <span class="d-block">Setor Kas {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($setorKasLastMonth, 0, ',', '.') }}</h6>          
+            </div>
+              @php
+                  $setorkasPercentage = ($setorKasMonthly == 0) ? 0 : (($setorKasMonthly - $setorKasLastMonth) / $setorKasMonthly) * 100;
+              @endphp
+            <div id="setorkasChart" class="mb-2"></div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-3 col-6 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="card-title d-flex align-items-start justify-content-between">
+                <div class="avatar flex-shrink-0">
+                  <img
+                    src="{{ asset('assets') }}/img/icons/unicons/income-up-warning.png"
+                    alt="Credit Card"
+                    class="rounded" />
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn p-0"
+                    type="button"
+                    id="cardOpt6"
+                    data-bs-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false">
+                    <i class="bx bx-dots-vertical-rounded"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                  </div>
+                </div>
+              </div>
+              <span class="d-block">Top Up {{$bulan}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($topUpMonthly, 0, ',', '.') }}</h6>   
+              <hr>
+              <span class="d-block">Top Up {{$bulanLalu}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($topUpLastMonth, 0, ',', '.') }}</h6>   
+              @php
+                $topupPercentage = ($topUpLastMonth == 0) ? 0 : (($topUpMonthly - $topUpLastMonth) / $topUpLastMonth) * 100;
+              @endphp
+            </div>
+            <div id="topupChart" class="mb-2"></div>
+          </div>
+        </div>
+      </div>
     </div>
     <!--/ Conversion rate -->
 
@@ -736,8 +870,7 @@
                     <div class="mt-auto">
                       <h3 class="mb-2">$84.7k</h3>
                       <small class="text-danger text-nowrap fw-medium"
-                        ><i class="bx bx-down-arrow-alt"></i> 8.2%</small
-                      >
+                        ><i class="bx bx-down-arrow-alt"></i> 8.2%</small>
                     </div>
                   </div>
                   <span class="badge bg-label-secondary rounded-pill">2021 Year</span>
@@ -1182,6 +1315,15 @@
   var incomeNovYear   = {{ $incomeNovYear }};   
   var incomeDecYear   = {{ $incomeDecYear }};   
   
+  var bulan           = {!! json_encode($bulan) !!};
+  var bulanLalu       = {!! json_encode($bulanLalu) !!};
+  var duaBulanLalu    = {!! json_encode($duaBulanLalu) !!};
+
+  
+  var incomeThisMonth = {{ number_format($incomeThisMonth, 0, '.', '') }};
+  var incomeLastMonth = {{ number_format($incomeLastMonth, 0, '.', '') }};
+  var incomweToMonth  = {{ number_format($incomweToMonth, 0, '.', '') }};
+
   var incomeMonthly     = {{ number_format($incomeMounthlyPercentage, 0, '.', '') }};
   var bonMonthly        = {{ number_format($bonMonthlyPercentage, 0, '.', '') }};
   var setorkasMonthly   = {{ number_format($setorkasPercentage, 0, '.', '') }};

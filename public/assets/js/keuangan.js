@@ -11,7 +11,9 @@ $(function () {
   // Invoice datatable
   if (dt_invoice_table.length) {
     var dt_invoice = dt_invoice_table.DataTable({
+      processing: true,      
       ajax: {
+        ajax: assetsPath + 'get-keua',
         url: '/get-keua',
         dataSrc: 'data'
       },
