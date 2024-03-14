@@ -1343,9 +1343,12 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
-  var incomeJanYear   = {{ $incomeJanYear }};   
-  var incomeFebYear   = {{ $incomeFebYear }};   
-  var incomeMarYear   = {{ $incomeMarYear }};   
+  // var incomeJanYear   = {{ $incomeJanYear }};   
+  // var incomeFebYear   = {{ $incomeFebYear }};   
+  // var incomeMarYear   = {{ $incomeMarYear }};   
+  var incomeJanYear   = {{ number_format($incomeJanYear, 0, '.', '') }};  
+  var incomeFebYear   = {{ number_format($incomeFebYear, 0, '.', '') }};   
+  var incomeMarYear   = {{ number_format($incomeMarYear, 0, '.', '') }};   
   var incomeAprYear   = {{ $incomeAprYear }};   
   var incomeMayYear   = {{ $incomeMayYear }};   
   var incomeJunYear   = {{ $incomeJunYear }};   

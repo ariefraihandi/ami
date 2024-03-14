@@ -530,364 +530,6 @@
     marginChart.render();
   }
 
-
-  // --------------------------------------------------------------------
-  // !Used
-
-
-  // Profit Bar Chart
-  // --------------------------------------------------------------------
-  const profitBarChartEl = document.querySelector('#profitChart'),
-    profitBarChartConfig = {
-      series: [
-        {
-          data: [58, 28, 50, 80]
-        },
-        {
-          data: [50, 22, 65, 72]
-        }
-      ],
-      chart: {
-        type: 'bar',
-        height: 80,
-        toolbar: {
-          tools: {
-            download: false
-          }
-        }
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '65%',
-          startingShape: 'rounded',
-          endingShape: 'rounded',
-          borderRadius: 3,
-          dataLabels: {
-            show: false
-          }
-        }
-      },
-      grid: {
-        show: false,
-        padding: {
-          top: -30,
-          bottom: -12,
-          left: -10,
-          right: 0
-        }
-      },
-      colors: [config.colors.success, config.colors_label.success],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        show: true,
-        width: 5,
-        colors: labelColor
-      },
-      legend: {
-        show: false
-      },
-      xaxis: {
-        categories: ['Jan', 'Apr', 'Jul', 'Oct'],
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        labels: {
-          style: {
-            colors: labelColor,
-            fontSize: '13px'
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          show: false
-        }
-      }
-    };
-  if (typeof profitBarChartEl !== undefined && profitBarChartEl !== null) {
-    const profitBarChart = new ApexCharts(profitBarChartEl, profitBarChartConfig);
-    profitBarChart.render();
-  }
-
-  // Total Income - Area Chart
-  // --------------------------------------------------------------------
-  const totalIncomeEl = document.querySelector('#totalIncomeChart'),
-    totalIncomeConfig = {
-      chart: {
-        height: 250,
-        type: 'area',
-        toolbar: false,
-        dropShadow: {
-          enabled: true,
-          top: 14,
-          left: 2,
-          blur: 3,
-          color: config.colors.primary,
-          opacity: 0.15
-        }
-      },
-      series: [
-        {
-          data: [incomeJanYear, incomeFebYear, incomeMarYear, incomeAprYear, incomeMayYear, incomeJunYear, incomeJulYear, incomeAugYear, incomeSepYear, incomeOctYear, incomeNovYear, incomeDecYear]
-        }
-      ],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 3,
-        curve: 'straight'
-      },
-      colors: [config.colors.primary],
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: shadeColor,
-          shadeIntensity: 0.8,
-          opacityFrom: 0.7,
-          opacityTo: 0.25,
-          stops: [0, 95, 100]
-        }
-      },
-      grid: {
-        show: true,
-        borderColor: borderColor,
-        padding: {
-          top: -15,
-          bottom: -10,
-          left: 0,
-          right: 0
-        }
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        labels: {
-          offsetX: 0,
-          style: {
-            colors: labelColor,
-            fontSize: '13px'
-          }
-        },
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        lines: {
-          show: false
-        }
-      },
-      yaxis: {
-        labels: {
-          offsetX: -15,
-          formatter: function (val) {
-            return 'Rp.' + parseInt(val) + ',-';
-          },
-          style: {
-            fontSize: '13px',
-            colors: labelColor
-          }
-        },
-        min: -20000000,
-        max: 50000000,
-        tickAmount: 5
-      }
-    };
-  if (typeof totalIncomeEl !== undefined && totalIncomeEl !== null) {
-    const totalIncome = new ApexCharts(totalIncomeEl, totalIncomeConfig);
-    totalIncome.render();
-  }
-
-  // Performance - Radar Chart
-  // --------------------------------------------------------------------
-  const performanceChartEl = document.querySelector('#performanceChart'),
-    performanceChartConfig = {
-      series: [
-        {
-          name: 'Income',
-          data: [26, 29, 31, 40, 29, 24]
-        },
-        {
-          name: 'Earning',
-          data: [30, 26, 24, 26, 24, 40]
-        }
-      ],
-      chart: {
-        height: 270,
-        type: 'radar',
-        toolbar: {
-          show: false
-        },
-        dropShadow: {
-          enabled: true,
-          enabledOnSeries: undefined,
-          top: 6,
-          left: 0,
-          blur: 6,
-          color: '#000',
-          opacity: 0.14
-        }
-      },
-      plotOptions: {
-        radar: {
-          polygons: {
-            strokeColors: borderColor,
-            connectorColors: borderColor
-          }
-        }
-      },
-      stroke: {
-        show: false,
-        width: 0
-      },
-      legend: {
-        show: true,
-        fontSize: '13px',
-        position: 'bottom',
-        labels: {
-          colors: '#aab3bf',
-          useSeriesColors: false
-        },
-        markers: {
-          height: 10,
-          width: 10,
-          offsetX: -3
-        },
-        itemMargin: {
-          horizontal: 10
-        },
-        onItemHover: {
-          highlightDataSeries: false
-        }
-      },
-      colors: [config.colors.primary, config.colors.info],
-      fill: {
-        opacity: [1, 0.85]
-      },
-      markers: {
-        size: 0
-      },
-      grid: {
-        show: false,
-        padding: {
-          top: -8,
-          bottom: -5
-        }
-      },
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        labels: {
-          show: true,
-          style: {
-            colors: [labelColor, labelColor, labelColor, labelColor, labelColor, labelColor],
-            fontSize: '13px',
-            fontFamily: 'Public Sans'
-          }
-        }
-      },
-      yaxis: {
-        show: false,
-        min: 0,
-        max: 40,
-        tickAmount: 4
-      }
-    };
-  if (typeof performanceChartEl !== undefined && performanceChartEl !== null) {
-    const performanceChart = new ApexCharts(performanceChartEl, performanceChartConfig);
-    performanceChart.render();
-  }
-
-  // Conversion rate Line Chart
-  // --------------------------------------------------------------------
-  const conversionLineChartEl = document.querySelector('#conversionRateChart'),
-    conversionLineChartConfig = {
-      chart: {
-        height: 80,
-        width: 140,
-        type: 'line',
-        toolbar: {
-          show: false
-        },
-        dropShadow: {
-          enabled: true,
-          top: 10,
-          left: 5,
-          blur: 3,
-          color: config.colors.primary,
-          opacity: 0.15
-        },
-        sparkline: {
-          enabled: true
-        }
-      },
-      markers: {
-        size: 6,
-        colors: 'transparent',
-        strokeColors: 'transparent',
-        strokeWidth: 4,
-        discrete: [
-          {
-            fillColor: config.colors.white,
-            seriesIndex: 0,
-            dataPointIndex: 3,
-            strokeColor: config.colors.primary,
-            strokeWidth: 4,
-            size: 6,
-            radius: 2
-          }
-        ],
-        hover: {
-          size: 7
-        }
-      },
-      grid: {
-        show: false,
-        padding: {
-          right: 8
-        }
-      },
-      colors: [config.colors.primary],
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        width: 5,
-        curve: 'smooth'
-      },
-      series: [
-        {
-          name: 'Income',
-          data: [incomweToMonth, incomeLastMonth, incomeThisMonth]
-        }
-      ],
-      xaxis: {
-        show: false,
-        categories: [duaBulanLalu, bulanLalu, bulan],
-        labels: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        },
-        axisBorder: {
-          show: false
-        }
-      },
-      yaxis: {
-        show: false
-      }
-    };
-  if (typeof conversionLineChartEl !== undefined && conversionLineChartEl !== null) {
-    const conversionLineChart = new ApexCharts(conversionLineChartEl, conversionLineChartConfig);
-    conversionLineChart.render();
-  }
-
   // Conversion rate Line Chart
   // --------------------------------------------------------------------
   const pendapatanBarChartEl = document.querySelector('#pendapatanBarChart'),
@@ -1206,6 +848,368 @@
     marginBarChart.render();
   }
 
+  // --------------------------------------------------------------------
+  // !Used
+
+
+  // Profit Bar Chart
+  // --------------------------------------------------------------------
+  const profitBarChartEl = document.querySelector('#profitChart'),
+    profitBarChartConfig = {
+      series: [
+        {
+          data: [58, 28, 50, 80]
+        },
+        {
+          data: [50, 22, 65, 72]
+        }
+      ],
+      chart: {
+        type: 'bar',
+        height: 80,
+        toolbar: {
+          tools: {
+            download: false
+          }
+        }
+      },
+      plotOptions: {
+        bar: {
+          columnWidth: '65%',
+          startingShape: 'rounded',
+          endingShape: 'rounded',
+          borderRadius: 3,
+          dataLabels: {
+            show: false
+          }
+        }
+      },
+      grid: {
+        show: false,
+        padding: {
+          top: -30,
+          bottom: -12,
+          left: -10,
+          right: 0
+        }
+      },
+      colors: [config.colors.success, config.colors_label.success],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        show: true,
+        width: 5,
+        colors: labelColor
+      },
+      legend: {
+        show: false
+      },
+      xaxis: {
+        categories: ['Jan', 'Apr', 'Jul', 'Oct'],
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        labels: {
+          style: {
+            colors: labelColor,
+            fontSize: '13px'
+          }
+        }
+      },
+      yaxis: {
+        labels: {
+          show: false
+        }
+      }
+    };
+  if (typeof profitBarChartEl !== undefined && profitBarChartEl !== null) {
+    const profitBarChart = new ApexCharts(profitBarChartEl, profitBarChartConfig);
+    profitBarChart.render();
+  }
+
+  // Total Income - Area Chart
+  // --------------------------------------------------------------------
+  const totalIncomeEl = document.querySelector('#totalIncomeChart'),
+    totalIncomeConfig = {
+      chart: {
+        height: 250,
+        type: 'area',
+        toolbar: false,
+        dropShadow: {
+          enabled: true,
+          top: 14,
+          left: 2,
+          blur: 3,
+          color: config.colors.primary,
+          opacity: 0.15
+        }
+      },
+    
+      series: [
+        {
+          name: 'Margin',
+          data: [incomeJanYear, incomeFebYear, incomeMarYear, incomeAprYear, incomeMayYear, incomeJunYear, incomeJulYear, incomeAugYear, incomeSepYear, incomeOctYear, incomeNovYear, incomeDecYear]
+        }
+      ],
+   
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: 3,
+        curve: 'straight'
+      },
+      colors: [config.colors.primary],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: shadeColor,
+          shadeIntensity: 0.8,
+          opacityFrom: 0.7,
+          opacityTo: 0.25,
+          stops: [0, 95, 100]
+        }
+      },
+      grid: {
+        show: true,
+        borderColor: borderColor,
+        padding: {
+          top: -15,
+          bottom: -10,
+          left: 0,
+          right: 0
+        }
+      },
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: {
+          offsetX: 0,
+          style: {
+            colors: labelColor,
+            fontSize: '13px'
+          }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        lines: {
+          show: false
+        }
+      },
+      yaxis: {
+        labels: {
+          offsetX: -15,
+          formatter: function(val) {
+              // Format angka ke dalam format mata uang rupiah (Rp.)
+              return 'Rp.' + val.toLocaleString('id-ID') + ',-';
+          },
+          style: {
+            fontSize: '13px',
+            colors: labelColor
+          }
+        },
+        min: -20000000,
+        max: 50000000,
+        tickAmount: 5
+      }
+    };
+  if (typeof totalIncomeEl !== undefined && totalIncomeEl !== null) {
+    const totalIncome = new ApexCharts(totalIncomeEl, totalIncomeConfig);
+    totalIncome.render();
+  }
+
+  // Performance - Radar Chart
+  // --------------------------------------------------------------------
+  const performanceChartEl = document.querySelector('#performanceChart'),
+    performanceChartConfig = {
+      series: [
+        {
+          name: 'Income',
+          data: [26, 29, 31, 40, 29, 24]
+        },
+        {
+          name: 'Earning',
+          data: [30, 26, 24, 26, 24, 40]
+        }
+      ],
+      chart: {
+        height: 270,
+        type: 'radar',
+        toolbar: {
+          show: false
+        },
+        dropShadow: {
+          enabled: true,
+          enabledOnSeries: undefined,
+          top: 6,
+          left: 0,
+          blur: 6,
+          color: '#000',
+          opacity: 0.14
+        }
+      },
+      plotOptions: {
+        radar: {
+          polygons: {
+            strokeColors: borderColor,
+            connectorColors: borderColor
+          }
+        }
+      },
+      stroke: {
+        show: false,
+        width: 0
+      },
+      legend: {
+        show: true,
+        fontSize: '13px',
+        position: 'bottom',
+        labels: {
+          colors: '#aab3bf',
+          useSeriesColors: false
+        },
+        markers: {
+          height: 10,
+          width: 10,
+          offsetX: -3
+        },
+        itemMargin: {
+          horizontal: 10
+        },
+        onItemHover: {
+          highlightDataSeries: false
+        }
+      },
+      colors: [config.colors.primary, config.colors.info],
+      fill: {
+        opacity: [1, 0.85]
+      },
+      markers: {
+        size: 0
+      },
+      grid: {
+        show: false,
+        padding: {
+          top: -8,
+          bottom: -5
+        }
+      },
+      xaxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        labels: {
+          show: true,
+          style: {
+            colors: [labelColor, labelColor, labelColor, labelColor, labelColor, labelColor],
+            fontSize: '13px',
+            fontFamily: 'Public Sans'
+          }
+        }
+      },
+      yaxis: {
+        show: false,
+        min: 0,
+        max: 40,
+        tickAmount: 4
+      }
+    };
+  if (typeof performanceChartEl !== undefined && performanceChartEl !== null) {
+    const performanceChart = new ApexCharts(performanceChartEl, performanceChartConfig);
+    performanceChart.render();
+  }
+
+  // Conversion rate Line Chart
+  // --------------------------------------------------------------------
+  const conversionLineChartEl = document.querySelector('#conversionRateChart'),
+    conversionLineChartConfig = {
+      chart: {
+        height: 80,
+        width: 140,
+        type: 'line',
+        toolbar: {
+          show: false
+        },
+        dropShadow: {
+          enabled: true,
+          top: 10,
+          left: 5,
+          blur: 3,
+          color: config.colors.primary,
+          opacity: 0.15
+        },
+        sparkline: {
+          enabled: true
+        }
+      },
+      markers: {
+        size: 6,
+        colors: 'transparent',
+        strokeColors: 'transparent',
+        strokeWidth: 4,
+        discrete: [
+          {
+            fillColor: config.colors.white,
+            seriesIndex: 0,
+            dataPointIndex: 3,
+            strokeColor: config.colors.primary,
+            strokeWidth: 4,
+            size: 6,
+            radius: 2
+          }
+        ],
+        hover: {
+          size: 7
+        }
+      },
+      grid: {
+        show: false,
+        padding: {
+          right: 8
+        }
+      },
+      colors: [config.colors.primary],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        width: 5,
+        curve: 'smooth'
+      },
+      series: [
+        {
+          name: 'Income',
+          data: [incomweToMonth, incomeLastMonth, incomeThisMonth]
+        }
+      ],
+      xaxis: {
+        show: false,
+        categories: [duaBulanLalu, bulanLalu, bulan],
+        labels: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        },
+        axisBorder: {
+          show: false
+        }
+      },
+      yaxis: {
+        show: false
+      }
+    };
+  if (typeof conversionLineChartEl !== undefined && conversionLineChartEl !== null) {
+    const conversionLineChart = new ApexCharts(conversionLineChartEl, conversionLineChartConfig);
+    conversionLineChart.render();
+  }
+
+  
   // Total Balance - Line Chart
   // --------------------------------------------------------------------
   const totalBalanceChartEl = document.querySelector('#totalBalanceChart'),
