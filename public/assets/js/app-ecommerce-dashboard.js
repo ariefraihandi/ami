@@ -1216,7 +1216,7 @@
     totalBalanceChartConfig = {
       series: [
         {
-          data: [137, 210, 160, 275, 205, 315]
+          data: [invoiceJan, invoiceFeb, invoiceMar, invoiceApr, invoiceMay, invoiceJun, invoiceJul, invoiceAug, invoiceSep, invoiceOct, invoiceNov, invoiceDec]
         }
       ],
       chart: {
@@ -1277,7 +1277,7 @@
         }
       },
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         axisBorder: {
           show: false
         },

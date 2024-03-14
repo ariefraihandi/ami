@@ -302,6 +302,7 @@ class DashboardController extends Controller
             $outcomeWeekly      = FinancialTransaction::getRangeOutTransonAmount($seninDate, $sabtuDate);
             $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);        
         //!Mingguan
+        
         //Bulanan
             //Money
                 $incomeThisMonth    = FinancialTransaction::getIncomeRangeAmount($startingMonth, $today);
@@ -323,8 +324,18 @@ class DashboardController extends Controller
                 $operationalLastMo  = $outcomeLastMount-$topUpLastMonth;
             //!Money
             //Count
-                // $getInvMonthly      = Invoice::getInv($startingMonth, $today)->count();
-                // $invBonMonthly      = Invoice::getCountInvBon($startingMonth, $today);
+                $countInvJan = Invoice::getInv($janStartDateYear, $janEndDateYear)->count();
+                $countInvFeb = Invoice::getInv($febStartDateYear, $febEndDateYear)->count();
+                $countInvMar = Invoice::getInv($marStartDateYear, $marEndDateYear)->count();
+                $countInvApr = Invoice::getInv($aprStartDateYear, $aprEndDateYear)->count();
+                $countInvMay = Invoice::getInv($mayStartDateYear, $mayEndDateYear)->count();
+                $countInvJun = Invoice::getInv($junStartDateYear, $junEndDateYear)->count();
+                $countInvJul = Invoice::getInv($julStartDateYear, $julEndDateYear)->count();
+                $countInvAug = Invoice::getInv($augStartDateYear, $augEndDateYear)->count();
+                $countInvSep = Invoice::getInv($sepStartDateYear, $sepEndDateYear)->count();
+                $countInvOct = Invoice::getInv($octStartDateYear, $octEndDateYear)->count();
+                $countInvNov = Invoice::getInv($novStartDateYear, $novEndDateYear)->count();
+                $countInvDec = Invoice::getInv($decStartDateYear, $decEndDateYear)->count();          
             //!Count
             //Monthly Income
                 $incomeJanYear      = FinancialTransaction::getMarginByRange($janStartDateYear, $janEndDateYear);
@@ -486,6 +497,22 @@ class DashboardController extends Controller
 
             'marginMonthly'     => $marginMonthly,
             'marginLastMonth'   => $marginLastMonth,
+            
+            //Count Inv
+                'countInvJan' => $countInvJan,
+                'countInvFeb' => $countInvFeb,
+                'countInvMar' => $countInvMar,
+                'countInvApr' => $countInvApr,
+                'countInvMay' => $countInvMay,
+                'countInvJun' => $countInvJun,
+                'countInvJul' => $countInvJul,
+                'countInvAug' => $countInvAug,
+                'countInvSep' => $countInvSep,
+                'countInvOct' => $countInvOct,
+                'countInvNov' => $countInvNov,
+                'countInvDec' => $countInvDec,
+            //!Count Inv
+            
             //icomeMonthlyYear
                 'incomeJanYear'  => $incomeJanYear, 
                 'incomeFebYear'  => $incomeFebYear, 

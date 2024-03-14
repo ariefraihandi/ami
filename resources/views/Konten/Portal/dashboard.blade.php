@@ -808,7 +808,7 @@
     <div class="col-md-6 col-lg-4">
       <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
-          <h5 class="card-title m-0 me-2">Total Balance</h5>
+          <h5 class="card-title m-0 me-2">Grafik Invoice</h5>
           <div class="dropdown">
             <button
               class="btn p-0"
@@ -902,6 +902,20 @@
   var incomeOctYear   = {{ $incomeOctYear }};   
   var incomeNovYear   = {{ $incomeNovYear }};   
   var incomeDecYear   = {{ $incomeDecYear }};   
+  
+  var invoiceJan = {{ $countInvJan }};
+  var invoiceFeb = {{ $countInvFeb }};
+  var invoiceMar = {{ $countInvMar }};
+  var invoiceApr = {{ $countInvApr }};
+  var invoiceMay = {{ $countInvMay }};
+  var invoiceJun = {{ $countInvJun }};
+  var invoiceJul = {{ $countInvJul }};
+  var invoiceAug = {{ $countInvAug }};
+  var invoiceSep = {{ $countInvSep }};
+  var invoiceOct = {{ $countInvOct }};
+  var invoiceNov = {{ $countInvNov }};
+  var invoiceDec = {{ $countInvDec }};
+
   
   var bulan           = {!! json_encode($bulan) !!};
   var bulanLalu       = {!! json_encode($bulanLalu) !!};
