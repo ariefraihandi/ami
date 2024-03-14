@@ -479,6 +479,7 @@
               </div>
               <span class="d-block">Penjualan {{$currentYear}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalInvPaidYear, 0, ',', '.') }}</h6>
+              {{$totalInvPaidLastYear}}
               @php
                 $incomeYearlyPercentage = ($totalInvPaidLastYear == 0) ? 0 : (($totalInvPaidYear - $totalInvPaidLastYear) / $totalInvPaidLastYear) * 100;
                 $iconClass = ($incomeYearlyPercentage >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
