@@ -79,7 +79,15 @@ class Invoice extends Model
         ->where('panjar_amount', '!=', 0.00)
             ->get(); 
     }
-    
+
+    public static function getInvPanBon($startDate, $endDate)
+    {
+        return self::whereBetween('created_at', [$startDate, $endDate])
+                ->whereIn('status', [0, 1])
+                ->where('total_amount', '!=', 0.00)
+                ->get();
+    }
+   
     
     //Count
         public static function getCountInvLun($startDate, $endDate)

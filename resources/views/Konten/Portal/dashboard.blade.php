@@ -707,330 +707,100 @@
           <table class="table text-nowrap">
             <thead>
               <tr>
-                <th>Product</th>
-                <th>Category</th>
-                <th>Payment</th>
+                <th>Invoice</th>
+                <th>Constumer</th>
+                <th>Pembayaran</th>
                 <th>Order Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody class="table-border-bottom-0">
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/oneplus-lg.png"
-                      alt="Oneplus"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">OnePlus 7Pro</span>
-                      <small class="text-muted">OnePlus</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-primary rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-mobile-alt bx-xs"></i
-                  ></span>
-                  Smart Phone
-                </td>
-                <td>
-                  <div class="text-muted lh-1"><span class="text-primary fw-medium">$120</span>/499</div>
-                  <small class="text-muted">Partially Paid</small>
-                </td>
-                <td><span class="badge bg-label-primary">Confirmed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/magic-mouse.png"
-                      alt="Apple"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">Magic Mouse</span>
-                      <small class="text-muted">Apple</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-warning rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-mouse bx-xs"></i
-                  ></span>
-                  Mouse
-                </td>
-                <td>
-                  <div class="lh-1"><span class="text-primary fw-medium">$149</span></div>
-                  <small class="text-muted">Fully Paid</small>
-                </td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/imac-pro.png"
-                      alt="Apple"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">iMac Pro</span>
-                      <small class="text-muted">Apple</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-info rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-desktop bx-xs"></i
-                  ></span>
-                  Computer
-                </td>
-                <td>
-                  <div class="text-muted lh-1"><span class="text-primary fw-medium">$0</span>/899</div>
-                  <small class="text-muted">Unpaid</small>
-                </td>
-                <td><span class="badge bg-label-danger">Cancelled</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/note10.png"
-                      alt="Samsung"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">Note 10</span>
-                      <small class="text-muted">Samsung</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-primary rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-mobile-alt bx-xs"></i
-                  ></span>
-                  Smart Phone
-                </td>
-                <td>
-                  <div class="lh-1"><span class="text-primary fw-medium">$149</span></div>
-                  <small class="text-muted">Fully Paid</small>
-                </td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/iphone.png"
-                      alt="Apple"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">iPhone 11 Pro</span>
-                      <small class="text-muted">Apple</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-primary rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-mobile-alt bx-xs"></i
-                  ></span>
-                  Smart Phone
-                </td>
-                <td>
-                  <div class="lh-1"><span class="text-primary fw-medium">$399</span></div>
-                  <small class="text-muted">Fully Paid</small>
-                </td>
-                <td><span class="badge bg-label-success">Completed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/mi-tv.png"
-                      alt="Xiaomi"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">Mi LED TV 4X</span>
-                      <small class="text-muted">Xiaomi</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-danger rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-tv bx-xs"></i
-                  ></span>
-                  Smart TV
-                </td>
-                <td>
-                  <div class="text-muted lh-1"><span class="text-primary fw-medium">$349</span>/2499</div>
-                  <small class="text-muted">Partially Paid</small>
-                </td>
-                <td><span class="badge bg-label-primary">Confirmed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <img
-                      src="{{ asset('assets') }}/img/products/logitech-mx.png"
-                      alt="Logitech"
-                      height="32"
-                      width="32"
-                      class="me-2" />
-                    <div class="d-flex flex-column">
-                      <span class="fw-medium lh-1">Logitech MX</span>
-                      <small class="text-muted">Logitech</small>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-label-warning rounded-pill badge-center p-3 me-2"
-                    ><i class="bx bx-mouse bx-xs"></i
-                  ></span>
-                  Mouse
-                </td>
-                <td>
-                  <div class="lh-1"><span class="text-primary fw-medium">$89</span></div>
-                  <small class="text-muted">Fully Paid</small>
-                </td>
-                <td><span class="badge bg-label-primary">Completed</span></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      type="button"
-                      class="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown">
-                      <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-edit-alt me-1"></i> View Details</a
-                      >
-                      <a class="dropdown-item" href="javascript:void(0);"
-                        ><i class="bx bx-trash me-1"></i> Delete</a
-                      >
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
+              @foreach($invoiceData as $invoice)
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                          @php
+                              $imagePath = '';
+                              if (Str::startsWith($invoice->invoice_number, 'S')) {
+                                  $imagePath = 'sales.png';
+                              } elseif (Str::startsWith($invoice->invoice_number, 'P')) {
+                                  $imagePath = 'project.png';
+                              }
+                          @endphp
+                          <img src="{{ asset('assets/img/icons/unicons/' . $imagePath) }}" alt="{{ $invoice->invoice_number }}" height="32" width="32" class="me-2" />
+                          <div class="d-flex flex-column">
+                              <span class="fw-medium lh-1">{{ $invoice->invoice_number }}</span>
+                              <small class="text-muted">{{ $invoice->invoice_name }}</small>
+                          </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                          @php
+                              $imagePath = '';
+                              $customer = \App\Models\Customer::where('uuid', $invoice->customer_uuid)->first();
+                              
+                              if ($customer) {
+                                  if ($customer->customer_type == 'individual') {
+                                      $imagePath = 'user.png';
+                                  } elseif ($customer->customer_type == 'biro') {
+                                      $imagePath = 'biro.png';
+                                  } elseif ($customer->customer_type == 'instansi') {
+                                      $imagePath = 'instansi.png';
+                                  }
+                              }
+                          @endphp
+                          <img src="{{ asset('assets/img/icons/unicons/' . $imagePath) }}" alt="{{ $invoice->invoice_number }}" height="32" width="32" class="me-2" />
+                          <div class="d-flex flex-column">
+                              <span class="fw-medium lh-1">{{ $customer->name }}</span>
+                              <small class="text-muted">{{ ucfirst($customer->customer_type) }}</small>
+                          </div>
+                      </div>
+                    </td>  
+                    <td>
+                      <div class="text-muted lh-1">
+                        <span class="text-primary fw-medium">Rp. {{ number_format($invoice->total_amount, 0) }}</span>/{{ number_format($invoice->panjar_amount, 0) }}
+                      </div>
+                      <small class="text-muted">
+                        @if($invoice->status == 0)
+                            Belum Bayar
+                        @elseif($invoice->status == 1)
+                            Panjar
+                        @endif
+                      </small>   
+                    </td>
+                    <td>
+                      @if($invoice->status == 0)
+                          <div class="progress">
+                              <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">                                
+                              </div>
+                          </div>
+                      @elseif($invoice->status == 1)
+                          @php
+                              $percentage = ($invoice->panjar_amount / $invoice->total_amount) * 100;
+                          @endphp
+                          <div class="progress">
+                              <div class="progress-bar bg-info" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                  {{ $percentage }}%
+                              </div>
+                          </div>
+                      @endif
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> View Details</a>
+                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
+                            </div>
+                        </div>
+                    </td>
+                  </tr>
+              @endforeach
+              </tbody>
+              
           </table>
         </div>
       </div>

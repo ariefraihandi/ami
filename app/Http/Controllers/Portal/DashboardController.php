@@ -244,18 +244,6 @@ class DashboardController extends Controller
             //!Bulanan
         //!Date Configuration        
         
-        $incomeTotal        = FinancialTransaction::getTransactionAmount($today);
-        $incomeTotalYes     = FinancialTransaction::getTransactionAmount($yesterday);
-        $totIncomeSen       = FinancialTransaction::getTransactionAmount($seninDate);
-        $totIncomeSel       = FinancialTransaction::getTransactionAmount($selasaDate);
-        $totIncomeRab       = FinancialTransaction::getTransactionAmount($rabuDate);
-        $totIncomeKam       = FinancialTransaction::getTransactionAmount($kamisDate);
-        $totIncomeJum       = FinancialTransaction::getTransactionAmount($jumatDate);
-        $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
-      
-        
-        
-        // $incomelastWeek     = FinancialTransaction::getIncomeRangeAmount($startLast, $endLast);
         
         //Mingguan
             //Income
@@ -294,6 +282,25 @@ class DashboardController extends Controller
                 $margPastWeek3  = $incPastWeek3-$outPastWeek3;
                 $margPastWeek4  = $incPastWeek4-$outPastWeek4;
             //!Margin
+            $incomeTotal        = FinancialTransaction::getTransactionAmount($today);
+            $incomeTotalYes     = FinancialTransaction::getTransactionAmount($yesterday);
+            $totIncomeSen       = FinancialTransaction::getTransactionAmount($seninDate);
+            $totIncomeSel       = FinancialTransaction::getTransactionAmount($selasaDate);
+            $totIncomeRab       = FinancialTransaction::getTransactionAmount($rabuDate);
+            $totIncomeKam       = FinancialTransaction::getTransactionAmount($kamisDate);
+            $totIncomeJum       = FinancialTransaction::getTransactionAmount($jumatDate);
+            $totIncomeSab       = FinancialTransaction::getTransactionAmount($sabtuDate);
+
+            $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
+            $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
+            $totOutcomeSen      = FinancialTransaction::getOutTransAmount($seninDate);
+            $totOutcomeSel      = FinancialTransaction::getOutTransAmount($selasaDate);
+            $totOutcomeRab      = FinancialTransaction::getOutTransAmount($rabuDate);
+            $totOutcomeKam      = FinancialTransaction::getOutTransAmount($kamisDate);
+            $totOutcomeJum      = FinancialTransaction::getOutTransAmount($jumatDate);
+            $totOutcomeSab      = FinancialTransaction::getOutTransAmount($sabtuDate);
+            $outcomeWeekly      = FinancialTransaction::getRangeOutTransonAmount($seninDate, $sabtuDate);
+            $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);        
         //!Mingguan
         //Bulanan
             //Money
@@ -378,32 +385,11 @@ class DashboardController extends Controller
           $setorKasForPast    = FinancialTransaction::getWeeklySetorKasAmount($starting, $today);
           $sisaSaldoPast      = $incomeForSisaPast+$topupForSisaPast-$outcomeForSisaPast-$setorKasForPast;          
         //!Geting Saldo Sisa This Month
-
-        $setorKasWeek       = FinancialTransaction::getWeeklySetorKasAmount($seninDate, $sabtuDate);
-        $topUpWeek          = FinancialTransaction::getWeeklyTopUpAmount($seninDate, $sabtuDate);
-
-        $outcomeTotal       = FinancialTransaction::getOutTransAmount($today);
-        $outcomeTotalYes    = FinancialTransaction::getOutTransAmount($yesterday);
-        $totOutcomeSen      = FinancialTransaction::getOutTransAmount($seninDate);
-        $totOutcomeSel      = FinancialTransaction::getOutTransAmount($selasaDate);
-        $totOutcomeRab      = FinancialTransaction::getOutTransAmount($rabuDate);
-        $totOutcomeKam      = FinancialTransaction::getOutTransAmount($kamisDate);
-        $totOutcomeJum      = FinancialTransaction::getOutTransAmount($jumatDate);
-        $totOutcomeSab      = FinancialTransaction::getOutTransAmount($sabtuDate);
-        $outcomeWeekly      = FinancialTransaction::getRangeOutTransonAmount($seninDate, $sabtuDate);
-        $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);        
-        
-        $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
-        // $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
-        // $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
-        // $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
-        // $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
-        
-
-        $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
-        $sisaKasTotal         = $fixedTotal-$setorKasWeek;
-// dd($getSUmBonYear);
-        // dd($fixedTotal, $sisaKasTotal);
+       
+        //GetInvoice
+            $invoiceData         = Invoice::getInvPanBon($startingYear, $today);
+        //!GetInvoice
+// dd($invoiceData);
         $data = [
         //Sistem
             'title'             => 'Dashboard',
@@ -428,7 +414,20 @@ class DashboardController extends Controller
             'totIncomeKam'      => $totIncomeKam,
             'totIncomeJum'      => $totIncomeJum,
             'totIncomeSab'      => $totIncomeSab,
-        //!Income      
+        //!Income    
+        
+        // Outcome            
+           'outcomeTotal'      => $outcomeTotal,
+           'outcomeTotalYes'   => $outcomeTotalYes,
+           'totOutcomeSen'     => $totOutcomeSen,
+           'totOutcomeSel'     => $totOutcomeSel,
+           'totOutcomeRab'     => $totOutcomeRab,
+           'totOutcomeKam'     => $totOutcomeKam,
+           'totOutcomeJum'     => $totOutcomeJum,
+           'totOutcomeSab'     => $totOutcomeSab,
+           'outcomeWeekly'     => $outcomeWeekly,
+           'outcomelastWeek'   => $outcomelastWeek,
+        //!Outcome    
           
         //Data Mingguan
             'incomeWeekly'   => $incomeWeekly,
@@ -461,6 +460,7 @@ class DashboardController extends Controller
             'bulanLalu'         => $bulanLalu,
             'duaBulanLalu'      => $duaBulanLalu,
             'totalInvMouthly'   => $totalInvMouthly,
+            'invoiceData'       => $invoiceData,
             
             'sisaSaldo'         => $sisaSaldo,
             'sisaSaldoPast'     => $sisaSaldoPast,
@@ -514,21 +514,7 @@ class DashboardController extends Controller
             
             'totalBonYearly'        => $totalBonYearly,
             
-        //! Data Tahunan 
-        
-        // Outcome            
-            'outcomeTotal'      => $outcomeTotal,
-            'outcomeTotalYes'   => $outcomeTotalYes,
-            'totOutcomeSen'     => $totOutcomeSen,
-            'totOutcomeSel'     => $totOutcomeSel,
-            'totOutcomeRab'     => $totOutcomeRab,
-            'totOutcomeKam'     => $totOutcomeKam,
-            'totOutcomeJum'     => $totOutcomeJum,
-            'totOutcomeSab'     => $totOutcomeSab,
-            'outcomeWeekly'     => $outcomeWeekly,
-            'outcomelastWeek'   => $outcomelastWeek,
-        //!Outcome    
-            
+        //! Data Tahunan            
         ];
 
         return view('Konten/Portal/dashboard', $data);
