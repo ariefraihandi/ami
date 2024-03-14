@@ -363,13 +363,74 @@ class DashboardController extends Controller
                 $incomeDecYear      = FinancialTransaction::getMarginByRange($decStartDateYear, $decEndDateYear);
                 $incomeDecLastYear  = FinancialTransaction::getMarginByRange($decStartDateLastYear, $decEndDateLastYear);
             //!Monthly Income
+            //Average
+                $totalIncomeYear = $incomeJanYear +
+                $incomeFebYear +
+                $incomeMarYear +
+                $incomeAprYear +
+                $incomeMayYear +
+                $incomeJunYear +
+                $incomeJulYear +
+                $incomeAugYear +
+                $incomeSepYear +
+                $incomeOctYear +
+                $incomeNovYear +
+                $incomeDecYear;
+
+                // Hitung total pendapatan dari Januari hingga bulan sekarang
+                $totalIncomeTillNow = 0;
+                $currentMonth = Carbon::now()->month;
+                switch ($currentMonth) {
+                case 1:
+                $totalIncomeTillNow = $incomeJanYear;
+                break;
+                case 2:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear;
+                break;
+                case 3:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear;
+                break;
+                case 4:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear;
+                break;
+                case 5:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear;
+                break;
+                case 6:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear;
+                break;
+                case 7:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear;
+                break;
+                case 8:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear + $incomeAugYear;
+                break;
+                case 9:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear + $incomeAugYear + $incomeSepYear;
+                break;
+                case 10:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear + $incomeAugYear + $incomeSepYear + $incomeOctYear;
+                break;
+                case 11:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear + $incomeAugYear + $incomeSepYear + $incomeOctYear + $incomeNovYear;
+                break;
+                case 12:
+                $totalIncomeTillNow = $incomeJanYear + $incomeFebYear + $incomeMarYear + $incomeAprYear + $incomeMayYear + $incomeJunYear + $incomeJulYear + $incomeAugYear + $incomeSepYear + $incomeOctYear + $incomeNovYear + $incomeDecYear;
+                break;
+                }
+
+                // Hitung rata-rata pendapatan sampai sekarang
+                $averageIncomeTillNow = $totalIncomeTillNow / $currentMonth;
+            //Average
         //!Bulanan
 
         //Tahunan
+            $incomeThisYear         = FinancialTransaction::getIncomeRangeAmount($startingYear, $today);
+            $outcomeYear            = FinancialTransaction::getRangeOutTransonAmount($startingYear, $today);  
             $totalInvPaidYear       = Invoice::getInvPaid($startingYear, $today);   
             $totalInvPaidLastYear   = Invoice::getInvPaid($startingLastYear, $endingLastYear);   
             $totalBonYearly         = Invoice::getBon($startingYear, $today);
-
+            $marginYear             = FinancialTransaction::getMarginByRange($startingYear, $today);
             $invLunYear             = Invoice::getCountInvLun($startingYear, $today);
             $invPanYear             = Invoice::getCountInvPan($startingYear, $today);
             $invBonYear             = Invoice::getCountInvBon($startingYear, $today);
@@ -400,7 +461,6 @@ class DashboardController extends Controller
         //GetInvoice
             $invoiceData         = Invoice::getInvPanBon($startingYear, $today);
         //!GetInvoice
-// dd($invoiceData);
         $data = [
         //Sistem
             'title'             => 'Dashboard',
@@ -472,6 +532,7 @@ class DashboardController extends Controller
             'duaBulanLalu'      => $duaBulanLalu,
             'totalInvMouthly'   => $totalInvMouthly,
             'invoiceData'       => $invoiceData,
+            'rataIncome'        => $averageIncomeTillNow,
             
             'sisaSaldo'         => $sisaSaldo,
             'sisaSaldoPast'     => $sisaSaldoPast,
@@ -535,9 +596,12 @@ class DashboardController extends Controller
             'endingYear'            => $endingYear,
             'invYear'               => $invYear,
             'invLastYear'           => $invLastYear,
-            'invBonYear'           => $invBonYear,
+            'invBonYear'            => $invBonYear,
             'totalInvPaidYear'      => $totalInvPaidYear,
             'totalInvPaidLastYear'  => $totalInvPaidLastYear,
+            'marginYear'            => $marginYear,
+            'incomeThisYear'        => $incomeThisYear,
+            'outcomeYear'           => $outcomeYear,
             
             'totalBonYearly'        => $totalBonYearly,
             

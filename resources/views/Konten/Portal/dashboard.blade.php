@@ -616,7 +616,7 @@
             <div class="card-header d-flex justify-content-between">
               <div>
                 <h5 class="card-title mb-0">Report</h5>
-                <small class="card-subtitle">Monthly Avg. $45.578k</small>
+                <small class="card-subtitle">Monthly Avg. Rp. {{ number_format($rataIncome, 0) }},-</small>
               </div>
               <div class="dropdown">
                 <button
@@ -641,42 +641,6 @@
                   <div class="d-flex align-items-start">
                     <div class="report-list-icon shadow-sm me-2">
                       <img
-                        src="{{ asset('assets') }}/svg/icons/paypal-icon.svg"
-                        width="22"
-                        height="22"
-                        alt="Paypal" />
-                    </div>
-                    <div class="d-flex justify-content-between align-items-end w-100 flex-wrap gap-2">
-                      <div class="d-flex flex-column">
-                        <span>Income</span>
-                        <h5 class="mb-0">$42,845</h5>
-                      </div>
-                      <small class="text-success">+2.34k</small>
-                    </div>
-                  </div>
-                </div>
-                <div class="report-list-item rounded-2 mb-3">
-                  <div class="d-flex align-items-start">
-                    <div class="report-list-icon shadow-sm me-2">
-                      <img
-                        src="{{ asset('assets') }}/svg/icons/shopping-bag-icon.svg"
-                        width="22"
-                        height="22"
-                        alt="Shopping Bag" />
-                    </div>
-                    <div class="d-flex justify-content-between align-items-end w-100 flex-wrap gap-2">
-                      <div class="d-flex flex-column">
-                        <span>Expense</span>
-                        <h5 class="mb-0">$38,658</h5>
-                      </div>
-                      <small class="text-danger">-1.15k</small>
-                    </div>
-                  </div>
-                </div>
-                <div class="report-list-item rounded-2">
-                  <div class="d-flex align-items-start">
-                    <div class="report-list-icon shadow-sm me-2">
-                      <img
                         src="{{ asset('assets') }}/svg/icons/wallet-icon.svg"
                         width="22"
                         height="22"
@@ -684,10 +648,44 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-end w-100 flex-wrap gap-2">
                       <div class="d-flex flex-column">
-                        <span>Profit</span>
-                        <h5 class="mb-0">$18,220</h5>
+                        <span>Pemasukan</span>
+                        <h5 class="mb-0">{{ number_format($incomeThisYear, 0) }},-</h5>
                       </div>
-                      <small class="text-success">+1.35k</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="report-list-item rounded-2 mb-3">
+                  <div class="d-flex align-items-start">
+                    <div class="report-list-icon shadow-sm me-2">
+                      <img                      
+                        src="{{ asset('assets') }}/img/icons/unicons/outcome.png"
+                        width="22"
+                        height="22"
+                        alt="Pengeluaran" />
+                    </div>
+                    <div class="d-flex justify-content-between align-items-end w-100 flex-wrap gap-2">
+                      <div class="d-flex flex-column">
+                        <span>Pengeluaran</span>
+                        <h5 class="mb-0">{{ number_format($outcomeYear, 0) }},-</h5>
+                      </div>                     
+                    </div>
+                  </div>
+                </div>
+                <div class="report-list-item rounded-2">
+                  <div class="d-flex align-items-start">
+                    <div class="report-list-icon shadow-sm me-2">
+                      <img                      
+                        src="{{ asset('assets') }}/img/icons/unicons/margin.png"
+                        width="22"
+                        height="22"
+                        alt="Margin" />
+                    </div>
+                    <div class="d-flex justify-content-between align-items-end w-100 flex-wrap gap-2">
+                      <div class="d-flex flex-column">
+                    
+                        <span>Margin</span>
+                        <h5 class="mb-0">{{ number_format($marginYear, 0) }},-</h5>
+                      </div>                    
                     </div>
                   </div>
                 </div>
@@ -830,27 +828,27 @@
           <div class="d-flex justify-content-start">
             <div class="d-flex pe-4">
               <div class="me-3">
-                <span class="badge bg-label-warning p-2"><i class="bx bx-wallet text-warning"></i></span>
+                <span class="badge bg-label-success p-2"><i class="bx bx-wallet text-success"></i></span>
               </div>
               <div>
-                <h6 class="mb-0">$2.54k</h6>
-                <small>Wallet</small>
+                <h5 class="card-title mb-1">{{ number_format($totalInvPaidYear, 0, ',', '.') }},-</h5>     
+                <small>Paid</small>
               </div>
             </div>
             <div class="d-flex">
               <div class="me-3">
-                <span class="badge bg-label-secondary p-2"
-                  ><i class="bx bx-dollar text-secondary"></i
+                <span class="badge bg-label-danger p-2"
+                  ><i class="bx bx-dollar text-danger"></i
                 ></span>
               </div>
               <div>
-                <h6 class="mb-0">$4.2k</h6>
-                <small>Paypal</small>
+                <h5 class="card-title mb-1">{{ number_format($totalBonYearly, 0, ',', '.') }}</h5>
+                <small>Unpaid</small>
               </div>
             </div>
           </div>
           <div id="totalBalanceChart" class="border-bottom mb-3"></div>
-          <div class="d-flex justify-content-between">
+          {{-- <div class="d-flex justify-content-between">
             <small class="text-muted"
               >You have done <span class="fw-medium">57.6%</span> more sales.<br />Check your new badge in
               your profile.</small
@@ -860,7 +858,7 @@
                 ><i class="bx bx-chevron-right text-warning scaleX-n1-rtl"></i
               ></span>
             </div>
-          </div>
+          </div> --}}
         </div>
       </div>
     </div>

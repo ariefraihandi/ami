@@ -1216,6 +1216,7 @@
     totalBalanceChartConfig = {
       series: [
         {
+          name: 'Invoice',
           data: [invoiceJan, invoiceFeb, invoiceMar, invoiceApr, invoiceMay, invoiceJun, invoiceJul, invoiceAug, invoiceSep, invoiceOct, invoiceNov, invoiceDec]
         }
       ],
