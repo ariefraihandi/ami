@@ -780,22 +780,21 @@
                               $percentage = ($invoice->panjar_amount / $invoice->total_amount) * 100;
                           @endphp
                           <div class="progress">
-                              <div class="progress-bar bg-info" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                  {{ $percentage }}%
+                              <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ number_format($percentage, 2) }}%
                               </div>
                           </div>
                       @endif
                     </td>
                     <td>
-                        <div class="dropdown">
-                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                <i class="bx bx-dots-vertical-rounded"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-edit-alt me-1"></i> View Details</a>
-                                <a class="dropdown-item" href="javascript:void(0);"><i class="bx bx-trash me-1"></i> Delete</a>
-                            </div>
-                        </div>
+                      <div class="dropdown">
+                          <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                          </button>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ url('/invoice/add') }}?invoiceNumber={{ $invoice->invoice_number }}&customerUuid={{ $invoice->customer_uuid }}" target="_blank"><i class="bx bx-edit-alt me-1"></i> Lihat Invoice</a>
+                          </div>
+                      </div>
                     </td>
                   </tr>
               @endforeach
