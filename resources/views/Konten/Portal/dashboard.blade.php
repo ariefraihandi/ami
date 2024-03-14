@@ -147,7 +147,7 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Income Inv {{$bulan}}</span>
+              <span class="d-block">Income {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalInvPaid, 0, ',', '.') }}</h6>                            
                 @php
                   $incomeMounthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($totalInvPaid / $totalInvMouthly) * 100;
@@ -472,15 +472,22 @@
                     aria-expanded="false">
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
-                  <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="javascript:void(0);">View More</a>
-                    <a class="dropdown-item" href="javascript:void(0);">Delete</a>
+                  <div class="dropdown-menu" aria-labelledby="cardOpt6">                    
+                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingYear }}&endDate={{ $endingYear }}" target="_blank">Lihat Laporan</a>         
                   </div>
                 </div>
               </div>
-              <span class="d-block">Sales</span>
-              <h4 class="card-title mb-1">$4,679</h4>
-              <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+              <span class="d-block">Penjualan {{$currentYear}}</span>
+              <h6 class="card-title mb-1">Rp. {{ number_format($totalInvPaidYear, 0, ',', '.') }}</h6>
+              @php
+                $incomeYearlyPercentage = ($totalInvPaidLastYear == 0) ? 0 : (($totalInvPaidYear - $totalInvPaidLastYear) / $totalInvPaidLastYear) * 100;
+                $iconClass = ($incomeYearlyPercentage >= 0) ? 'bx bx-up-arrow-alt text-success' : 'bx bx-down-arrow-alt text-danger';
+                $percentage = number_format(abs($incomeYearlyPercentage), 2);
+                $arrow = ($incomeYearlyPercentage >= 0) ? '+' : '-';
+              @endphp
+              
+              <small class="fw-medium"><i class="{{ $iconClass }}"></i> {{ $arrow }}{{ $percentage }}%</small>
+          
             </div>
           </div>
         </div>
@@ -1343,12 +1350,9 @@
   var totOutcomeJum   = {{ $totOutcomeJum }};   
   var totOutcomeSab   = {{ $totOutcomeSab }};   
   
-  // var incomeJanYear   = {{ $incomeJanYear }};   
-  // var incomeFebYear   = {{ $incomeFebYear }};   
-  // var incomeMarYear   = {{ $incomeMarYear }};   
-  var incomeJanYear   = {{ number_format($incomeJanYear, 0, '.', '') }};  
-  var incomeFebYear   = {{ number_format($incomeFebYear, 0, '.', '') }};   
-  var incomeMarYear   = {{ number_format($incomeMarYear, 0, '.', '') }};   
+  var incomeJanYear   = {{ $incomeJanYear }};   
+  var incomeFebYear   = {{ $incomeFebYear }};   
+  var incomeMarYear   = {{ $incomeMarYear }};   
   var incomeAprYear   = {{ $incomeAprYear }};   
   var incomeMayYear   = {{ $incomeMayYear }};   
   var incomeJunYear   = {{ $incomeJunYear }};   

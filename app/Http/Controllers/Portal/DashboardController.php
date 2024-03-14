@@ -112,23 +112,27 @@ class DashboardController extends Controller
             $accessSubmenus = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
             $accessChildren = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
 
-            $menus          = Menu::whereIn('id', $accessMenus)->get();
-            $subMenus       = MenuSub::whereIn('id', $accessSubmenus)->get();
-            $childSubMenus  = MenuSubsChild::whereIn('id', $accessChildren)->get();
-            $roleData       = UserRole::where('id', $user->role)->first();
-            $starting       = Carbon::createFromDate(2023, 12, 1);
-            $bulan          = Carbon::now()->locale('id')->monthName;
-            $bulanLalu      = Carbon::now()->subMonth()->locale('id')->monthName;
-            $duaBulanLalu   = Carbon::now()->subMonths(2)->locale('id')->monthName;
-            $startingYear   = Carbon::now()->startOfYear();
-            $startingMonth  = Carbon::now()->startOfMonth();
-            $endMonth       = Carbon::now()->endOfMonth();
-            $startPastMonth = $startingMonth->copy()->subMonth()->startOfMonth();
-            $endPastMonth   = $startPastMonth->copy()->endOfMonth();      
-            $startTwoMonth  = $startingMonth->copy()->subMonths(2)->startOfMonth();
-            $endTwoMonth    = $startTwoMonth->copy()->endOfMonth();           
-            $currentYear    = Carbon::now()->year;
-            $lastYear       = Carbon::now()->subYear()->year;
+            $menus              = Menu::whereIn('id', $accessMenus)->get();
+            $subMenus           = MenuSub::whereIn('id', $accessSubmenus)->get();
+            $childSubMenus      = MenuSubsChild::whereIn('id', $accessChildren)->get();
+            $roleData           = UserRole::where('id', $user->role)->first();
+
+            $starting           = Carbon::createFromDate(2023, 12, 1);
+            $bulan              = Carbon::now()->locale('id')->monthName;        
+            $bulanLalu          = Carbon::now()->subMonth()->locale('id')->monthName;
+            $duaBulanLalu       = Carbon::now()->subMonths(2)->locale('id')->monthName;
+            $startingYear       = Carbon::now()->startOfYear();
+            $endingYear         = Carbon::now()->endOfYear();
+            $startingLastYear   = Carbon::now()->startOfYear()->subYear();
+            $endingLastYear     = Carbon::now()->endOfYear()->subYear();
+            $startingMonth      = Carbon::now()->startOfMonth();
+            $endMonth           = Carbon::now()->endOfMonth();
+            $startPastMonth     = $startingMonth->copy()->subMonth()->startOfMonth();
+            $endPastMonth       = $startPastMonth->copy()->endOfMonth();      
+            $startTwoMonth      = $startingMonth->copy()->subMonths(2)->startOfMonth();
+            $endTwoMonth        = $startTwoMonth->copy()->endOfMonth();           
+            $currentYear        = Carbon::now()->year;
+            $lastYear            = Carbon::now()->subYear()->year;
             
             $startWeek1     = $startingMonth->copy()->startOfWeek();
             $endWeek1       = $startingMonth->copy()->startOfWeek()->addDays(6);    
@@ -343,6 +347,11 @@ class DashboardController extends Controller
             //!Monthly Income
         //!Bulanan
 
+        //Tahunan
+            $totalInvPaidYear       = Invoice::getInvPaid($startingYear, $today);   
+            $totalInvPaidLastYear   = Invoice::getInvPaid($startingLastYear, $endingLastYear);   
+        //!Tahunan
+
         //Geting Saldo Sisa This Month
           $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $today);
           $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $today);
@@ -410,6 +419,7 @@ class DashboardController extends Controller
             'totIncomeSab'      => $totIncomeSab,
             //!Income      
             
+          
         //Data Mingguan
             'incomeWeekly'   => $incomeWeekly,
             'incomeLastWeek' => $incomelastWeek,            
@@ -481,6 +491,14 @@ class DashboardController extends Controller
                 'incomeDecYear'  => $incomeDecYear, 
             //!icomeMonthlyYear
         //! Data Bulanan 
+        
+        // Data Tahunan 
+            'currentYear'           => $currentYear,
+            'startingYear'          => $startingYear,
+            'endingYear'          => $endingYear,
+            'totalInvPaidYear'      => $totalInvPaidYear,
+            'totalInvPaidLastYear'  => $totalInvPaidLastYear,
+        //! Data Tahunan 
         
         // Outcome            
             'outcomeTotal'      => $outcomeTotal,
