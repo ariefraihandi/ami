@@ -350,6 +350,17 @@ class DashboardController extends Controller
         //Tahunan
             $totalInvPaidYear       = Invoice::getInvPaid($startingYear, $today);   
             $totalInvPaidLastYear   = Invoice::getInvPaid($startingLastYear, $endingLastYear);   
+            $totalBonYearly         = Invoice::getBon($startingYear, $today);
+
+            $invLunYear             = Invoice::getCountInvLun($startingYear, $today);
+            $invPanYear             = Invoice::getCountInvPan($startingYear, $today);
+            $invBonYear             = Invoice::getCountInvBon($startingYear, $today);
+            $invYear                = $invLunYear+$invPanYear+$invBonYear;
+            
+            $invLunLastLastYear     = Invoice::getCountInvLun($startingLastYear, $endingLastYear);
+            $invPanLastYear         = Invoice::getCountInvPan($startingLastYear, $endingLastYear);
+            $invBonLastYear         = Invoice::getCountInvBon($startingLastYear, $endingLastYear);
+            $invLastYear            = $invLunLastLastYear+$invPanLastYear+$invBonLastYear;
         //!Tahunan
 
         //Geting Saldo Sisa This Month
@@ -383,10 +394,10 @@ class DashboardController extends Controller
         $outcomelastWeek    = FinancialTransaction::getRangeOutTransonAmount($startLast, $endLast);        
         
         $invLunWeek         = Invoice::getCountInvLun($seninDate, $sabtuDate);
-        $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
-        $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
-        $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
-        $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
+        // $invLunLastWeek     = Invoice::getCountInvLun($startLast, $endLast);
+        // $invPanWeek         = Invoice::getCountInvPan($seninDate, $sabtuDate);
+        // $invPanLastWeek     = Invoice::getCountInvPan($startLast, $endLast);
+        // $invBonWeek         = Invoice::getCountInvBon($seninDate, $sabtuDate);
         
 
         $fixedTotal         = $incomeWeekly+$topUpWeek-$outcomeWeekly;
@@ -417,8 +428,7 @@ class DashboardController extends Controller
             'totIncomeKam'      => $totIncomeKam,
             'totIncomeJum'      => $totIncomeJum,
             'totIncomeSab'      => $totIncomeSab,
-            //!Income      
-            
+        //!Income      
           
         //Data Mingguan
             'incomeWeekly'   => $incomeWeekly,
@@ -495,9 +505,15 @@ class DashboardController extends Controller
         // Data Tahunan 
             'currentYear'           => $currentYear,
             'startingYear'          => $startingYear,
-            'endingYear'          => $endingYear,
+            'endingYear'            => $endingYear,
+            'invYear'               => $invYear,
+            'invLastYear'           => $invLastYear,
+            'invBonYear'           => $invBonYear,
             'totalInvPaidYear'      => $totalInvPaidYear,
             'totalInvPaidLastYear'  => $totalInvPaidLastYear,
+            
+            'totalBonYearly'        => $totalBonYearly,
+            
         //! Data Tahunan 
         
         // Outcome            
@@ -513,16 +529,6 @@ class DashboardController extends Controller
             'outcomelastWeek'   => $outcomelastWeek,
         //!Outcome    
             
-          
-        
-        // Invoice
-            
-            'invLunLastWeek'    => $invLunLastWeek,
-            'invPanWeek'        => $invPanWeek,
-            'invPanLastWeek'    => $invPanLastWeek,
-            'invBonWeek'        => $invBonWeek,
-            
-        //!Invoice
         ];
 
         return view('Konten/Portal/dashboard', $data);
