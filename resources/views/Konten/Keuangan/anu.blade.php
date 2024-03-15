@@ -117,7 +117,7 @@
                 </tbody>
                 <tfoot style="font-size: 13px; background-color: #BA0000; color: #E8B014;">
                     <tr>
-                        <td colspan="4"></td>
+                        <td colspan="5"></td>
                         <td>sa,-</td>
                         <td>{{ number_format($invoicePan, 0) }},-</td>
                         <td>sa,-</td>
