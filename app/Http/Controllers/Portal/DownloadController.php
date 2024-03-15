@@ -131,8 +131,7 @@ class DownloadController extends Controller
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
                 $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
-                $invoiceBon     = Invoice::getBon($startDate, $endDate);
-                // dd($nameHari);
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);                
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
                 $jenis          = 'Mingguan';
                 $dayName        = '';
@@ -171,8 +170,7 @@ class DownloadController extends Controller
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
                 $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);
-            }            
-            
+            }                        
             $kopSuratImage     = public_path('assets/img/report/kop.png');   
             $bgImage           = public_path('assets/img/report/bg-report.png');         
             $coverLaporan      = public_path('assets/img/report/cover-laporan.png');  

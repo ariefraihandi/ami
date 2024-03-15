@@ -84,7 +84,8 @@
                     <tr>
                         <td style="width: 5%; text-align: center;">{{ $index + 1 }}</td>
                         <td style="width: 25%;">
-                            {{ $data->invoice_name }}<br>{{ $data->invoice_number }}
+                            {{ $data->invoice_name }}<br>
+                            <a href="{{ url('/invoice/add?invoiceNumber=' . $data->invoice_number . '&customerUuid=' . $data->customer_uuid) }}" target="_blank">{{ $data->invoice_number }}</a>
                         </td>
                         @php                           
                             $customer = \App\Models\Customer::where('uuid', $data->customer_uuid)->first();
