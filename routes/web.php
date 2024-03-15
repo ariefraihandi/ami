@@ -21,6 +21,7 @@ Route::get('/register',                 [AuthController::class, 'showRegisForm']
 Route::post('/register',                [AuthController::class, 'register'])->name('register.post');
 Route::get('/logout',                   [AuthController::class, 'logout'])->name('logout');
 Route::get('/unduh/invoice',            [DownloadController::class, 'unduhInvoice'])->name('unduh.Invoice');
+Route::get('/report',                   [DownloadController::class, 'laporanPdf'])->name('laporanPdf');
 
 
 
@@ -65,9 +66,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan');
     Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
     Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
-    Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');
-    Route::get('/report',               [KeuanganController::class, 'generatePDF'])->name('generatePDF');
-    
+    Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');   
     
     Route::get('get-tagih',             [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
     Route::get('keuangan/tagihan',      [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');

@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Portal;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SendInvoice;
 use App\Models\Invoice;
 use App\Models\Customer;
+use App\Models\FinancialTransaction;
 use App\Models\ItemInvoice;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use PDF;
 
 class DownloadController extends Controller
@@ -72,7 +75,8 @@ class DownloadController extends Controller
             $background         = 'bg-report.png';
             $kopSuratImage      = public_path('assets/img/report/kop.png');     
             $link               = public_path('assets/img/report/kop.png');                        
-            $logo               = public_path('assets/img/icons/brands/logo-kecil.png');                        
+            $logo               = public_path('assets/img/icons/brands/logo-kecil.png');
+            $stemp              = public_path('assets/img/report/stemp-ami.png');                           
             $bgImage            = public_path('assets/img/report/' . $background);        
 
             $data = [
@@ -81,6 +85,7 @@ class DownloadController extends Controller
                 'bgImage'        => $bgImage,
                 'kopSuratImage'  => $kopSuratImage,
                 'logo'           => $logo,
+                'stemp'          => $stemp,
                 'logoPath'       => $link,
                 'formattedDate'  => $formattedDate,
                 'subtotal'       => $format_subtotal,
@@ -93,11 +98,109 @@ class DownloadController extends Controller
                 'items'          => $items,
             ];
 
-            $pdf = PDF::loadView('Konten.Invoice.pdfInvoice', $data);
+            $pdf = PDF::loadView('Konten.Invoice.pdfInvoiceSend', $data);
             return $pdf->stream('Invoice.pdf');  
         } else {
             // Jika data tidak ditemukan, Anda dapat memberikan respons sesuai
             return response()->json(['success' => false, 'message' => 'Invoice tidak ditemukan'], 404);
         }
     }
+
+    public function laporanPdf(Request $request)
+    {
+        try {
+            Carbon::setLocale('id');
+            $startDate = $request->input('startDate');
+            $endDate = $request->input('endDate');
+
+            if (!$startDate || !$endDate) {
+                $startDate = now()->startOfDay();
+                $endDate = now()->endOfDay();
+            } else {
+                $startDate = Carbon::parse($startDate)->startOfDay();
+                $endDate = Carbon::parse($endDate)->endOfDay();
+            }
+
+            $diffInDays = $endDate->diffInDays($startDate);
+            $jenis = '';
+
+            if ($diffInDays == 0) {
+                $jenis          = 'Harian';
+                $dayName        = $this->getIndonesianDayName($startDate);
+                $tanggal        = $startDate->translatedFormat('d F Y');
+                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+                // dd($nameHari);
+            } elseif ($diffInDays > 0 && $diffInDays <= 6) {
+                $jenis      = 'Mingguan';
+                $dayName    = '';
+                $dateStart  = $startDate->day;   
+                $dateEnd    = $endDate->translatedFormat('d F Y');
+                $tanggal    = $dateStart . ' s.d ' . $dateEnd;
+                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+            } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
+                $jenis      = 'Bulanan';
+                $dayName    = '';
+                $bulan      = $startDate->translatedFormat('F');
+                $tanggal    = $bulan;
+                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+            } elseif ($diffInDays >= 365) {
+                $jenis      = 'Tahunan';
+                $dayName   = '';
+                $tahun      = $startDate->year;
+                $tanggal    = $tahun;    
+                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);         
+            } else {
+                $jenis      = 'Keuangan';
+                $dayName    = '';
+                $dateStart  = $startDate->day;   
+                $dateEnd    = $endDate->translatedFormat('d F Y');
+                $tanggal    = $dateStart . ' s.d ' . $dateEnd;
+                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+            }            
+            
+            $kopSuratImage     = public_path('assets/img/report/kop.png');   
+            $bgImage           = public_path('assets/img/report/bg-report.png');         
+            $coverLaporan      = public_path('assets/img/report/cover-laporan.png');  
+
+            if ($jenis !== '') {
+                $data = [
+                    //Config
+                        'title'             => 'Laporan ' . $jenis,
+                        'subtitle'          => 'Pdf',
+                        'jenis'             => $jenis,
+                        'dayName'           => $dayName,
+                        'tanggal'           => $tanggal,
+                        
+                        'coverLaporan'      => $coverLaporan,
+                        'bgImage'           => $bgImage,
+                        'kopSuratImage'     => $kopSuratImage,
+                        
+                        'invoiceData'       => $invoiceData,
+                    //!Config
+                ];
+
+                $pdf = PDF::loadView('Konten.Keuangan.anu', $data);
+                return $pdf->stream('Invoice.pdf');
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getIndonesianDayName($date) {
+        $dayNameEnglish = $date->format('l'); // Mendapatkan nama hari dalam bahasa Inggris
+        $dayNameLower = strtolower($dayNameEnglish); // Mengonversi nama hari menjadi huruf kecil
+        $dayNamesIndonesian = [
+            'monday' => 'Senin',
+            'tuesday' => 'Selasa',
+            'wednesday' => 'Rabu',
+            'thursday' => 'Kamis',
+            'friday' => 'Jumat',
+            'saturday' => 'Sabtu',
+            'sunday' => 'Minggu'
+        ];
+        return $dayNamesIndonesian[$dayNameLower]; // Mendapatkan nama hari dalam bahasa Indonesia
+    }
+        
 }
+

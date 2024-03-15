@@ -26,6 +26,24 @@
         .page-break {
             page-break-after: always;
         }
+        .container {
+            position: relative;
+        }
+        .stamp {
+            position: absolute;
+            top: 10;
+            left: 60;
+            /* Sesuaikan dengan lebar kolom */
+            width: 33.33%;
+            /* Sesuaikan dengan tinggi gambar */
+            height: 100px;
+        }
+
+        .content {
+            width: 100%;
+            font-size: 14px;
+            text-align: center;
+        }
         .image-container {
             margin-top: 45px;
             margin-bottom: 10px;
@@ -171,10 +189,13 @@
                         
                         <td style="width: 33.33%;"></td>
                         <td style="width: 33.33%;"></td>                       
-                        <td style="width: 33.33%; font-size: 14px; text-align: center;">
+                        <td style="position: relative; width: 33.33%; font-size: 14px; text-align: center;">
+                            <!-- Gambar stempel -->
+                                <img src="{{ $stemp }}" alt="Stamp Image" class="stamp">
+                            <!-- Konten -->
                             Lhokseumawe<br><strong>Aceh Mediatama Indonesia</strong><br><br><br><br>
                             <span style="text-decoration: underline;">Nishra ilkhalissia</span><br>Kasir
-                        </td> 
+                        </td>
                     </tr>
                 </thead>                         
             </table>

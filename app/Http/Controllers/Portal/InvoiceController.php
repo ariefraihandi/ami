@@ -1062,7 +1062,7 @@ class InvoiceController extends Controller
         $format_total       = "Rp. " . number_format($total_amount, 0) . ",-";
         $background         = 'bg-report.png';
         $kopSuratImage      = public_path('assets/img/report/kop.png');                        
-        $logo               = public_path('assets/img/icons/brands/logo-kecil.png');                        
+        $logo               = public_path('assets/img/icons/brands/logo-kecil.png');                                             
         $bgImage            = public_path('assets/img/report/' . $background);                
 
         $data = [
@@ -1071,7 +1071,6 @@ class InvoiceController extends Controller
             'bgImage'        => $bgImage,
             'kopSuratImage'  => $kopSuratImage,
             'logo'           => $logo,
-            // 'logoPath'       => $link,
             'formattedDate'  => $formattedDate,
             'subtotal'       => $format_subtotal,
             'panjar_amount'  => $format_panjar,

@@ -627,7 +627,7 @@
         </div>
       </div>
       <!-- /Invoice Add-->
-      {{-- <!-- Transaksi -->
+      <!-- Transaksi -->
         <div class="col-lg-3 col-12 invoice-actions">
           <div class="card mb-4">
             <div class="card-body">
@@ -646,7 +646,7 @@
             </div>
           </div>          
         </div>
-      <!-- /Transaksi --> --}}
+      <!-- /Transaksi -->
     </div>
   </div>
 
