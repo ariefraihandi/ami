@@ -149,6 +149,7 @@ class DownloadController extends Controller
                 $tahun      = $startDate->year;
                 $tanggal    = $tahun;    
                 $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);         
+                $invoicePan    = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
             } else {
                 $jenis      = 'Keuangan';
                 $dayName    = '';
@@ -156,6 +157,7 @@ class DownloadController extends Controller
                 $dateEnd    = $endDate->translatedFormat('d F Y');
                 $tanggal    = $dateStart . ' s.d ' . $dateEnd;
                 $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+                $invoicePan    = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
             }            
             
             $kopSuratImage     = public_path('assets/img/report/kop.png');   
@@ -176,6 +178,7 @@ class DownloadController extends Controller
                         'kopSuratImage'     => $kopSuratImage,
                         
                         'invoiceData'       => $invoiceData,
+                        'invoicePan'       => $invoicePan,
                     //!Config
                 ];
 

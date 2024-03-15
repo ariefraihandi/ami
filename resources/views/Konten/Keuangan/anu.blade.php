@@ -69,38 +69,60 @@
             <table border="1">
                 <thead style="background-color: #BA0000; color: #E8B014; font-size: 12px;">
                     <tr>
+                        <th>No</th>
                         <th>No. Invoice</th>
                         <th>Customer</th>
+                        <th>Tanggal</th>
                         <th>Status</th>
                         <th>Total</th>
                         <th>Panjar</th>
                         <th>Sisa</th>
-                        <th>Aksi</th>
+                      
                     </tr>
                 </thead>                
                 <tbody style="font-size: 13px;">
-                    @foreach($invoiceData as $data)
+                    @foreach($invoiceData as $index => $data)
                     <tr>
-                        <td style="width: 20%;">
+                        <td style="width: 5%;">{{ $index + 1 }}</td>
+                        <td style="width: 25%;">
                             {{ $data->invoice_name }}<br>{{ $data->invoice_number }}
                         </td>
-                        @php
-                            $imagePath = '';
+                        @php                           
                             $customer = \App\Models\Customer::where('uuid', $data->customer_uuid)->first();
                         @endphp
-
-                        <td>{{ $customer->customer_name }}<br>{{ $customer->customer_type }}</td>
-
-                        {{-- <td>{{ $data->status }}</td>
-                        <td>{{ $data->total }}</td>
-                        <td>{{ $data->deposit }}</td>
-                        <td>{{ $data->remaining }}</td>
-                        <td>
-                            <a href="{{ $data->view_url }}"><button>View</button></a>
-                        </td>                         --}}
+                        <td style="width: 20%;">{{ ucwords($customer->name) }}<br>{{ ucwords($customer->customer_type) }}</td>
+                        <td style="width: 10%;">{{ $data->created_at->format('d-m-y') }}</td>
+                        <td style="width: 10%;">
+                            @if($data->status == 0)
+                                Belum Bayar
+                            @elseif($data->status == 1)
+                                Panjar
+                            @elseif($data->status == 2)
+                                Lunas
+                            @endif
+                        </td>
+                        <td style="width: 10%;">
+                            {{ number_format($data->total_amount, 0) }},-
+                        </td>
+                        <td style="width: 10%;">
+                            @if($data->panjar_amount == 0.00)
+                                -
+                            @else
+                                {{ number_format($data->panjar_amount, 0) }},-
+                            @endif
+                        </td>
+                        <td style="width: 10%;">{{ number_format($data->total_amount-$data->panjar_amount, 0) }}</td>              
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot style="font-size: 13px; background-color: #BA0000; color: #E8B014;">
+                    <tr>
+                        <td colspan="4"></td>
+                        <td>sa,-</td>
+                        <td>{{ number_format($invoicePan, 0) }},-</td>
+                        <td>sa,-</td>
+                    </tr>
+                </tfoot>
                 
             </table>
         <h3>B. Keuangan</h3>
