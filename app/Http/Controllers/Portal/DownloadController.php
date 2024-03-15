@@ -129,8 +129,9 @@ class DownloadController extends Controller
                 $dayName        = $this->getIndonesianDayName($startDate);
                 $tanggal        = $startDate->translatedFormat('d F Y');
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
-                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
-                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
+                $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);
                 // dd($nameHari);
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
                 $jenis          = 'Mingguan';
@@ -140,15 +141,16 @@ class DownloadController extends Controller
                 $tanggal        = $dateStart . ' s.d ' . $dateEnd;
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
-                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);
             } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
                 $jenis          = 'Bulanan';
                 $dayName        = '';
                 $bulan          = $startDate->translatedFormat('F');
                 $tanggal        = $bulan;
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
-                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
-                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
+                $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);
             } elseif ($diffInDays >= 365) {
                 $jenis          = 'Tahunan';
@@ -157,7 +159,8 @@ class DownloadController extends Controller
                 $tanggal        = $tahun;    
                 $invoiceData    = Invoice::getInv($startDate, $endDate);         
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
-                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);
             } else {
                 $jenis          = 'Keuangan';
                 $dayName        = '';
@@ -167,6 +170,7 @@ class DownloadController extends Controller
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
                 $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);
             }            
             
             $kopSuratImage     = public_path('assets/img/report/kop.png');   
