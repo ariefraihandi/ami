@@ -67,7 +67,7 @@
         <br>  
         <h3>A. Invoice</h3>
             <table border="1">
-                <thead style="background-color: #BA0000; color: #E8B014; font-size: 12px; text-align: center;">
+                <thead style="background-color: #BA0000; color: #E8B014; font-size: 11px; text-align: center;">
                     <tr>
                         <th>No</th>
                         <th>Invoice</th>
@@ -79,7 +79,7 @@
                         <th>Sisa</th>
                     </tr>
                 </thead>                
-                <tbody style="font-size: 13px;">
+                <tbody style="font-size: 11px;">
                     @foreach($invoiceData as $index => $data)
                     <tr>
                         <td style="width: 5%; text-align: center;">{{ $index + 1 }}</td>
@@ -115,7 +115,7 @@
                     </tr>
                     @endforeach
                 </tbody>
-                <tfoot style="font-size: 13px; background-color: #BA0000; color: #E8B014;">
+                <tfoot style="font-size: 11px; background-color: #BA0000; color: #E8B014;">
                     <tr>
                         <td colspan="5"></td>
                         <td>{{ number_format($invoiceTot, 0) }},-</td>
