@@ -67,23 +67,22 @@
         <br>  
         <h3>A. Invoice</h3>
             <table border="1">
-                <thead style="background-color: #BA0000; color: #E8B014; font-size: 12px;">
+                <thead style="background-color: #BA0000; color: #E8B014; font-size: 12px; text-align: center;">
                     <tr>
                         <th>No</th>
-                        <th>No. Invoice</th>
+                        <th>Invoice</th>
                         <th>Customer</th>
                         <th>Tanggal</th>
                         <th>Status</th>
                         <th>Total</th>
                         <th>Panjar</th>
                         <th>Sisa</th>
-                      
                     </tr>
                 </thead>                
                 <tbody style="font-size: 13px;">
                     @foreach($invoiceData as $index => $data)
                     <tr>
-                        <td style="width: 5%;">{{ $index + 1 }}</td>
+                        <td style="width: 5%; text-align: center;">{{ $index + 1 }}</td>
                         <td style="width: 25%;">
                             {{ $data->invoice_name }}<br>{{ $data->invoice_number }}
                         </td>
@@ -101,26 +100,26 @@
                                 Lunas
                             @endif
                         </td>
-                        <td style="width: 10%;">
+                        <td style="width: 10%; text-align: center;">
                             {{ number_format($data->total_amount, 0) }},-
                         </td>
-                        <td style="width: 10%;">
+                        <td style="width: 10%; text-align: center;">
                             @if($data->panjar_amount == 0.00)
                                 -
                             @else
                                 {{ number_format($data->panjar_amount, 0) }},-
                             @endif
                         </td>
-                        <td style="width: 10%;">{{ number_format($data->total_amount-$data->panjar_amount, 0) }}</td>              
+                        <td style="width: 10%; text-align: center;">{{ number_format($data->total_amount-$data->panjar_amount, 0) }}</td>              
                     </tr>
                     @endforeach
                 </tbody>
                 <tfoot style="font-size: 13px; background-color: #BA0000; color: #E8B014;">
                     <tr>
                         <td colspan="5"></td>
-                        <td>sa,-</td>
+                        <td>{{ number_format($invoiceTot, 0) }},-</td>
                         <td>{{ number_format($invoicePan, 0) }},-</td>
-                        <td>sa,-</td>
+                        <td>{{ number_format($invoiceBon, 0) }},-</td>                        
                     </tr>
                 </tfoot>
                 

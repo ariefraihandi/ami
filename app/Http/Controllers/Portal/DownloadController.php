@@ -128,36 +128,45 @@ class DownloadController extends Controller
                 $jenis          = 'Harian';
                 $dayName        = $this->getIndonesianDayName($startDate);
                 $tanggal        = $startDate->translatedFormat('d F Y');
-                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+                $invoiceData    = Invoice::getInv($startDate, $endDate);
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
+                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
                 // dd($nameHari);
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
-                $jenis      = 'Mingguan';
-                $dayName    = '';
-                $dateStart  = $startDate->day;   
-                $dateEnd    = $endDate->translatedFormat('d F Y');
-                $tanggal    = $dateStart . ' s.d ' . $dateEnd;
-                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+                $jenis          = 'Mingguan';
+                $dayName        = '';
+                $dateStart      = $startDate->day;   
+                $dateEnd        = $endDate->translatedFormat('d F Y');
+                $tanggal        = $dateStart . ' s.d ' . $dateEnd;
+                $invoiceData    = Invoice::getInv($startDate, $endDate);
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
+                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
             } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
-                $jenis      = 'Bulanan';
-                $dayName    = '';
-                $bulan      = $startDate->translatedFormat('F');
-                $tanggal    = $bulan;
-                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
+                $jenis          = 'Bulanan';
+                $dayName        = '';
+                $bulan          = $startDate->translatedFormat('F');
+                $tanggal        = $bulan;
+                $invoiceData    = Invoice::getInv($startDate, $endDate);
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
+                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);
             } elseif ($diffInDays >= 365) {
-                $jenis      = 'Tahunan';
-                $dayName   = '';
-                $tahun      = $startDate->year;
-                $tanggal    = $tahun;    
-                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);         
-                $invoicePan    = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $jenis          = 'Tahunan';
+                $dayName        = '';
+                $tahun          = $startDate->year;
+                $tanggal        = $tahun;    
+                $invoiceData    = Invoice::getInv($startDate, $endDate);         
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
+                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
             } else {
-                $jenis      = 'Keuangan';
-                $dayName    = '';
-                $dateStart  = $startDate->day;   
-                $dateEnd    = $endDate->translatedFormat('d F Y');
-                $tanggal    = $dateStart . ' s.d ' . $dateEnd;
-                $invoiceData    = Invoice::getInvPanBon($startDate, $endDate);
-                $invoicePan    = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
+                $jenis          = 'Keuangan';
+                $dayName        = '';
+                $dateStart      = $startDate->day;   
+                $dateEnd        = $endDate->translatedFormat('d F Y');
+                $tanggal        = $dateStart . ' s.d ' . $dateEnd;
+                $invoiceData    = Invoice::getInv($startDate, $endDate);
+                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
+                $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
             }            
             
             $kopSuratImage     = public_path('assets/img/report/kop.png');   
@@ -178,7 +187,9 @@ class DownloadController extends Controller
                         'kopSuratImage'     => $kopSuratImage,
                         
                         'invoiceData'       => $invoiceData,
-                        'invoicePan'       => $invoicePan,
+                        'invoiceTot'        => $invoiceTot,
+                        'invoicePan'        => $invoicePan,
+                        'invoiceBon'        => $invoiceBon,
                     //!Config
                 ];
 
