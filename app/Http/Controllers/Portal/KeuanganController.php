@@ -145,7 +145,7 @@ class KeuanganController extends Controller
     
             return [
                 "id" => $transaction->id,
-                "avatar" => $transaction->description,
+                "description" => $transaction->description,
                 "source_receiver" => $transaction->source_receiver,
                 "customerUuid" => $customer_uuid,
                 "reference_number" => $transaction->reference_number,
@@ -157,7 +157,7 @@ class KeuanganController extends Controller
                 "salary" => $transaction->lunas,
                 "age" => $transaction->lunas,
                 "experience" => $transaction->lunas,
-                "status" => $transaction->lunas,
+                "status" => $transaction->status,
             ];
         });
     

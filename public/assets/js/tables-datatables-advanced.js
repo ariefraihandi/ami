@@ -1,149 +1,62 @@
-/**
- * DataTables Advanced (jquery)
- */
-
 'use strict';
 
 $(function () {
-  var 
-    dt_ajax_table = $('.datatables-ajax'),
-    dt_filter_table = $('.dt-column-search'),
-    dt_adv_filter_table = $('.dt-advanced-search'),
-    dt_responsive_table = $('.dt-responsive'),
-    startDateEle = $('.start_date'),
-    endDateEle = $('.end_date');
+    var dt_adv_filter_table = $('.dt-advanced-search');
+    var startDateEle = $('.start_date');
+    var endDateEle = $('.end_date');
+    var referenceInput = $('.reference-number');
 
-  // Advanced Search Functions Starts
-  // --------------------------------------------------------------------
+    // Datepicker for advanced filter
+    var rangePickr = $('.flatpickr-range');
+    var dateFormat = 'YYYY/MM/DD';
 
-  // Datepicker for advanced filter
-  var rangePickr = $('.flatpickr-range'),
-    dateFormat = 'MM/DD/YYYY';
-
-  if (rangePickr.length) {
-    rangePickr.flatpickr({
-      mode: 'range',
-      dateFormat: 'm/d/Y',
-      orientation: isRtl ? 'auto right' : 'auto left',
-      locale: {
-        format: dateFormat
-      },
-      onClose: function (selectedDates, dateStr, instance) {
-        var startDate = '',
-          endDate = new Date();
-        if (selectedDates[0] != undefined) {
-          startDate = moment(selectedDates[0]).format('MM/DD/YYYY');
-          startDateEle.val(startDate);
-        }
-        if (selectedDates[1] != undefined) {
-          endDate = moment(selectedDates[1]).format('MM/DD/YYYY');
-          endDateEle.val(endDate);
-        }
-        $(rangePickr).trigger('change').trigger('keyup');
-      }
-    });
-  }
-
-  // Filter column wise function
-  function filterColumn(i, val) {
-    if (i == 5) {
-      var startDate = startDateEle.val(),
-        endDate = endDateEle.val();
-      if (startDate !== '' && endDate !== '') {
-        $.fn.dataTableExt.afnFiltering.length = 0; // Reset datatable filter
-        dt_adv_filter_table.dataTable().fnDraw(); // Draw table after filter
-        filterByDate(i, startDate, endDate); // We call our filter function
-      }
-      dt_adv_filter_table.dataTable().fnDraw();
-    } else {
-      dt_adv_filter_table.DataTable().column(i).search(val, false, true).draw();
+    if (rangePickr.length) {
+        rangePickr.flatpickr({
+            mode: 'range',
+            dateFormat: 'Y-m-d',
+            onClose: function (selectedDates) {
+                var startDate = '';
+                var endDate = '';
+                if (selectedDates.length > 1) {
+                    startDate = moment(selectedDates[0]).format('YYYY/MM/DD');
+                    endDate = moment(selectedDates[1]).format('YYYY/MM/DD');
+                }
+                startDateEle.val(startDate);
+                endDateEle.val(endDate);
+                filterTableByDate();
+            }
+        });
     }
-  }
 
-  // Advance filter function
-  // We pass the column location, the start date, and the end date
-  $.fn.dataTableExt.afnFiltering.length = 0;
-  var filterByDate = function (column, startDate, endDate) {
-    // Custom filter syntax requires pushing the new filter to the global filter array
-    $.fn.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
-      var rowDate = normalizeDate(aData[column]),
-        start = normalizeDate(startDate),
-        end = normalizeDate(endDate);
+    // Function to filter table by date range
+    function filterTableByDate() {
+        var startDate = startDateEle.val();
+        var endDate = endDateEle.val();
+        dt_adv_filter_table.DataTable().draw();
+    }
 
-      // If our date from the row is between the start and end
-      if (start <= rowDate && rowDate <= end) {
-        return true;
-      } else if (rowDate >= start && end === '' && start !== '') {
-        return true;
-      } else if (rowDate <= end && start === '' && end !== '') {
-        return true;
-      } else {
-        return false;
-      }
-    });
-  };
-
-  // converts date strings to a Date object, then normalized into a YYYYMMMDD format (ex: 20131220). Makes comparing dates easier. ex: 20131220 > 20121220
-  var normalizeDate = function (dateString) {
-    var date = new Date(dateString);
-    var normalized =
-      date.getFullYear() + '' + ('0' + (date.getMonth() + 1)).slice(-2) + '' + ('0' + date.getDate()).slice(-2);
-    return normalized;
-  };
-  // Advanced Search Functions Ends
-
-  // Ajax Sourced Server-side
-  // --------------------------------------------------------------------
-
-  if (dt_ajax_table.length) {
-    var dt_ajax = dt_ajax_table.dataTable({
-      processing: true,
-      ajax: assetsPath + 'json/ajax.php',
-      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
-    });
-  }
-
-  // Column Search
-  // --------------------------------------------------------------------
-
-  if (dt_filter_table.length) {
-    // Setup - add a text input to each footer cell
-    $('.dt-column-search thead tr').clone(true).appendTo('.dt-column-search thead');
-    $('.dt-column-search thead tr:eq(1) th').each(function (i) {
-      var title = $(this).text();
-      $(this).html('<input type="text" class="form-control" placeholder="Search ' + title + '" />');
-
-      $('input', this).on('keyup change', function () {
-        if (dt_filter.column(i).search() !== this.value) {
-          dt_filter.column(i).search(this.value).draw();
+    // Custom filter for date range
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        var startDate = moment(startDateEle.val(), 'YYYY/MM/DD');
+        var endDate = moment(endDateEle.val(), 'YYYY/MM/DD');
+        var currentDate = moment(data[5], 'YYYY/MM/DD'); // Assuming date column index is 5
+        if (startDate.isValid() && endDate.isValid()) {
+            return currentDate.isBetween(startDate, endDate, null, '[]'); // '[]' includes both start and end dates
         }
-      });
+        return true;
     });
 
-    var dt_filter = dt_filter_table.DataTable({
-      ajax: {
-          url: '{{ route("getDataKeuangan") }}',
-          dataSrc: '' // Jika respons langsung adalah array dari objek, gunakan nilai kosong
-      },
-      columns: [
-          { data: 'full_name' },
-          { data: 'email' },
-          { data: 'post' },
-          { data: 'city' },
-          { data: 'start_date' },
-          { data: 'salary' }
-      ],
-      orderCellsTop: true,
-      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+      var referenceValue = referenceInput.val().trim().toUpperCase(); // Trim and convert to uppercase for case-insensitive search
+      var referenceData = data[1].toUpperCase(); // Assuming reference column index is 0
+
+      if (referenceValue !== '') {
+          return referenceData.includes(referenceValue);
+      }
+      return true;
   });
-  
-  }
 
-  // Advanced Search
-  // --------------------------------------------------------------------
-
-  // Advanced Filter table
-  if (dt_adv_filter_table.length) {
+    // DataTable initialization for advanced filter
     var dt_adv_filter = dt_adv_filter_table.DataTable({
         dom: "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 dataTables_pager'p>>",
         ajax: {
@@ -151,75 +64,24 @@ $(function () {
             dataSrc: 'data'
         },
         columns: [
-            { 
-                data: null,
-                title: 'No.', // Judul kolom untuk nomor urut
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
-                }
-            }, // Kolom untuk nomor urut
-            {
-              data: 'reference_number',
-              title: '#REFERENCE',
-              render: function (data, type, full, meta) {
-                  var sourceReceiver = full.source_receiver;
-                  var referenceNumber = full.reference_number;
-                  var customer = full.customerUuid;
-          
-                  // Jika ada data pelanggan, tampilkan link invoice
-                  if (customer) {
-                      var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer.customerUuid; // Sesuaikan dengan atribut yang menyimpan UUID pelanggan
-                      return '<div class="text-center">' + sourceReceiver + '<br>' + '<a href="' + link + '" class="invoice-link" target="_blank"><span class="fw-medium">#' + referenceNumber + '</span></a></div>';
-                  } else {
-                      // Jika tidak ada data pelanggan, tampilkan hanya nomor referensi
-                      return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
-                  }
-                 }
-            },          
-            {
-              data: 'amount',
-              title: 'AMOUNT',
-              render: function (data, type, full, meta) {
-                  var amount = parseFloat(full.amount); // Ubah ke tipe float
-                  var formatted_amount = amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
-                  return '<div class="text-center">' + formatted_amount + '</div>';
-              }
-            },          
-          
-            { data: 'status', title: 'STATUS' }, // Judul kolom 'Post' ditambahkan
-            { data: 'city', title: 'City' }, // Judul kolom 'City' ditambahkan
-            { data: 'start_date', title: 'Date' }, // Judul kolom 'Date' ditambahkan
-            { data: 'salary', title: 'Salary' } // Judul kolom 'Salary' ditambahkan
+            { data: null, title: 'No.', className: 'text-center', render: function (data, type, row, meta) { return meta.row + 1; } },
+            { data: 'reference_number', title: '#REFERENCE', render: function (data, type, full, meta) { return renderReferenceNumber(full); } },
+            { data: 'amount', title: 'AMOUNT', render: function (data, type, full, meta) { return renderAmount(full); } },
+            { data: 'status', title: 'STATUS', render: function (data, type, full, meta) { return renderStatus(full); } },
+            { data: 'description', title: 'DESKRIPSI' },
+            { data: 'start_date', title: 'Date', className: 'text-center' }
         ],
         orderCellsTop: true,
         responsive: {
             details: {
                 display: $.fn.dataTable.Responsive.display.modal({
-                    header: function (row) {
-                        var data = row.data();
-                        return 'Details of ' + data['full_name'];
-                    }
+                    header: function (row) { return 'Details of ' + row.data()['source_receiver']; }
                 }),
                 type: 'column',
                 renderer: function (api, rowIdx, columns) {
                     var data = $.map(columns, function (col, i) {
-                        return col.title !== '' 
-                            ? '<tr data-dt-row="' +
-                            col.rowIndex +
-                            '" data-dt-column="' +
-                            col.columnIndex +
-                            '">' +
-                            '<td>' +
-                            col.title +
-                            ':' +
-                            '</td> ' +
-                            '<td>' +
-                            col.data +
-                            '</td>' +
-                            '</tr>'
-                            : '';
+                        return col.title !== '' ? '<tr data-dt-row="' + col.rowIndex + '" data-dt-column="' + col.columnIndex + '"><td>' + col.title + ':</td> <td>' + col.data + '</td></tr>' : '';
                     }).join('');
-
                     return data ? $('<table class="table"/><tbody />').append(data) : false;
                 }
             }
@@ -227,111 +89,84 @@ $(function () {
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         pageLength: 10
     });
-}
 
-
-
-
-  // on key up from input field
-  $('input.dt-input').on('keyup', function () {
-    filterColumn($(this).attr('data-column'), $(this).val());
+    referenceInput.on('input', function () {
+      filterTableByReference();
   });
 
-  // Responsive Table
-  // --------------------------------------------------------------------
-
-  if (dt_responsive_table.length) {
-    var dt_responsive = dt_responsive_table.DataTable({
-      ajax: assetsPath + 'json/table-datatable.json',
-      columns: [
-        { data: '' },
-        { data: 'full_name' },
-        { data: 'email' },
-        { data: 'post' },
-        { data: 'city' },
-        { data: 'start_date' },
-        { data: 'salary' },
-        { data: 'age' },
-        { data: 'experience' },
-        { data: 'status' }
-      ],
-      columnDefs: [
-        {
-          className: 'control',
-          orderable: false,
-          targets: 0,
-          searchable: false,
-          render: function (data, type, full, meta) {
-            return '';
-          }
-        },
-        {
-          // Label
-          targets: -1,
-          render: function (data, type, full, meta) {
-            var $status_number = full['status'];
-            var $status = {
-              1: { title: 'Current', class: 'bg-label-primary' },
-              2: { title: 'Professional', class: ' bg-label-success' },
-              3: { title: 'Rejected', class: ' bg-label-danger' },
-              4: { title: 'Resigned', class: ' bg-label-warning' },
-              5: { title: 'Applied', class: ' bg-label-info' }
-            };
-            if (typeof $status[$status_number] === 'undefined') {
-              return data;
-            }
-            return (
-              '<span class="badge rounded-pill ' +
-              $status[$status_number].class +
-              '">' +
-              $status[$status_number].title +
-              '</span>'
-            );
-          }
-        }
-      ],
-      // scrollX: true,
-      destroy: true,
-      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details of ' + data['full_name'];
-            }
-          }),
-          type: 'column',
-          renderer: function (api, rowIdx, columns) {
-            var data = $.map(columns, function (col, i) {
-              return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
-                ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
-                : '';
-            }).join('');
-
-            return data ? $('<table class="table"/><tbody />').append(data) : false;
-          }
-        }
-      }
-    });
+  // Function to trigger table redraw on reference input change
+  function filterTableByReference() {
+      dt_adv_filter_table.DataTable().draw();
   }
 
-  // Filter form control to default size
-  // ? setTimeout used for multilingual table initialization
-  setTimeout(() => {
-    $('.dataTables_filter .form-control').removeClass('form-control-sm');
-    $('.dataTables_length .form-select').removeClass('form-select-sm');
-  }, 200);
+    // Event listener for status filter
+    $('select.dt-status-filter').on('change', function () {
+        var value = $(this).val();
+        dt_adv_filter_table.DataTable().column(3).search(value).draw();
+    });
+
+    // Function to render reference number with invoice link if available
+    function renderReferenceNumber(full) {
+        var sourceReceiver = full.source_receiver;
+        var referenceNumber = full.reference_number;
+        var customer = full.customerUuid;
+        if (customer) {
+            var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer.customerUuid;
+            return '<div class="text-center">' + sourceReceiver + '<br>' + '<a href="' + link + '" class="invoice-link" target="_blank"><span class="fw-medium">#' + referenceNumber + '</span></a></div>';
+        } else {
+            return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
+        }
+    }
+
+    // Function to render amount with currency formatting
+    function renderAmount(full) {
+        var amount = parseFloat(full.amount);
+        var formattedAmount = amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+        return '<div class="text-center">' + formattedAmount + '</div>';
+    }
+
+    // Function to render status with badge
+    function renderStatus(full) {
+        var status = full.status;
+        var statusText = '';
+        var badgeClass = '';
+        switch (status) {
+            case 1:
+            case 2:
+            case 3:
+                statusText = 'Invoice';
+                badgeClass = 'bg-label-primary';
+                break;
+            case 4:
+                statusText = 'Operational';
+                badgeClass = 'bg-label-danger';
+                break;
+            case 5:
+                statusText = 'Ambilan';
+                badgeClass = 'bg-label-warning';
+                break;
+            case 6:
+                statusText = 'Setoran Kas';
+                badgeClass = 'bg-label-secondary';
+                break;
+            case 7:
+                statusText = 'Top Up';
+                badgeClass = 'bg-label-success';
+                break;
+            case 8:
+                statusText = 'Bonus';
+                badgeClass = 'bg-label-info';
+                break;
+            case 9:
+                statusText = 'Gaji';
+                badgeClass = 'bg-label-warning';
+                break;
+            default:
+                statusText = status ? status : 'Unknown';
+                badgeClass = 'bg-label-secondary';
+                break;
+        }
+        return '<div class="text-center"><span class="badge ' + badgeClass + '">' + statusText + '</span></div>';
+    }
+
 });
