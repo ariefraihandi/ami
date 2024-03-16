@@ -6,11 +6,19 @@ $(function () {
   if (dt_invoice_table.length) {
       var dt_invoice = dt_invoice_table.DataTable({
           processing: true,
-          serverSide: true, // Activate server side
+          serverSide: true,          
           ajax: {
-              url: '/get-keua',
-              dataSrc: 'data'
-          },
+            url: '/get-keua',
+            data: function (d) {
+                d.current_month = true;
+                var filter = {
+                    status: $('#StatusFilter').val(),
+                  
+                };
+                d.filter = filter;
+            },
+            dataSrc: 'data'
+        },
           columns: [
               {
                   data: null,
@@ -149,89 +157,90 @@ $(function () {
           ],
 
           initComplete: function () {
-              var table = this.api();
-
-              table.columns(5).every(function () {
-                  var column = this;
-                  var select = $('<select id="TransactionDateFilter" class="form-select"><option value="">All Dates</option></select>')
-                      .appendTo('.transaction_date_filter')
-                      .on('change', function () {
-                          var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                          // Clear existing filters
-                          $.fn.dataTable.ext.search = [];
-
-                          // Apply the custom filter function
-                          if (val) {
-                              $.fn.dataTable.ext.search.push(dataTableTransactionDateFilter);
-                          }
-
-                          // Redraw the table
-                          table.draw();
-                      });
-
-                  var dateFilterOptions = [
-                      { value: 'today', label: 'Today' },
-                      { value: 'this_week', label: 'This Week' },
-                      { value: 'this_month', label: 'This Month' },
-                      // Add more options if needed
-                  ];
-
-                  dateFilterOptions.forEach(function (option) {
-                      select.append('<option value="' + option.value + '">' + option.label + '</option>');
-                  });
-              });
-
-              function dataTableTransactionDateFilter(settings, data, dataIndex) {
-                  var currentDate = new Date();
-                  var dateParts = data[4].split(' '); // Gunakan indeks 4 karena kolom tanggal berada di indeks 4
-                  var day = parseInt(dateParts[0], 10);
-                  var month = getMonthIndex(dateParts[1]);
-                  var year = 2000 + parseInt(dateParts[2], 10);
-                  var transactionDate = new Date(year, month, day);
-
-                  var filterType = $('#TransactionDateFilter').val();
-
-                  switch (filterType) {
-                      case 'today':
-                          return transactionDate.toDateString() === currentDate.toDateString();
-                      case 'this_week':
-                          var oneDay = 24 * 60 * 60 * 1000;
-                          var diffDays = Math.round(Math.abs((currentDate - transactionDate) / oneDay));
-                          return diffDays <= 7;
-                      case 'this_month':
-                          return transactionDate.getMonth() === currentDate.getMonth() && transactionDate.getFullYear() === currentDate.getFullYear();
-                      default:
-                          return true; // No filter
-                  }
+            var table = this.api();
+      
+            table.columns(5).every(function () {
+                var column = this;
+                var select = $('<select id="TransactionDateFilter" class="form-select"><option value="">All Dates</option></select>')
+                    .appendTo('.transaction_date_filter')
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+      
+                        // Clear existing filters
+                        $.fn.dataTable.ext.search = [];
+      
+                        // Apply the custom filter function
+                        if (val) {
+                            $.fn.dataTable.ext.search.push(dataTableTransactionDateFilter);
+                        }
+      
+                        // Redraw the table
+                        table.draw();
+                    });
+      
+                var dateFilterOptions = [
+                    { value: 'today', label: 'Today' },
+                    { value: 'this_week', label: 'This Week' },
+                    { value: 'this_month', label: 'This Month' },
+                    // Add more options if needed
+                ];
+      
+                dateFilterOptions.forEach(function (option) {
+                    select.append('<option value="' + option.value + '">' + option.label + '</option>');
+                });
+            });
+      
+            function dataTableTransactionDateFilter(settings, data, dataIndex) {
+              var currentDate = new Date();
+              var dateParts = data[4].split(' '); // Gunakan indeks 4 karena kolom tanggal berada di indeks 4
+              var day = parseInt(dateParts[0], 10);
+              var month = getMonthIndex(dateParts[1]);
+              var year = 2000 + parseInt(dateParts[2], 10);
+              var transactionDate = new Date(year, month, day);
+      
+              var filterType = $('#TransactionDateFilter').val();
+      
+              switch (filterType) {
+                  case 'today':
+                      return transactionDate.toDateString() === currentDate.toDateString();
+                  case 'this_week':
+                      var oneDay = 24 * 60 * 60 * 1000;
+                      var diffDays = Math.round(Math.abs((currentDate - transactionDate) / oneDay));
+                      return diffDays <= 7;
+                  case 'this_month':
+                      return transactionDate.getMonth() === currentDate.getMonth() && transactionDate.getFullYear() === currentDate.getFullYear();
+                  default:
+                      return true; // No filter
               }
-
-              function getMonthIndex(monthAbbreviation) {
-                  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                  return months.indexOf(monthAbbreviation);
-              }
-
-              table.columns(3).every(function () {
-                  var column = this;
-                  var select = $(
-                      '<select id="StatusFilter" class="form-select"><option value="">Status</option></select>'
-                  )
-                      .appendTo('.transaction_status')
-                      .on('change', function () {
-                          var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                          column.search(val ? '^' + val + '$' : '', true, false).draw();
-                      });
-
-                  var statusOptions = ['Invoice', 'Operational', 'Ambilan', 'Bonus', 'Gaji', 'Setoran Kas', 'Top Up'];
-
-                  statusOptions.forEach(function (d) {
-                      select.append('<option value="' + d.toLowerCase() + '" class="text-capitalize">' + d + '</option>');
-                  });
-              });
-
-              console.log('Init Complete Finished');
+            }
+      
+            function getMonthIndex(monthAbbreviation) {
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return months.indexOf(monthAbbreviation);
+            }
+      
+            table.columns(4).every(function () {
+                    var column = this;
+                    var select = $(
+                        '<select id="StatusFilter" class="form-select"><option value="">Status</option></select>'
+                    )
+                        .appendTo('.transaction_status')
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+      
+                    var statusOptions = ['Invoice', 'Operational', 'Ambilan', 'Bonus', 'Gaji', 'Setoran Kas', 'Top Up'];
+      
+                    statusOptions.forEach(function (d) {
+                        select.append('<option value="' + d.toLowerCase() + '" class="text-capitalize">' + d + '</option>');
+                    });
+                });
+      
+            console.log('Init Complete Finished');
           }
-      });
+      
+          });
   }
 
   dt_invoice_table.on('draw.dt', function () {
