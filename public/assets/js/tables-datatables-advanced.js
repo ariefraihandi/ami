@@ -74,45 +74,36 @@ $(function () {
                   var status = full.status;
                   var statusText = '';
                   var badgeClass = '';
-                  switch (status) {
-                      case 1:
-                      case 2:
-                      case 3:
-                          statusText = 'Invoice';
-                          badgeClass = 'bg-label-primary';
-                          break;
-                      case 4:
-                          statusText = 'Operational';
-                          badgeClass = 'bg-label-danger';
-                          break;
-                      case 5:
-                          statusText = 'Ambilan';
-                          badgeClass = 'bg-label-warning';
-                          break;
-                      case 6:
-                          statusText = 'Setoran Kas';
-                          badgeClass = 'bg-label-secondary';
-                          break;
-                      case 7:
-                          statusText = 'Top Up';
-                          badgeClass = 'bg-label-success';
-                          break;
-                      case 8:
-                          statusText = 'Bonus';
-                          badgeClass = 'bg-label-info';
-                          break;
-                      case 9:
-                          statusText = 'Gaji';
-                          badgeClass = 'bg-label-warning';
-                          break;
-                      default:
-                          statusText = status ? status : 'Unknown';
-                          badgeClass = 'bg-label-secondary';
-                          break;
+          
+                  if (status === 1 || status === 2 || status === 3) {
+                      statusText = 'Invoice';
+                      badgeClass = 'bg-label-primary';
+                  } else if (status === 4) {
+                      statusText = 'Operational';
+                      badgeClass = 'bg-label-danger';
+                  } else if (status === 5) {
+                      statusText = 'Ambilan';
+                      badgeClass = 'bg-label-warning';
+                  } else if (status === 6) {
+                      statusText = 'Setoran Kas';
+                      badgeClass = 'bg-label-secondary';
+                  } else if (status === 7) {
+                      statusText = 'Top Up';
+                      badgeClass = 'bg-label-success';
+                  } else if (status === 8) {
+                      statusText = 'Bonus';
+                      badgeClass = 'bg-label-info';
+                  } else if (status === 9) {
+                      statusText = 'Gaji';
+                      badgeClass = 'bg-label-warning';
+                  } else {
+                      statusText = status ? status : 'Unknown';
+                      badgeClass = 'bg-label-secondary';
                   }
+          
                   return '<div class="text-center"><span class="badge ' + badgeClass + '">' + statusText + '</span></div>';
               }
-            },          
+            },               
             { data: 'description', title: 'DESKRIPSI' },
             { data: 'start_date', title: 'Date', className: 'text-center' }
         ],
