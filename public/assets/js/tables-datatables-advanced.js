@@ -72,7 +72,8 @@ $(function () {
               title: 'STATUS',
               render: function (data, type, full, meta) {
                   try {
-                      var status = full.status;
+                      var status = parseInt(full.status); // Pastikan status di-parse sebagai angka
+          
                       var statusText = '';
                       var badgeClass = '';
           
@@ -108,7 +109,8 @@ $(function () {
                       return '<div class="text-center"><span class="badge bg-label-danger">Error</span></div>';
                   }
               }
-          },                   
+          }
+          ,                   
             { data: 'description', title: 'DESKRIPSI' },
             { data: 'start_date', title: 'Date', className: 'text-center' }
         ],
