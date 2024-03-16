@@ -67,31 +67,7 @@ $(function () {
             { data: null, title: 'No.', className: 'text-center', render: function (data, type, row, meta) { return meta.row + 1; } },
             { data: 'reference_number', title: '#REFERENCE', render: function (data, type, full, meta) { return renderReferenceNumber(full); } },
             { data: 'amount', title: 'AMOUNT', render: function (data, type, full, meta) { return renderAmount(full); } },
-            {
-              data: 'status',
-              title: 'STATUS',
-              render: function (data, type, full, meta) {
-                  var status = full.status;
-                  
-                  if (status === 1 || status === 2 || status === 3) {
-                      return '<div class="text-center">Invoice</div>';
-                  } else if (status === 4) {
-                      return '<div class="text-center">Operational</div>';
-                  } else if (status === 5) {
-                      return '<div class="text-center">Ambilan</div>';
-                  } else if (status === 6) {
-                      return '<div class="text-center">Setoran Kas</div>';
-                  } else if (status === 7) {
-                      return '<div class="text-center">Top Up</div>';
-                  } else if (status === 8) {
-                      return '<div class="text-center">Bonus</div>';
-                  } else if (status === 9) {
-                      return '<div class="text-center">Gaji</div>';
-                  } else {
-                      return '<div class="text-center">' + (status ? status : 'Unknown') + '</div>';
-                  }
-              }
-            },                   
+            { data: 'status', title: 'STATUS', render: function (data, type, full, meta) { return renderStatus(full); } },
             { data: 'description', title: 'DESKRIPSI' },
             { data: 'start_date', title: 'Date', className: 'text-center' }
         ],
@@ -149,6 +125,27 @@ $(function () {
         return '<div class="text-center">' + formattedAmount + '</div>';
     }
 
-    
+    // Function to render status with badge
+    function renderStatus(full) {
+        var status = full.status;
+        
+        if (status == 1 || status == 2 || status == 3) {
+            return '<div class="text-center"><span class="badge bg-label-primary">Invoice</span></div>';
+        } else if (status == 4) {
+            return '<div class="text-center"><span class="badge bg-label-danger">Operational</span></div>';
+        } else if (status == 5) {
+            return '<div class="text-center"><span class="badge bg-label-warning">Ambilan</span></div>';
+        } else if (status == 6) {
+            return '<div class="text-center"><span class="badge bg-label-secondary">Setoran Kas</span></div>';
+        } else if (status == 7) {
+            return '<div class="text-center"><span class="badge bg-label-success">Top Up</span></div>';
+        } else if (status == 8) {
+            return '<div class="text-center"><span class="badge bg-label-info">Bonus</span></div>';
+        } else if (status == 9) {
+            return '<div class="text-center"><span class="badge bg-label-warning">Gaji</span></div>';
+        } else {
+            return '<div class="text-center"><span class="badge bg-label-secondary">' + (status ? status : 'Unknown') + '</span></div>';
+        }
+    }
 
 });
