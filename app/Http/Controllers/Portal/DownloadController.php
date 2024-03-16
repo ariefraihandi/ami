@@ -196,7 +196,7 @@ class DownloadController extends Controller
                 ];
 
                 $pdf = PDF::loadView('Konten.Keuangan.anu', $data);
-                return $pdf->stream('Invoice.pdf');
+                return $pdf->stream('Laporan.pdf');
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

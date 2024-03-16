@@ -116,6 +116,7 @@
                               <th>Deskripsi</th>                              
                               <th>Action</th>
                               <th>Ukuran</th>
+                              <th>Volume</th>
                               <th>Jumlah</th>
                               <th>Harga Satuan</th>
                               <th>Sub Total</th>
@@ -126,7 +127,6 @@
                   </table>
               </div>
             </div>
-                      
               <hr class="my-4 mx-n4" />
             @endif
             <form class="source-item py-sm-3" id="myForm" action="{{ route('addItemInvoice') }}" method="post">

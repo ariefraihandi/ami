@@ -28,6 +28,7 @@ $(function () {
       { 
         data: 'deskripsi', 
         name: 'deskripsi',
+        orderable: false,
         targets: 2,
       },
       {
@@ -49,12 +50,28 @@ $(function () {
       {
         data: null,
         name: 'ukuran',
+        searchable: false,
+        orderable: false,
+        targets: 4,
+        render: function(data, type, full, meta) {
+            if (full['ukurana'] == 0 || full['ukuranb'] == 0) {
+                return '-';
+              } else {
+                return full['ukurana']/100 + ' x ' + full['ukuranb']/100 + ' m\u00B2';
+            }
+        }
+      },
+      {
+        data: null,
+        name: 'volume',
+        searchable: false,
+        orderable: false,
         targets: 4,
         render: function(data, type, full, meta) {
             if (full['ukurana'] == 0 || full['ukuranb'] == 0) {
                 return '-';
             } else {
-                return full['ukuran'] + ' m2';
+                return full['ukuran'] + ' m\u00B2';
             }
         }
       },
@@ -247,8 +264,8 @@ function calculateTotal() {
   var ukuranb = parseFloat($('#ukuranb').val()) || 0;
 
   // Bulatkan ukuran a dan b
-  var bulatUkurana = bulatkanUkuran(ukurana) / 100;
-  var bulatUkuranb = bulatkanUkuran(ukuranb) / 100;
+  var bulatUkurana = ukurana / 100;
+  var bulatUkuranb = ukuranb / 100;
 
   // Perhitungan total berdasarkan ukuran yang sudah dibulatkan
   var volume = bulatUkurana * bulatUkuranb;

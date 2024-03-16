@@ -491,16 +491,16 @@ class InvoiceController extends Controller
     public function itemStore(Request $request)
     {
         $validatedData = validator($request->all(), [
-            'kode_barang' => 'required|string',
-            'barang' => 'required|string',
-            'deskripsi' => 'required|string',
-            'ukurana' => 'required|string',
-            'ukuranb' => 'required|string',
-            'qty' => 'required|integer',
-            'harga_satuan' => 'required',
-            'discount' => 'required',
-            'tax' => 'required|numeric',
-            'invoice_id' => 'required|string',
+            'kode_barang'       => 'required|string',
+            'barang'            => 'required|string',
+            'deskripsi'         => 'required|string',
+            'ukurana'           => 'required|string',
+            'ukuranb'           => 'required|string',
+            'qty'               => 'required|integer',
+            'harga_satuan'      => 'required',
+            'discount'          => 'required',
+            'tax'               => 'required|numeric',
+            'invoice_id'        => 'required|string',
         ]);
 
         // If validation fails, throw an exception
@@ -527,8 +527,8 @@ class InvoiceController extends Controller
                     'ukuran' => $volume,
                     'ukurana' => $request->input('ukurana'),
                     'ukuranb' => $request->input('ukuranb'),
-                    'bulata' => $ukuranaInput,
-                    'bulatb' => $ukuranbInput,
+                    'bulata' => $request->input('ukurana'),
+                    'bulatb' => $request->input('ukuranb'),
                     'qty' => $request->input('qty'),
                     'harga_satuan' => $hargaSatuan,
                     'discount' => $discount,
