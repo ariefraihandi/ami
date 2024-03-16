@@ -48,6 +48,10 @@ class DownloadController extends Controller
             $formattedDate = Carbon::parse($invoiceData->created_at)->isoFormat('LL'); // Format "29 Januari 2024"
 
             $subtotal = $items->sum(function ($item) {
+                return ($item->harga_satuan * $item->qty * $item->ukuran)-$item->discount;
+            });
+           
+            $total = $items->sum(function ($item) {
                 return $item->harga_satuan * $item->qty * $item->ukuran;
             });
 
@@ -55,6 +59,7 @@ class DownloadController extends Controller
                 return $item->discount;
             });
 
+            $totaled         = "Rp. " . number_format($total, 0) . ",-";
             $format_subtotal = "Rp. " . number_format($subtotal, 0) . ",-";
             $format_discount = "Rp. " . number_format($discount, 0) . ",-";
 
@@ -88,6 +93,7 @@ class DownloadController extends Controller
                 'stemp'          => $stemp,
                 'logoPath'       => $link,
                 'formattedDate'  => $formattedDate,
+                'totas'          => $totaled,
                 'subtotal'       => $format_subtotal,
                 'panjar_amount'  => $format_panjar,
                 'discount'       => $format_discount,

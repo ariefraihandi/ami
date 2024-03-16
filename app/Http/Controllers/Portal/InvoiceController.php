@@ -1038,11 +1038,16 @@ class InvoiceController extends Controller
         $subtotal = $items->sum(function ($item) {
             return ($item->harga_satuan * $item->qty * $item->ukuran)-$item->discount;
         });
+       
+        $total = $items->sum(function ($item) {
+            return $item->harga_satuan * $item->qty * $item->ukuran;
+        });
 
         $discount = $items->sum(function ($item) {
             return $item->discount;
         });
 
+        $totaled         = "Rp. " . number_format($total, 0) . ",-";
         $format_subtotal = "Rp. " . number_format($subtotal, 0) . ",-";
         $format_discount = "Rp. " . number_format($discount, 0) . ",-";
 
@@ -1056,6 +1061,7 @@ class InvoiceController extends Controller
             $tax = "0%";
         }
 
+        
         $panjar_amount      = $invoiceData->panjar_amount;
         $total_amount       = $invoiceData->total_amount - $invoiceData->panjar_amount;
         $format_panjar      = "Rp. " . number_format($panjar_amount, 0) . ",-";
@@ -1072,6 +1078,7 @@ class InvoiceController extends Controller
             'kopSuratImage'  => $kopSuratImage,
             'logo'           => $logo,
             'formattedDate'  => $formattedDate,
+            'totas'          => $totaled,
             'subtotal'       => $format_subtotal,
             'panjar_amount'  => $format_panjar,
             'discount'       => $format_discount,

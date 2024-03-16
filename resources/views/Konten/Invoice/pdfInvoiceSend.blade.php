@@ -146,7 +146,7 @@
                 <tfoot>
                     <tr>
                         <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 15px;">TOTAL:</td>
-                        <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$subtotal+$discount}}</strong></td>
+                        <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$totas}}</strong></td>
                     </tr>
                     @if ($discount != 'Rp. 0,-')
                         <tr>
