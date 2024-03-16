@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
 
     //item fix route
-    Route::get('/get-items',            [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+    // Route::get('/get-items',            [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
     Route::post('item-invoices',        [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
     Route::post('updateItem/',          [InvoiceController::class, 'updateItem'])->name('updateItem'); //NF
     Route::get('/get-items/{invNumber}',[InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');

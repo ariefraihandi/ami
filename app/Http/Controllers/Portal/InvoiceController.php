@@ -1036,7 +1036,7 @@ class InvoiceController extends Controller
         $formattedDate = Carbon::parse($invoiceData->created_at)->isoFormat('LL'); // Format "29 Januari 2024"
 
         $subtotal = $items->sum(function ($item) {
-            return $item->harga_satuan * $item->qty * $item->ukuran;
+            return ($item->harga_satuan * $item->qty * $item->ukuran)-$item->discount;
         });
 
         $discount = $items->sum(function ($item) {
@@ -1085,9 +1085,6 @@ class InvoiceController extends Controller
         $pdf = PDF::loadView('Konten.Invoice.pdfInvoice', $data);
         return $pdf->stream('Invoice.pdf');        
     }
-    
-   
-
 
     public function bulatkanUkuran($ukuran)
     {
