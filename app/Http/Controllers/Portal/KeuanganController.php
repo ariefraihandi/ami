@@ -149,14 +149,8 @@ class KeuanganController extends Controller
                 "source_receiver" => $transaction->source_receiver,
                 "customerUuid" => $customer_uuid,
                 "reference_number" => $transaction->reference_number,
-                "amount" => $transaction->transaction_amount,
-                "post" => $transaction->transaction_date,
-                "email" => $transaction->payment_method,
-                "city" => $transaction->reference_number,
-                "start_date" => $transaction->transaction_date,
-                "salary" => $transaction->lunas,
-                "age" => $transaction->lunas,
-                "experience" => $transaction->lunas,
+                "amount" => $transaction->transaction_amount,             
+                "start_date" => $transaction->transaction_date,               
                 "status" => $transaction->status,
             ];
         });
