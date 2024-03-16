@@ -111,14 +111,13 @@
                   <table id="datatables-items" class="datatables-items table border-top">
                       <thead>
                           <tr>
-                              <th>No</th>
-                              <th>Kode</th>
+                              <th>No</th>                            
                               <th>Deskripsi</th>                              
                               <th>Action</th>
                               <th>Ukuran</th>
                               <th>Volume</th>
                               <th>Jumlah</th>
-                              <th>Harga Satuan</th>
+                              <th>Satuan</th>
                               <th>Sub Total</th>
                               <th>Discount</th>
                               <th>Pajak</th>

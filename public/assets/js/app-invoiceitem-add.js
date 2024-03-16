@@ -12,28 +12,29 @@ $(function () {
     columns: [
       { 
         data: null,
+        orderable: false,
         targets: 0,
         render: function (data, type, full, meta) {
           return meta.row + 1;
         }
       },
-      { 
-        data: 'kode_barang', 
-        name: 'kode_barang',
-        targets: 1,
-        render: function (data, type, full, meta) {
-          return '#' + data; // Menambahkan '#' sebelum kode_barang
-        }
-      },      
+      // { 
+      //   data: 'kode_barang', 
+      //   name: 'kode_barang',
+      //   targets: 1,
+      //   render: function (data, type, full, meta) {
+      //     return '#' + data; // Menambahkan '#' sebelum kode_barang
+      //   }
+      // },      
       { 
         data: 'deskripsi', 
         name: 'deskripsi',
         orderable: false,
-        targets: 2,
+        targets: 1,
       },
       {
         data: null,
-        targets: 3,
+        targets: 2,
         title: 'Actions',
         searchable: false,
         orderable: false,
@@ -52,7 +53,7 @@ $(function () {
         name: 'ukuran',
         searchable: false,
         orderable: false,
-        targets: 4,
+        targets: 3,
         render: function(data, type, full, meta) {
             if (full['ukurana'] == 0 || full['ukuranb'] == 0) {
                 return '-';
@@ -78,11 +79,13 @@ $(function () {
       { 
         data: 'qty', 
         name: 'qty',
+        orderable: false,
         targets: 5,
       },
       { 
         data: 'harga_satuan', 
         name: 'harga_satuan',
+        orderable: false,
         targets: 6,
         render: function (data, type, full, meta) {
           return simplifyNumber(data);
@@ -91,6 +94,7 @@ $(function () {
       {
         data: null,
         name: 'total',
+        orderable: false,
         targets: 7,
         render: function(data, type, full, meta) {
             var hargaSatuan = full['harga_satuan'];
@@ -245,11 +249,8 @@ function bulatkanUkuran(ukuran) {
   // Jika ukuran kurang dari atau sama dengan 0 cm, bulatkan ke 1 cm
   if (ukuran <= 0) {
     return 100;
-  } else if (ukuran <= 50) {
-    return 50;
   } else {
-    // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
-    return Math.ceil((ukuran - 5) / 50) * 50;
+    return ukuran;
   }
 }
 
@@ -264,8 +265,8 @@ function calculateTotal() {
   var ukuranb = parseFloat($('#ukuranb').val()) || 0;
 
   // Bulatkan ukuran a dan b
-  var bulatUkurana = ukurana / 100;
-  var bulatUkuranb = ukuranb / 100;
+  var bulatUkurana = bulatkanUkuran(ukurana) / 100;
+  var bulatUkuranb = bulatkanUkuran(ukuranb) / 100;
 
   // Perhitungan total berdasarkan ukuran yang sudah dibulatkan
   var volume = bulatUkurana * bulatUkuranb;

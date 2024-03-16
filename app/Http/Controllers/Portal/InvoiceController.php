@@ -513,27 +513,27 @@ class InvoiceController extends Controller
             \DB::beginTransaction();
     
             try {
-                $hargaSatuan = $this->cleanNumericInput($request->input('harga_satuan'));
-                $discount = $this->cleanNumericInput($request->input('discount'));
-                $ukuranaInput = $this->bulatkanUkuran($request->input('ukurana'));
-                $ukuranbInput = $this->bulatkanUkuran($request->input('ukuranb'));
+                $hargaSatuan    = $this->cleanNumericInput($request->input('harga_satuan'));
+                $discount       = $this->cleanNumericInput($request->input('discount'));
+                $ukuranaInput   = $this->bulatkanUkuran($request->input('ukurana'));
+                $ukuranbInput   = $this->bulatkanUkuran($request->input('ukuranb'));
     
                 $volume = ($ukuranaInput / 100) * ($ukuranbInput / 100);
     
                 $item = new ItemInvoice([
-                    'kode_barang' => $request->input('kode_barang'),
-                    'barang' => $request->input('barang'),
-                    'deskripsi' => $request->input('deskripsi'),
-                    'ukuran' => $volume,
-                    'ukurana' => $request->input('ukurana'),
-                    'ukuranb' => $request->input('ukuranb'),
-                    'bulata' => $request->input('ukurana'),
-                    'bulatb' => $request->input('ukuranb'),
-                    'qty' => $request->input('qty'),
-                    'harga_satuan' => $hargaSatuan,
-                    'discount' => $discount,
-                    'tax' => $this->cleanNumericInput($request->input('tax')),
-                    'invoice_id' => $request->input('invoice_id'),
+                    'kode_barang'   => $request->input('kode_barang'),
+                    'barang'        => $request->input('barang'),
+                    'deskripsi'     => $request->input('deskripsi'),
+                    'ukuran'        => $volume,
+                    'ukurana'       => $request->input('ukurana'),
+                    'ukuranb'       => $request->input('ukuranb'),
+                    'bulata'        => $request->input('ukurana'),
+                    'bulatb'        => $request->input('ukuranb'),
+                    'qty'           => $request->input('qty'),
+                    'harga_satuan'  => $hargaSatuan,
+                    'discount'      => $discount,
+                    'tax'           => $this->cleanNumericInput($request->input('tax')),
+                    'invoice_id'    => $request->input('invoice_id'),
                    
                 ]);
     
@@ -741,7 +741,7 @@ class InvoiceController extends Controller
             // Bersihkan dan format nilai input yang diperlukan
             $hargaSatuan    = $this->cleanNumericInput($request->input('harga_satuan'));
             $discount       = $this->cleanNumericInput($request->input('discount'));
-            $tax            = $this->cleanNumericInput($request->input('tax'));
+            $tax            = $this->cleanNumericInput($request->input('tax'));     
             $ukuranaInput   = $this->bulatkanUkuran($request->input('ukurana'));
             $ukuranbInput   = $this->bulatkanUkuran($request->input('ukuranb'));
 
@@ -1099,11 +1099,8 @@ class InvoiceController extends Controller
         // Jika angka kurang dari atau sama dengan 100, bulatkan ke 100
         if ($ukuran <= 0) {
             return 100;
-        } else if ($ukuran <= 50) {
-            return 50;
         } else {
-            // Gunakan ceil untuk mendekatkan ke angka di atasnya dalam kelipatan 50
-            return ceil(($ukuran - 5) / 50) * 50;
+            return $ukuran;
         }
     }
 
