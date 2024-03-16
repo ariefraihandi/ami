@@ -31,37 +31,64 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class KeuanganController extends Controller
 {
-    public function getAllKeuangan()
+    public function getAllKeuangan(Request $request)
     {
-        $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
+        // Mengambil nilai 'length' dan 'start' dari permintaan
+        $length = $request->input('length', 10); // Default: 10
+        $start = $request->input('start', 0); // Default: 0
+    
+        // Menghitung halaman berdasarkan posisi awal
+        $page = $start / $length + 1;
+    
+        // Mengambil data menggunakan pagination dengan jumlah dan halaman yang sesuai
+        // Jika length bernilai -1, maka ambil semua data tanpa batasan
+        if ($length == -1) {
+            $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->get();
+        } else {
+            $keuangan = FinancialTransaction::orderBy('created_at', 'desc')->paginate($length, ['*'], 'page', $page);
+        }
     
         $formattedKeuangan = $keuangan->map(function ($transaction) {
-
+            // Logika pemetaan seperti yang Anda lakukan sebelumnya
             $invoice = Invoice::where('invoice_number', $transaction->reference_number)->first();
-
+    
             // Jika invoice ditemukan, gunakan customer_uuid dari invoice
             if ($invoice) {
                 $customer = $invoice->customer_uuid;
             } else {
                 $customer = '';
             }
-
+    
             return [
-                'id'                    => $transaction->id,
-                'reference_number'      => $transaction->reference_number,
-                'source_receiver'       => $transaction->source_receiver,
-                'customer'              => $customer,
-                'status'                => $transaction->status,
-                'transaction_amount'    => number_format($transaction->transaction_amount),
-                'payment_method'        => $transaction->payment_method,  
-                'created_at'            => Carbon::parse($transaction->transaction_date)->isoFormat('D MMM YY'), // Change 'transaction_date' to 'created_at'
-                'description'           => $transaction->description,  
+                'id' => $transaction->id,
+                'reference_number' => $transaction->reference_number,
+                'source_receiver' => $transaction->source_receiver,
+                'customer' => $customer,
+                'status' => $transaction->status,
+                'transaction_amount' => number_format($transaction->transaction_amount),
+                'payment_method' => $transaction->payment_method,
+                'created_at' => Carbon::parse($transaction->created_at)->isoFormat('D MMM YY'), // Ubah 'transaction_date' menjadi 'created_at'
+                'description' => $transaction->description,
             ];
         });
     
-        return response()->json(['data' => $formattedKeuangan]);
+        // Jika length bernilai -1, maka kembalikan semua data tanpa pagination
+        if ($length == -1) {
+            return response()->json([
+                'data' => $formattedKeuangan,
+            ]);
+        }
+    
+        return response()->json([
+            'draw' => intval($request->input('draw', 1)), // Untuk mengikuti jumlah draw yang dikirim dari skrip
+            'recordsTotal' => $keuangan->total(), // Jumlah total data tanpa filter
+            'recordsFiltered' => $keuangan->total(), // Jumlah total data setelah filter (tidak ada filter di sini)
+            'data' => $formattedKeuangan,
+        ]);
     }
+    
 
+        
     public function getAlltagihans()
     {
         try {
