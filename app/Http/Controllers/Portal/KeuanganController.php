@@ -98,9 +98,189 @@ class KeuanganController extends Controller
             'data' => $formattedKeuangan,
         ]);
     }
+
+    public function getDatadfadKeuangan(Request $request)
+    {
+        $transactions = FinancialTransaction::all();
+
+        $data = [];
+
+        foreach ($transactions as $transaction) {
+            $data[] = [
+                $transaction->source_receiver,
+                $transaction->description,
+                $transaction->transaction_amount,
+                $transaction->transaction_date,
+                $transaction->payment_method,
+                $transaction->reference_number,
+                $transaction->status,
+                $transaction->lunas,
+            ];
+        }
+
+        $response = [
+            "draw" => 1,
+            "recordsTotal" => count($data),
+            "recordsFiltered" => count($data),
+            "data" => $data,
+        ];
+
+        return response()->json($response);
+    }
+
+    public function getDataKeuangan(Request $request)
+    {
+        $transactions = FinancialTransaction::all();
+    
+        $data = [];
+    
+        $formattedTransactions = $transactions->map(function ($transaction) {
+            // Lakukan pemetaan data ke format yang diinginkan
+            $invoice = Invoice::where('invoice_number', $transaction->reference_number)->first();
+            $customer_uuid = null;
+            
+            if ($invoice) {
+                $customer_uuid = $invoice->customer_uuid;
+            }
+    
+            return [
+                "id" => $transaction->id,
+                "avatar" => $transaction->description,
+                "source_receiver" => $transaction->source_receiver,
+                "customerUuid" => $customer_uuid,
+                "reference_number" => $transaction->reference_number,
+                "amount" => $transaction->transaction_amount,
+                "post" => $transaction->transaction_date,
+                "email" => $transaction->payment_method,
+                "city" => $transaction->reference_number,
+                "start_date" => $transaction->transaction_date,
+                "salary" => $transaction->lunas,
+                "age" => $transaction->lunas,
+                "experience" => $transaction->lunas,
+                "status" => $transaction->lunas,
+            ];
+        });
+    
+        $response = [
+            "draw" => 1,
+            "recordsTotal" => count($formattedTransactions),
+            "recordsFiltered" => count($formattedTransactions),
+            "data" => $formattedTransactions,
+        ];
+    
+        return response()->json($response);
+    }
     
     
 
+
+
+    public function test(Request $request)
+    
+    {
+          //Sistem
+            //Check Access
+            $requestedUrl   = $request->path();      
+            $urlParts       = explode('/', $requestedUrl);
+            $urlPart        = $urlParts[0]; // Ambil bagian pertama dari URL    
+            $menuSub        = MenuSub::where('url', $urlPart)->first();
+            
+            if ($menuSub) {
+            
+                $menuSubId = $menuSub->id;
+                $userRole = session('user_role');
+                $accessSub = AccessSub::where('role_id', $userRole)
+                                    ->where('submenu_id', $menuSubId)
+                                    ->first();
+                if (!$accessSub) {
+                    return redirect()->route('user.profile')->with([
+                        'response' => [
+                            'success' => false,
+                            'title' => 'Eror',
+                            'message' => 'Anda Tidak Memiliki Akses!',
+                        ],
+                    ]);
+                }                  
+            } else {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'URL tidak ditemukan!',
+                    ],
+                ]);
+            }
+        //!Check Access
+        // Check Subs Child Access
+            $requestedUrl = $request->path();       
+            $routes = Route::getRoutes();
+            $matchedRouteName = null;
+                    
+            foreach ($routes as $route) {
+                if ($route->uri() == $requestedUrl) {
+                    // Jika cocok, simpan nama rute dan keluar dari loop
+                    $matchedRouteName = $route->getName();
+                    break;
+                }
+            }
+
+            if ($matchedRouteName) {
+            $url            = $matchedRouteName;
+            $menuChildSub   = MenuSubsChild::where('url', $url)->first();         
+            $userRole       = session('user_role');
+            $accChildSub    = AccessSubChild::where('role_id', $userRole)
+                            ->where('childsubmenu_id', $menuChildSub->id)
+                            ->first();
+
+            if (!$accChildSub) {
+                return redirect()->route('user.profile')->with([
+                    'response' => [
+                        'success' => false,
+                        'title' => 'Eror',
+                        'message' => 'Anda Tidak Memiliki Akses!',
+                    ],
+                ]);
+            }       
+            } else {
+            return redirect()->route('user.profile')->with([
+                'response' => [
+                    'success' => false,
+                    'title' => 'Eror',
+                    'message' => 'Anda Tidak Memiliki Akses!',
+                ],
+            ]);
+            }
+        //! Check Subs Child Access
+        $user = Auth::user();
+        if (!$user) {
+        
+            return redirect('/login');
+        }
+
+        $accessMenus            = AccessMenu::where('user_id', $user->role)->pluck('menu_id');
+        $accessSubmenus         = AccessSub::where('role_id', $user->role)->pluck('submenu_id');
+        $accessChildren         = AccessSubChild::where('role_id', $user->role)->pluck('childsubmenu_id');
+    
+        $menus                  = Menu::whereIn('id', $accessMenus)->get();
+        $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
+        $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
+        $roleData               = UserRole::where('id', $user->role)->first();
+    //!Sistem   
+    $usersData              = User::all();
+        $additionalData = [
+            'title'                     => 'Bisnis',
+            'subtitle'                  => 'Keuangan',
+            'user'                      => $user,
+            'usersData'                 => $usersData,
+            'role'                      => $roleData,
+            'menus'                     => $menus,
+            'subMenus'                  => $subMenus,
+            'childSubMenus'             => $childSubMenus,
+            ]
+        ;
+        return view('Konten.Keuangan.test', $additionalData);
+    }
+    
         
     public function getAlltagihans()
     {

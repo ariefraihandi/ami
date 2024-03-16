@@ -649,9 +649,6 @@
       <!-- /Transaksi -->
     </div>
   </div>
-
-  
-
 @endsection
 
 @push('footer-script')  

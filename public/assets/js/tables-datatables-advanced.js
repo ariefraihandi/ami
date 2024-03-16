@@ -5,7 +5,8 @@
 'use strict';
 
 $(function () {
-  var dt_ajax_table = $('.datatables-ajax'),
+  var 
+    dt_ajax_table = $('.datatables-ajax'),
     dt_filter_table = $('.dt-column-search'),
     dt_adv_filter_table = $('.dt-advanced-search'),
     dt_responsive_table = $('.dt-responsive'),
@@ -120,18 +121,22 @@ $(function () {
     });
 
     var dt_filter = dt_filter_table.DataTable({
-      ajax: assetsPath + 'json/table-datatable.json',
+      ajax: {
+          url: '{{ route("getDataKeuangan") }}',
+          dataSrc: '' // Jika respons langsung adalah array dari objek, gunakan nilai kosong
+      },
       columns: [
-        { data: 'full_name' },
-        { data: 'email' },
-        { data: 'post' },
-        { data: 'city' },
-        { data: 'start_date' },
-        { data: 'salary' }
+          { data: 'full_name' },
+          { data: 'email' },
+          { data: 'post' },
+          { data: 'city' },
+          { data: 'start_date' },
+          { data: 'salary' }
       ],
       orderCellsTop: true,
       dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>><"table-responsive"t><"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
-    });
+  });
+  
   }
 
   // Advanced Search
@@ -140,63 +145,92 @@ $(function () {
   // Advanced Filter table
   if (dt_adv_filter_table.length) {
     var dt_adv_filter = dt_adv_filter_table.DataTable({
-      dom: "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6 dataTables_pager'p>>",
-      ajax: assetsPath + 'json/table-datatable.json',
-      columns: [
-        { data: '' },
-        { data: 'full_name' },
-        { data: 'email' },
-        { data: 'post' },
-        { data: 'city' },
-        { data: 'start_date' },
-        { data: 'salary' }
-      ],
+        dom: "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 dataTables_pager'p>>",
+        ajax: {
+            url: '/getDataKeuangan',
+            dataSrc: 'data'
+        },
+        columns: [
+            { 
+                data: null,
+                title: 'No.', // Judul kolom untuk nomor urut
+                render: function (data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            }, // Kolom untuk nomor urut
+            {
+              data: 'reference_number',
+              title: '#REFERENCE',
+              render: function (data, type, full, meta) {
+                  var sourceReceiver = full.source_receiver;
+                  var referenceNumber = full.reference_number;
+                  var customer = full.customerUuid;
+          
+                  // Jika ada data pelanggan, tampilkan link invoice
+                  if (customer) {
+                      var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer.customerUuid; // Sesuaikan dengan atribut yang menyimpan UUID pelanggan
+                      return '<div class="text-center">' + sourceReceiver + '<br>' + '<a href="' + link + '" class="invoice-link" target="_blank"><span class="fw-medium">#' + referenceNumber + '</span></a></div>';
+                  } else {
+                      // Jika tidak ada data pelanggan, tampilkan hanya nomor referensi
+                      return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
+                  }
+                 }
+            },          
+            {
+              data: 'amount',
+              title: 'AMOUNT',
+              render: function (data, type, full, meta) {
+                  var amount = parseFloat(full.amount); // Ubah ke tipe float
+                  var formatted_amount = amount.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 });
+                  return '<div class="text-center">' + formatted_amount + '</div>';
+              }
+            },          
+          
+            { data: 'status', title: 'STATUS' }, // Judul kolom 'Post' ditambahkan
+            { data: 'city', title: 'City' }, // Judul kolom 'City' ditambahkan
+            { data: 'start_date', title: 'Date' }, // Judul kolom 'Date' ditambahkan
+            { data: 'salary', title: 'Salary' } // Judul kolom 'Salary' ditambahkan
+        ],
+        orderCellsTop: true,
+        responsive: {
+            details: {
+                display: $.fn.dataTable.Responsive.display.modal({
+                    header: function (row) {
+                        var data = row.data();
+                        return 'Details of ' + data['full_name'];
+                    }
+                }),
+                type: 'column',
+                renderer: function (api, rowIdx, columns) {
+                    var data = $.map(columns, function (col, i) {
+                        return col.title !== '' 
+                            ? '<tr data-dt-row="' +
+                            col.rowIndex +
+                            '" data-dt-column="' +
+                            col.columnIndex +
+                            '">' +
+                            '<td>' +
+                            col.title +
+                            ':' +
+                            '</td> ' +
+                            '<td>' +
+                            col.data +
+                            '</td>' +
+                            '</tr>'
+                            : '';
+                    }).join('');
 
-      columnDefs: [
-        {
-          className: 'control',
-          orderable: false,
-          targets: 0,
-          render: function (data, type, full, meta) {
-            return '';
-          }
-        }
-      ],
-      orderCellsTop: true,
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal({
-            header: function (row) {
-              var data = row.data();
-              return 'Details of ' + data['full_name'];
+                    return data ? $('<table class="table"/><tbody />').append(data) : false;
+                }
             }
-          }),
-          type: 'column',
-          renderer: function (api, rowIdx, columns) {
-            var data = $.map(columns, function (col, i) {
-              return col.title !== '' // ? Do not show row in modal popup if title is blank (for check box)
-                ? '<tr data-dt-row="' +
-                    col.rowIndex +
-                    '" data-dt-column="' +
-                    col.columnIndex +
-                    '">' +
-                    '<td>' +
-                    col.title +
-                    ':' +
-                    '</td> ' +
-                    '<td>' +
-                    col.data +
-                    '</td>' +
-                    '</tr>'
-                : '';
-            }).join('');
-
-            return data ? $('<table class="table"/><tbody />').append(data) : false;
-          }
-        }
-      }
+        },
+        lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
+        pageLength: 10
     });
-  }
+}
+
+
+
 
   // on key up from input field
   $('input.dt-input').on('keyup', function () {

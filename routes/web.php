@@ -63,6 +63,9 @@ Route::middleware(['auth'])->group(function () {
 
     // fix keuangan
     Route::get('get-keua',              [KeuanganController::class, 'getAllKeuangan'])->name('dataKeuangan');
+    Route::get('getDataKeuangan',              [KeuanganController::class, 'getDataKeuangan'])->name('getDataKeuangan');
+    
+    Route::get('keuangan/test',                  [KeuanganController::class, 'test'])->name('keuangan.test');
     Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan');
     Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
     Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
