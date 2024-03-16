@@ -74,26 +74,24 @@ $(function () {
                   var status = full.status;
                   
                   if (status === 1 || status === 2 || status === 3) {
-                      return '<div class="text-center"><span class="badge bg-label-primary">Invoice</span></div>';
+                      return '<div class="text-center">Invoice</div>';
                   } else if (status === 4) {
-                      return '<div class="text-center"><span class="badge bg-label-danger">Operational</span></div>';
+                      return '<div class="text-center">Operational</div>';
                   } else if (status === 5) {
-                      return '<div class="text-center"><span class="badge bg-label-warning">Ambilan</span></div>';
+                      return '<div class="text-center">Ambilan</div>';
                   } else if (status === 6) {
-                      return '<div class="text-center"><span class="badge bg-label-secondary">Setoran Kas</span></div>';
+                      return '<div class="text-center">Setoran Kas</div>';
                   } else if (status === 7) {
-                      return '<div class="text-center"><span class="badge bg-label-success">Top Up</span></div>';
+                      return '<div class="text-center">Top Up</div>';
                   } else if (status === 8) {
-                      return '<div class="text-center"><span class="badge bg-label-info">Bonus</span></div>';
+                      return '<div class="text-center">Bonus</div>';
                   } else if (status === 9) {
-                      return '<div class="text-center"><span class="badge bg-label-warning">Gaji</span></div>';
+                      return '<div class="text-center">Gaji</div>';
                   } else {
-                      return '<div class="text-center"><span class="badge bg-label-secondary">' + (status ? status : 'Unknown') + '</span></div>';
+                      return '<div class="text-center">' + (status ? status : 'Unknown') + '</div>';
                   }
               }
-          }
-          
-          ,                   
+            },                   
             { data: 'description', title: 'DESKRIPSI' },
             { data: 'start_date', title: 'Date', className: 'text-center' }
         ],
