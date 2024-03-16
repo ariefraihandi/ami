@@ -71,45 +71,28 @@ $(function () {
               data: 'status',
               title: 'STATUS',
               render: function (data, type, full, meta) {
-                  try {
-                      var status = parseInt(full.status); // Pastikan status di-parse sebagai angka
-          
-                      var statusText = '';
-                      var badgeClass = '';
-          
-                      if (status === 1 || status === 2 || status === 3) {
-                          statusText = 'Invoice';
-                          badgeClass = 'bg-label-primary';
-                      } else if (status === 4) {
-                          statusText = 'Operational';
-                          badgeClass = 'bg-label-danger';
-                      } else if (status === 5) {
-                          statusText = 'Ambilan';
-                          badgeClass = 'bg-label-warning';
-                      } else if (status === 6) {
-                          statusText = 'Setoran Kas';
-                          badgeClass = 'bg-label-secondary';
-                      } else if (status === 7) {
-                          statusText = 'Top Up';
-                          badgeClass = 'bg-label-success';
-                      } else if (status === 8) {
-                          statusText = 'Bonus';
-                          badgeClass = 'bg-label-info';
-                      } else if (status === 9) {
-                          statusText = 'Gaji';
-                          badgeClass = 'bg-label-warning';
-                      } else {
-                          statusText = status ? status : 'Unknown';
-                          badgeClass = 'bg-label-secondary';
-                      }
-          
-                      return '<div class="text-center"><span class="badge ' + badgeClass + '">' + statusText + '</span></div>';
-                  } catch (error) {
-                      console.error('Error rendering status:', error);
-                      return '<div class="text-center"><span class="badge bg-label-danger">Error</span></div>';
+                  var status = full.status;
+                  
+                  if (status === 1 || status === 2 || status === 3) {
+                      return '<div class="text-center"><span class="badge bg-label-primary">Invoice</span></div>';
+                  } else if (status === 4) {
+                      return '<div class="text-center"><span class="badge bg-label-danger">Operational</span></div>';
+                  } else if (status === 5) {
+                      return '<div class="text-center"><span class="badge bg-label-warning">Ambilan</span></div>';
+                  } else if (status === 6) {
+                      return '<div class="text-center"><span class="badge bg-label-secondary">Setoran Kas</span></div>';
+                  } else if (status === 7) {
+                      return '<div class="text-center"><span class="badge bg-label-success">Top Up</span></div>';
+                  } else if (status === 8) {
+                      return '<div class="text-center"><span class="badge bg-label-info">Bonus</span></div>';
+                  } else if (status === 9) {
+                      return '<div class="text-center"><span class="badge bg-label-warning">Gaji</span></div>';
+                  } else {
+                      return '<div class="text-center"><span class="badge bg-label-secondary">' + (status ? status : 'Unknown') + '</span></div>';
                   }
               }
           }
+          
           ,                   
             { data: 'description', title: 'DESKRIPSI' },
             { data: 'start_date', title: 'Date', className: 'text-center' }
