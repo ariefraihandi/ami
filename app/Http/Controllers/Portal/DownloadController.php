@@ -129,6 +129,7 @@ class DownloadController extends Controller
                 $dayName        = $this->getIndonesianDayName($startDate);
                 $tanggal        = $startDate->translatedFormat('d F Y');
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
+                $incomeData     = FinancialTransaction::getIncomeByRange($startDate, $endDate);
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
                 $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);                

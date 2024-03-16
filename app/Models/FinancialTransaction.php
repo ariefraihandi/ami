@@ -98,6 +98,14 @@ class FinancialTransaction extends Model
 
 //!Sum 
 
+    public static function getIncomeByRange($startDate, $endDate)
+    {
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
+                ->whereIn('status', [1, 2, 3])
+                ->get();
+    }
+
+
     public static function getSetor($startDate, $endDate)
     {
         return self::whereBetween('created_at', [$startDate, $endDate])
