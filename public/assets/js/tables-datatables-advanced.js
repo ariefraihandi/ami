@@ -253,22 +253,28 @@ $('#amount').on('input', function() {
     formatCurrency(this); // Memformat nilai amount setiap kali input berubah
 });
 
-function formatCurrency(input) {
-    // Menghapus semua karakter selain angka
-    var numericValue = $(input).val().replace(/[^\d]/g, '');
 
-    // Menghapus digit nol di belakang jika ada
-    var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');
-
-    // Jika nilai kosong, kembalikan nilai kosong
-    if (trimmedValue === '') {
-        $(input).val('');
-        return;
+   function showKaryawanSelect() {
+    var statusSelect = document.getElementById("status");
+    var karyawanSelectDiv = document.getElementById("karyawanSelectDiv");
+  
+    if (statusSelect.value === "5" || statusSelect.value === "8") {
+        karyawanSelectDiv.style.display = "block";
+    } else {
+        karyawanSelectDiv.style.display = "none";
     }
+  }
 
-    // Set the formatted value to the specified input field
-    $(input).val(trimmedValue);
-}
+    function formatCurrency(input) {
+        var numericValue = $(input).val().replace(/[^\d]/g, '');
+        var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');
+
+        if (trimmedValue === '') {
+            $(input).val('');
+            return;
+        }
+        $(input).val(trimmedValue);
+    }
 
 
 function showSweetAlert(response) {

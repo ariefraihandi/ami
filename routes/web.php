@@ -62,12 +62,12 @@ Route::middleware(['auth'])->group(function () {
     //!!item fix route
 
     // fix keuangan
-    Route::get('get-keua',              [KeuanganController::class, 'getAllKeuangan'])->name('dataKeuangan');
+    Route::get('get-keua',                      [KeuanganController::class, 'getAllKeuangan'])->name('dataKeuangan');
     Route::get('getDataKeuangan',               [KeuanganController::class, 'getDataKeuangan'])->name('getDataKeuangan');
     Route::get('/getDataKeuanganById/{id}',     [KeuanganController::class, 'getDataKeuanganById'])->name('getDataKeuanganById');
-
-    Route::get('keuangan/test',                  [KeuanganController::class, 'test'])->name('keuangan.test');
-    Route::get('keuangan',              [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan');
+    
+    Route::get('keuangan/test',                 [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.test');
+    Route::get('keuangan',                      [KeuanganController::class, 'keuanganV2'])->name('keuangan');
     Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
     Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
     Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');   

@@ -260,7 +260,7 @@ class KeuanganController extends Controller
             $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData               = UserRole::where('id', $user->role)->first();
         //!Sistem   
-        $starting       = Carbon::createFromDate(2023, 12, 1);        
+        $starting               = Carbon::createFromDate(2023, 12, 1);        
         $today                  = Carbon::now();
         $yesterday              = $today->copy()->subDay();
         $usersData              = User::all();
@@ -307,7 +307,7 @@ class KeuanganController extends Controller
         return view('Konten/Keuangan/keuangan', $additionalData);
     }   
 
-    public function test(Request $request)
+    public function keuanganV2(Request $request)
     {
         //Sistem
             //Check Access
@@ -396,9 +396,27 @@ class KeuanganController extends Controller
             $subMenus               = MenuSub::whereIn('id', $accessSubmenus)->get();
             $childSubMenus          = MenuSubsChild::whereIn('id', $accessChildren)->get();
             $roleData               = UserRole::where('id', $user->role)->first();
-        //!Sistem   
-        $transaction            = FinancialTransaction::all();
-        $usersData              = User::all();
+        //!Sistem        
+        $starting                       = Carbon::createFromDate(2023, 12, 1);        
+        $today                          = Carbon::now();
+        $yesterday                      = $today->copy()->subDay();
+        $usersData                      = User::all();
+
+        $incomeToday                    = FinancialTransaction::getTransactionAmount($today);
+        $incomeYesterday                = FinancialTransaction::getTransactionAmount($yesterday);
+        $outcomeToday                   = FinancialTransaction::getOutTransAmount($today);
+        $outcomeYesterday               = FinancialTransaction::getOutTransAmount($yesterday);
+        $topupToday                     = FinancialTransaction::getDayliTopUpAmount($today);
+        $setorToday                     = FinancialTransaction::getDayliSetorKasAmount($today);
+        
+            //Geting Saldo Sisa
+               $incomeForSisa           = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
+               $outcomeForSisa          = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
+               $topupForSisa            = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+               $setorKasForSisa         = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+               $sisaBefore              = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;        
+           //!Geting Saldo Sisa
+
             $additionalData = [
                 'title'                     => 'Bisnis',
                 'subtitle'                  => 'Keuangan',
@@ -409,7 +427,16 @@ class KeuanganController extends Controller
                 'subMenus'                  => $subMenus,
                 'childSubMenus'             => $childSubMenus,
                 
-                'transaction'               => $transaction,
+                //Widget Data
+                    'incomeToday'           => $incomeToday,
+                    'sisaBefore'            => $sisaBefore,   
+                    'incomeYesterday'       => $incomeYesterday,   
+                    'outcomeToday'          => $outcomeToday,   
+                    'outcomeYesterday'      => $outcomeYesterday,   
+                    'topupToday'            => $topupToday,   
+                    'setorToday'            => $setorToday,   
+                //!Widget Data
+                  
 
                 ]
             ;
