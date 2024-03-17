@@ -47,18 +47,20 @@ $(function () {
     });
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-      var referenceValue = referenceInput.val().trim().toUpperCase(); // Trim and convert to uppercase for case-insensitive search
-      var referenceData = data[1].toUpperCase(); // Assuming reference column index is 0
+        var referenceValue = referenceInput.val().trim().toUpperCase(); // Trim and convert to uppercase for case-insensitive search
+        var referenceData = data[1].toUpperCase(); // Assuming reference column index is 0
 
-      if (referenceValue !== '') {
-          return referenceData.includes(referenceValue);
-      }
-      return true;
-  });
+        if (referenceValue !== '') {
+            return referenceData.includes(referenceValue);
+        }
+        return true;
+    });
 
     // DataTable initialization for advanced filter
     var dt_adv_filter = dt_adv_filter_table.DataTable({
-        dom: "<'row'<'col-sm-12'tr>><'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6 dataTables_pager'p>>",
+        dom: "<'row'<'col-sm-6'<'btn-add-container'>><'col-sm-6'>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-6'i><'col-sm-6'p>>",
         ajax: {
             url: '/getDataKeuangan',
             dataSrc: 'data'
@@ -69,7 +71,24 @@ $(function () {
             { data: 'amount', title: 'AMOUNT', render: function (data, type, full, meta) { return renderAmount(full); } },
             { data: 'status', title: 'STATUS', render: function (data, type, full, meta) { return renderStatus(full); } },
             { data: 'description', title: 'DESKRIPSI' },
-            { data: 'start_date', title: 'Date', className: 'text-center' }
+            { data: 'start_date', title: 'Date', className: 'text-center' },
+            { 
+                data: null,
+                title: 'Action',
+                render: function (data, type, full, meta) {
+                    var id = full.id;
+                    return (
+                        '<div class="d-flex align-items-center">' +
+                        '<a href="#" class="text-body edit-transaction-btn" data-transaction-id="' + id + '" data-bs-toggle="modal" data-bs-target="#editTransactionModal">' +
+                        '<i class="bx bxs-message-square-edit mx-1"></i>' +
+                        '</a>' +
+                        '<a href="#" class="text-body" onclick="return confirmDelete(\'/delete/trans?id=' + id + '\')">' +
+                        '<i class="bx bx-trash mx-1"></i>' +
+                        '</a>' +
+                        '</div>'
+                    );
+                }
+            }
         ],
         orderCellsTop: true,
         responsive: {
@@ -87,17 +106,30 @@ $(function () {
             }
         },
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
-        pageLength: 10
+        pageLength: 10,
+        initComplete: function () {
+            $('.btn-add-container').html('<button type="button" class="btn btn-primary mx-4 mb-3" id="addNewTransactionBtn"><i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah</span></button><button type="button" class="btn btn-success mx-2 mb-3" id="sendReportBtn"><i class="bx bx-send"></i> Kirim</button>');
+            
+            $('#addNewTransactionBtn').on('click', function () {
+                $('#addNewTransactionModal').modal('show');
+            });
+        
+            $('#sendReportBtn').on('click', function () {
+                $('#sendReportModal').modal('show');
+            });
+        }
+        
+                
     });
 
     referenceInput.on('input', function () {
-      filterTableByReference();
-  });
+        filterTableByReference();
+    });
 
-  // Function to trigger table redraw on reference input change
-  function filterTableByReference() {
-      dt_adv_filter_table.DataTable().draw();
-  }
+    // Function to trigger table redraw on reference input change
+    function filterTableByReference() {
+        dt_adv_filter_table.DataTable().draw();
+    }
 
     // Event listener for status filter
     $('select.dt-status-filter').on('change', function () {
@@ -128,7 +160,7 @@ $(function () {
     // Function to render status with badge
     function renderStatus(full) {
         var status = full.status;
-        
+
         if (status == 1 || status == 2 || status == 3) {
             return '<div class="text-center"><span class="badge bg-label-primary">Invoice</span></div>';
         } else if (status == 4) {
@@ -149,3 +181,100 @@ $(function () {
     }
 
 });
+
+function confirmDelete(deleteUrl) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If user confirms, proceed with the delete action
+            window.location.href = deleteUrl;
+        }
+    });
+    return false; 
+  }
+
+$(document).on('click', '.edit-transaction-btn', function() {
+    var transactionId = $(this).data('transaction-id');
+    
+    // Mengambil data transaksi berdasarkan ID menggunakan AJAX
+    $.ajax({
+        url: '/getDataKeuanganById/' + transactionId,
+        method: 'GET',
+        success: function(response) {
+            if (response) {
+                $('#transactionDate').val(response.start_date);
+                
+                // Mengambil nilai amount dari response
+                var amountValue = response.amount;
+
+                // Mengkonversi nilai amount menjadi format uang dengan mata uang IDR
+                var formattedAmount = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR'
+                }).format(amountValue);
+
+                // Menghapus simbol "Rp." dan desimal "00" di belakang
+                formattedAmount = formattedAmount.replace('Rp', '').replace(',00', '');
+
+                // Memasukkan nilai yang diformat ke dalam input
+                $('#amount').val(formattedAmount);
+
+                $('#id').val(response.id);
+                $('#invoice_number').val(response.reference_number);
+                
+                // Menampilkan modal
+                $('#editTransactionModal').modal('show');
+
+                // Mengatur teks untuk ID dan nomor referensi
+                $('#transactionId').text(response.id);
+                $('#referenceNumber').text(response.reference_number);
+            } else {
+                console.error("Data transaksi tidak ditemukan dalam respons.");
+                alert('Terjadi kesalahan saat memuat data transaksi.');
+            }
+        },
+        error: function(xhr, status, error) {
+            // Menangani kesalahan jika terjadi
+            console.error(error);
+            alert('Terjadi kesalahan saat memuat data transaksi.');
+        }
+    });
+});
+
+// Menambahkan event listener untuk input amount
+$('#amount').on('input', function() {
+    formatCurrency(this); // Memformat nilai amount setiap kali input berubah
+});
+
+function formatCurrency(input) {
+    // Menghapus semua karakter selain angka
+    var numericValue = $(input).val().replace(/[^\d]/g, '');
+
+    // Menghapus digit nol di belakang jika ada
+    var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');
+
+    // Jika nilai kosong, kembalikan nilai kosong
+    if (trimmedValue === '') {
+        $(input).val('');
+        return;
+    }
+
+    // Set the formatted value to the specified input field
+    $(input).val(trimmedValue);
+}
+
+
+function showSweetAlert(response) {
+    Swal.fire({
+        icon: response.success ? 'success' : 'error',
+        title: response.title,   
+        text: response.message,
+    });
+  }

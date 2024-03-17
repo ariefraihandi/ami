@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-<div class="container-xxl flex-grow-1 container-p-y">
+  <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="py-3 mb-4"><span class="text-muted fw-light">DataTables /</span> Advanced</h4>
     <!-- Advanced Search -->
     <div class="card">     
@@ -30,8 +30,6 @@
                         placeholder="No Invoice/Reference"
                         data-column-index="0" />
                 </div>
-                
-       
                 <div class="col-12 col-sm-6 col-lg-4">
                     <label class="form-label">Date:</label>
                     <div class="mb-0">
@@ -70,13 +68,12 @@
                         <!-- Tambahkan opsi lainnya sesuai dengan status yang ada -->
                     </select>
                 </div>
-                
               </div>
             </div>
           </div>
         </form>
       </div>
-      <hr class="mt-0" />
+      <hr class="mt-0" />        
       <div class="card-datatable table-responsive">
         <table class="dt-advanced-search table border-top">
           <thead>
@@ -87,6 +84,7 @@
                 <th style="text-align: center; width: 15%;">STATUS</th>
                 <th style="text-align: center; width: 25%;">DESKRIPSI</th>
                 <th style="text-align: center; width: 15%;">DATE</th>                
+                <th style="text-align: center; width: 15%;">Action</th>                
             </tr>
           </thead>
         </table>
@@ -94,7 +92,38 @@
     </div>
     <!--/ Advanced Search -->
   </div>
-  <!-- / Content -->
+<!-- Modal -->
+<div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
+    <div class="modal-content p-3 p-md-5">
+      <div class="modal-body">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="text-center mb-4">
+          <h3>Edit Transaction</h3>
+          <p>Transaction ID: <span id="transactionId"></span> | Reference Number: <span id="referenceNumber"></span></p>
+        </div>
+          <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
+            @csrf
+            <div class="col-12">
+              <label class="form-label" for="transactionDate">Transaction Date</label>
+              <input type="date" class="form-control" id="transactionDate" name="transactionDate">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="amount">Jumlah</label>
+              <input type="text" class="form-control" id="amount" name="amount">
+            </div>
+            <input type="hidden" class="form-control" id="invoice_number" name="invoice_number">
+            <input type="hidden" class="form-control" id="id" name="id">                         
+            <div class="col-12 text-center">
+              <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
+              <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+            </div>
+          </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 @endsection
 
