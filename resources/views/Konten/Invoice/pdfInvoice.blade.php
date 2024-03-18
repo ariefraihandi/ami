@@ -101,8 +101,9 @@
                 <thead style="background-color: #BA0000; color: #E8B014;">
                     <tr>
                         <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 5%;">NO</th>
-                        <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 30%;">DESKRIPSI</th>
+                        <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 20%;">DESKRIPSI</th>
                         <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 15%;">UKURAN</th>
+                        <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 10%;">VOLUME</th>
                         <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 10%;">JUMLAH</th>
                         <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 15%;">SATUAN</th>
                         <th style="border: 1px solid black; text-align: center; font-size: 12px; width: 25%;">SUBTOTAL</th>
@@ -118,6 +119,7 @@
                         <tr>
                             <td style="border: 1px solid black; text-align: center; font-size: 12px;">{{ $no++ }}</td>
                             <td style="border: 1px solid black; font-size: 12px;">{{ $item->deskripsi }}</td>
+                            <td style="border: 1px solid black; text-align: center; font-size: 12px;">{{ $item->ukurana/100 }} x {{ $item->ukuranb/100 }} m<sup>2</sup></td>
                             <td style="border: 1px solid black; text-align: center; font-size: 12px;">{{ $item->ukuran }} m<sup>2</sup></td>
                             <td style="border: 1px solid black; text-align: center; font-size: 12px;">{{ $item->qty }}</td>
                             <td style="border: 1px solid black; font-size: 12px;">Rp. {{ number_format($item->harga_satuan) }}</td>
@@ -127,36 +129,36 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 15px;">TOTAL:</td>
+                        <td colspan="6" style="border: 1px solid black; text-align: right; font-size: 15px;">TOTAL:</td>
                         <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$totas}}</strong></td>
                     </tr>
                     @if ($discount != 'Rp. 0,-')
                         <tr>
-                            <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 14px;">DISCOUNT:</td>
+                            <td colspan="6" style="border: 1px solid black; text-align: right; font-size: 14px;">DISCOUNT:</td>
                             <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$discount}}</strong></td>
                         </tr>
                     @endif
                     @if ($tax != '0%')
                         <tr>
-                            <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 14px;">PAJAK:</td>
+                            <td colspan="6" style="border: 1px solid black; text-align: right; font-size: 14px;">PAJAK:</td>
                             <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$tax}}</strong></td>
                         </tr>
                     @endif                       
                     @if ($panjar_amount != 'Rp. 0,-')
                         <tr>
-                            <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 14px;">SUDAH BAYAR:</td>
+                            <td colspan="6" style="border: 1px solid black; text-align: right; font-size: 14px;">SUDAH BAYAR:</td>
                             <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 15px;"><strong>{{$panjar_amount}}</strong></td>
                         </tr>
                     @endif                                       
                     <tr>
-                        <td colspan="5" style="border: 1px solid black; text-align: right; font-size: 16px;">SISA:</td>
+                        <td colspan="6" style="border: 1px solid black; text-align: right; font-size: 16px;">SISA:</td>
                         <td colspan="1" style="border: 1px solid black; background-color: #BA0000; color: #ffffff; font-size: 16px;"><strong>{{$total}}</strong></td>
                     </tr>
                 </tfoot>
                 <tfoot>
                     <!-- Footer tabel di sini -->
                     <tr>
-                        <td colspan="6" style="font-size: 12px; text-align: center;">
+                        <td colspan="7" style="font-size: 12px; text-align: center;">
                             *Mohon diperhatikan, kami tidak menyediakan layanan tukar atau pengembalian. Kami berharap produk ini memenuhi harapan Anda. Selamat menikmati pembelian Anda!
                         </td>
                     </tr>

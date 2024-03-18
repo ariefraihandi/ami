@@ -36,6 +36,8 @@ class ReportController extends Controller
                 $startDate = Carbon::today()->startOfDay();
                 $endDate = Carbon::today()->endOfDay();
                 $title = 'Harian';
+                $starting       = Carbon::createFromDate(2023, 12, 1);
+                $yesterday      = $startDate->copy()->subDay();
                 break;
                 case 'weekly':
                     // Tentukan rentang tanggal mingguan
@@ -71,6 +73,16 @@ class ReportController extends Controller
         $setoranKas         = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])->where(function ($query) {$query->whereIn('status', [6]);})->sum('transaction_amount');
         $topupKas           = FinancialTransaction::whereBetween('transaction_date', [$startDate, $endDate])->where(function ($query) {$query->whereIn('status', [7]);})->sum('transaction_amount');
         
+        //Geting Saldo Sisa
+            $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
+            $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
+            $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+            $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+            $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;          
+        //!Geting Saldo Sisa
+
+        $sisaHariIni        = $sisaBefore+$totalPanjarAmount+$topupKas-$totalOutcomeAmount-$setoranKas;
+
         // dd($startDate, $endDate, $title, $totalPanjarAmount);
         $startDateFormatted = urlencode($startDate->format('Y-m-d'));
         $endDateFormatted = urlencode($endDate->format('Y-m-d'));
@@ -86,8 +98,9 @@ class ReportController extends Controller
         $message           .= '*Keuangan:*' . "\n";
         $message           .= 'Pemasukan: *Rp.' . number_format($totalPanjarAmount, 0, ',', '.') . ',-*' . "\n";
         $message           .= 'Pengeluaran: *Rp.' . number_format($totalOutcomeAmount, 0, ',', '.') . ',-*' . "\n";
-        $message           .= 'Setoran Kas: *Rp.' . number_format($setoranKas, 0, ',', '.') . ',-*' . "\n";
         $message           .= 'Top Up Kas: *Rp.' . number_format($topupKas, 0, ',', '.') . ',-*' . "\n";
+        $message           .= 'Setoran Kas: *Rp.' . number_format($setoranKas, 0, ',', '.') . ',-*' . "\n\n";
+        $message           .= 'Sisa Kas: *Rp.' . number_format($sisaHariIni, 0, ',', '.') . ',-*' . "\n";
         $message           .= "\nDownload Laporan:\n";
         $message           .= "*$baseUrl/report/?startDate=$startDateFormatted&endDate=$endDateFormatted*\n";
         $message           .= "\n*Laporan Dikirim Secara Semi Otomatis*\n";
