@@ -104,7 +104,7 @@
                                 @endif
                                 <td style="width: 25%;">
                                     {{ $data->invoice_name }}<br>
-                                    <a href="{{ url('/print/' . $data->reference_number) }}" target="_blank">#{{ $data->reference_number }}</a>
+                                    <a href="{{ url('/print/' . $data->invoice_number ) }}" target="_blank">#{{ $data->invoice_number  }}</a>
                                 </td>
                                 <td style="width: 20%;">
                                     @php                           
