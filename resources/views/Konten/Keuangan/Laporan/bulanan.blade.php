@@ -95,13 +95,12 @@
                     <tr>
                         @if($rowCount > 0)
                             @foreach($invoicesOnDate as $index => $data)
-                                @if($index == 0)
-                                    <td rowspan="{{ $rowCount }}" style="width: 15%; text-align: center;">
-                                        <a href="{{ url('/report/?startDate=' . $date['start']->format('Y-m-d') . '&endDate=' . $date['end']->format('Y-m-d')) }}">
-                                            {{ $date['start']->format('d-m-Y') }}
-                                        </a>
-                                    </td>
-                                @endif
+                              
+                                <td style="width: 15%; text-align: center;">
+                                    <a href="{{ url('/report/?startDate=' . $date['start']->format('Y-m-d') . '&endDate=' . $date['end']->format('Y-m-d')) }}">
+                                        {{ $date['start']->format('d-m-Y') }}
+                                    </a>
+                                </td>
                                 <td style="width: 25%;">
                                     {{ $data->invoice_name }}<br>
                                     <a href="{{ url('/print/' . $data->invoice_number ) }}" target="_blank">#{{ $data->invoice_number  }}</a>
