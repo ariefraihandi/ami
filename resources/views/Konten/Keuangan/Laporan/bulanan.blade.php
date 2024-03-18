@@ -20,6 +20,10 @@
             padding: 8px;
             text-align: left;
         }
+        td[rowspan] {
+    page-break-inside: avoid;
+}
+
         th {
             /* background-color: #f2f2f2; */
         }
