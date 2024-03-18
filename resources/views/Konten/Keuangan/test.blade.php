@@ -198,139 +198,139 @@
     <!--/ Advanced Search -->
   </div>
 
-<!-- Add New Transaction -->
-<div class="modal fade" id="addNewTransactionModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
-    <div class="modal-content p-3 p-md-5">
-      <div class="modal-body">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <div class="text-center mb-4">
-          <h3>Add New Transaction</h3>
-          <p>Add new transaction details</p>
-        </div>
-        <form id="addNewTransactionForm" class="row g-3" action="{{ route('addNewTransaction') }}" method="POST">
-          @csrf
-          <div class="col-12">
-            <label class="form-label" for="transactionAmount">Transaction Amount</label>
-            <div class="input-group input-group-merge">
-                <span class="input-group-text">Rp.</span>
-                <input type="text" class="form-control" id="transactionAmount" name="transactionAmount" placeholder="Transaction Amount" oninput="formatCurrency(this)" />
-                <span class="input-group-text">.00</span>
-            </div>
-          </div>  
-          <div class="col-12">
-              <label class="form-label" for="description">Description</label>
-              <textarea id="description" name="description" class="form-control" placeholder="Description"></textarea>
-          </div>
-          <div class="col-12">
-              <label class="form-label" for="paymentMethod">Payment Method</label>
-              <select id="paymentMethod" name="paymentMethod" class="form-select">
-                  <option value="Cash">Cash</option>
-                  <option value="Transfer">Transfer</option>
-              </select>
-          </div>
-          <div class="col-12">
-            <label class="form-label" for="status">Status</label>
-            <select id="status" name="status" class="form-select" onchange="showKaryawanSelect()">
-                <option value="4">Operational</option>
-                <option value="5">Ambilan</option>
-                <option value="8">Bonus</option>
-                <option value="6">Setoran Kas</option>
-                <option value="7">Top Up</option>
-            </select>
-          </div>
-          
-          <div id="karyawanSelectDiv" style="display: none;">
-            <label class="form-label" for="karyawan">Karyawan</label>
-            <select id="karyawan" name="karyawan" class="form-select">
-                <?php foreach ($usersData as $item): ?>
-                    <option value="<?= $item->id ?>"><?= $item->name ?></option>
-                <?php endforeach; ?>
-            </select>
-          </div>
-       
-          <div class="col-12">
-              <label class="form-label" for="transactionDate">Transaction Date</label>
-              <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="<?= date('Y-m-d') ?>" />
-          </div>
-          <div class="col-12">            
-            <input type="checkbox" id="lunas" name="lunas" checked>
-            <label for="lunas"> Lunas</label>
-        </div>
-          <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3" onclick="submitTransaction()">Submit</button>
-              <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
-          </div>
-        </form>
-      
-      </div>
-    </div>
-  </div>
-</div>
-<!--/ Add New Transaction -->
-
-<!-- Send Report -->
-<div class="modal fade" id="sendReportModal" tabindex="-1" aria-labelledby="sendReportModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="sendReportModalLabel">Send Report</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form action="{{ route('send.report') }}" method="POST">
-        @csrf <!-- Tambahkan CSRF token untuk keamanan -->
+  <!-- Add New Transaction -->
+  <div class="modal fade" id="addNewTransactionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
+      <div class="modal-content p-3 p-md-5">
         <div class="modal-body">
-          <p>Select report type:</p>
-          <select id="reportType" name="reportType" class="form-select mb-3">
-            <option value="daily">Harian</option>
-            <option value="weekly">Mingguan</option>
-            <option value="monthly">Bulanan</option>
-            <option value="yearly">Tahunan</option>
-          </select>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Send</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<!--/ Send Report -->
-
-<!--Edit Transaction -->
-<div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
-    <div class="modal-content p-3 p-md-5">
-      <div class="modal-body">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        <div class="text-center mb-4">
-          <h3>Edit Transaction</h3>
-          <p>Transaction ID: <span id="transactionId"></span> | Reference Number: <span id="referenceNumber"></span></p>
-        </div>
-          <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="text-center mb-4">
+            <h3>Add New Transaction</h3>
+            <p>Add new transaction details</p>
+          </div>
+          <form id="addNewTransactionForm" class="row g-3" action="{{ route('addNewTransaction') }}" method="POST">
             @csrf
             <div class="col-12">
-              <label class="form-label" for="transactionDate">Transaction Date</label>
-              <input type="date" class="form-control" id="transactionDate" name="transactionDate">
+              <label class="form-label" for="transactionAmount">Transaction Amount</label>
+              <div class="input-group input-group-merge">
+                  <span class="input-group-text">Rp.</span>
+                  <input type="text" class="form-control" id="transactionAmount" name="transactionAmount" placeholder="Transaction Amount" oninput="formatCurrency(this)" />
+                  <span class="input-group-text">.00</span>
+              </div>
+            </div>  
+            <div class="col-12">
+                <label class="form-label" for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" placeholder="Description"></textarea>
             </div>
             <div class="col-12">
-              <label class="form-label" for="amount">Jumlah</label>
-              <input type="text" class="form-control" id="amount" name="amount">
+                <label class="form-label" for="paymentMethod">Payment Method</label>
+                <select id="paymentMethod" name="paymentMethod" class="form-select">
+                    <option value="Cash">Cash</option>
+                    <option value="Transfer">Transfer</option>
+                </select>
             </div>
-            <input type="hidden" class="form-control" id="invoice_number" name="invoice_number">
-            <input type="hidden" class="form-control" id="id" name="id">                         
+            <div class="col-12">
+              <label class="form-label" for="status">Status</label>
+              <select id="status" name="status" class="form-select" onchange="showKaryawanSelect()">
+                  <option value="4">Operational</option>
+                  <option value="5">Ambilan</option>
+                  <option value="8">Bonus</option>
+                  <option value="6">Setoran Kas</option>
+                  <option value="7">Top Up</option>
+              </select>
+            </div>
+            
+            <div id="karyawanSelectDiv" style="display: none;">
+              <label class="form-label" for="karyawan">Karyawan</label>
+              <select id="karyawan" name="karyawan" class="form-select">
+                  <?php foreach ($usersData as $item): ?>
+                      <option value="<?= $item->id ?>"><?= $item->name ?></option>
+                  <?php endforeach; ?>
+              </select>
+            </div>
+        
+            <div class="col-12">
+                <label class="form-label" for="transactionDate">Transaction Date</label>
+                <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="<?= date('Y-m-d') ?>" />
+            </div>
+            <div class="col-12">            
+              <input type="checkbox" id="lunas" name="lunas" checked>
+              <label for="lunas"> Lunas</label>
+          </div>
             <div class="col-12 text-center">
-              <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
-              <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3" onclick="submitTransaction()">Submit</button>
+                <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
             </div>
           </form>
+        
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!--/ Edit Transaction -->
+  <!--/ Add New Transaction -->
 
+  <!-- Send Report -->
+  <div class="modal fade" id="sendReportModal" tabindex="-1" aria-labelledby="sendReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sendReportModalLabel">Send Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{{ route('send.report') }}" method="POST">
+          @csrf <!-- Tambahkan CSRF token untuk keamanan -->
+          <div class="modal-body">
+            <p>Select report type:</p>
+            <select id="reportType" name="reportType" class="form-select mb-3">
+              <option value="daily">Harian</option>
+              {{-- <option value="weekly">Mingguan</option>
+              <option value="monthly">Bulanan</option>
+              <option value="yearly">Tahunan</option> --}}
+            </select>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--/ Send Report -->
+
+  <!--Edit Transaction -->
+  <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-transaction">
+      <div class="modal-content p-3 p-md-5">
+        <div class="modal-body">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="text-center mb-4">
+            <h3>Edit Transaction</h3>
+            <p>Transaction ID: <span id="transactionId"></span> | Reference Number: <span id="referenceNumber"></span></p>
+          </div>
+            <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
+              @csrf
+              <div class="col-12">
+                <label class="form-label" for="tanggalTransaksi">Transaction Date</label>
+                <input type="date" class="form-control" id="tanggalTransaksi" name="tanggalTransaksi">
+            </div>
+            
+              <div class="col-12">
+                <label class="form-label" for="amount">Jumlah</label>
+                <input type="text" class="form-control" id="amount" name="amount">
+              </div>
+              <input type="hidden" class="form-control" id="invoice_number" name="invoice_number">
+              <input type="hidden" class="form-control" id="id" name="id">                         
+              <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
+                <button type="reset" class="btn btn-label-secondary btn-reset mt-3" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Edit Transaction -->
 
 @endsection
 

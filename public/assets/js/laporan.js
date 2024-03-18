@@ -197,11 +197,12 @@ function reloadPageWithNewDates() {
         height: 280,
         type: 'donut'
       },
-      labels: ['Pengeluaran', 'Margin'],
-      series: [outcomeTotal, income],
+      labels: ['Sisa Kas', 'Setoran Kas', 'Pengeluaran'],
+      series: [sisakas, saldoKas, outcomeTotal],
       colors: [
-        chartColors.donutB.series4,
-        chartColors.donutB.series1
+        chartColors.donutB.series2,
+        chartColors.donutB.series5,
+        chartColors.donutB.series4
       ],
       stroke: {
         show: false,
@@ -247,7 +248,7 @@ function reloadPageWithNewDates() {
                 show: true,
                 fontSize: '0.8rem',
                 color: headingColor,
-                label: 'Income',
+                label: 'Income + Sisa',
                 formatter: function (w) {
                   return 'Rp ' + parseInt(pemasukan, 10).toLocaleString('id-ID');                  
                 }
@@ -300,7 +301,7 @@ function reloadPageWithNewDates() {
               position: 'bottom',
               labels: {
                 colors: legendColor,
-                useSeriesColors: false
+                useSeriesColors: true
               }
             }
           }

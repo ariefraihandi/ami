@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class FinancialTransaction extends Model
 {
@@ -21,6 +22,22 @@ class FinancialTransaction extends Model
         'status',
         'lunas',
     ];
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'reference_number', 'invoice_number');
+    }
+
+    public static function getIncomeForReport($startDate, $endDate)
+    {
+        return self::join('invoices', 'financial_transactions.reference_number', '=', 'invoices.invoice_number')
+            ->whereBetween('financial_transactions.transaction_date', [$startDate, $endDate])
+            ->whereIn('financial_transactions.status', [1, 2, 3])
+            ->select('financial_transactions.*', 'invoices.customer_uuid', 'invoices.invoice_name', 'invoices.type', 'invoices.status', 'invoices.total_amount', 'invoices.panjar_amount', 'invoices.due_date')
+            ->get();
+    }
+    
+    
 //Sum
     public static function getTransactionAmount($date)
     {
@@ -95,7 +112,6 @@ class FinancialTransaction extends Model
 
         return $margin;
     }
-
 //!Sum 
 
     public static function getIncomeByRange($startDate, $endDate)
@@ -104,17 +120,23 @@ class FinancialTransaction extends Model
                 ->whereIn('status', [1, 2, 3])
                 ->get();
     }
-
+  
+    public static function getOutcomeByRange($startDate, $endDate)
+    {
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
+                ->whereIn('status', [4, 5])
+                ->get();
+    }
 
     public static function getSetor($startDate, $endDate)
     {
-        return self::whereBetween('created_at', [$startDate, $endDate])
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
                 ->whereIn('status', [6])
                 ->get(); 
     }
     public static function getTopup($startDate, $endDate)
     {
-        return self::whereBetween('created_at', [$startDate, $endDate])
+        return self::whereBetween('transaction_date', [$startDate, $endDate])
                 ->whereIn('status', [7])
                 ->get(); 
     }

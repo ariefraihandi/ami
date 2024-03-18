@@ -209,7 +209,7 @@ $(document).on('click', '.edit-transaction-btn', function() {
         method: 'GET',
         success: function(response) {
             if (response) {
-                $('#transactionDate').val(response.start_date);
+                $('#tanggalTransaksi').val(response.start_date);
                 
                 // Mengambil nilai amount dari response
                 var amountValue = response.amount;
@@ -254,17 +254,16 @@ $('#amount').on('input', function() {
 });
 
 
-   function showKaryawanSelect() {
-    var statusSelect = document.getElementById("status");
-    var karyawanSelectDiv = document.getElementById("karyawanSelectDiv");
-  
-    if (statusSelect.value === "5" || statusSelect.value === "8") {
-        karyawanSelectDiv.style.display = "block";
-    } else {
-        karyawanSelectDiv.style.display = "none";
-    }
-  }
+function showKaryawanSelect() {
+  var statusSelect = document.getElementById("status");
+  var karyawanSelectDiv = document.getElementById("karyawanSelectDiv");
 
+  if (statusSelect.value === "5" || statusSelect.value === "8") {
+      karyawanSelectDiv.style.display = "block";
+  } else {
+      karyawanSelectDiv.style.display = "none";
+  }
+}
     function formatCurrency(input) {
         var numericValue = $(input).val().replace(/[^\d]/g, '');
         var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');

@@ -132,13 +132,74 @@ class DownloadController extends Controller
 
             if ($diffInDays == 0) {
                 $jenis          = 'Harian';
+                $starting       = Carbon::createFromDate(2023, 12, 1);
+                $yesterday      = $startDate->copy()->subDay();
                 $dayName        = $this->getIndonesianDayName($startDate);
                 $tanggal        = $startDate->translatedFormat('d F Y');
+                $kopSuratImage  = public_path('assets/img/report/kop.png');   
+                $bgImage        = public_path('assets/img/report/bg-report.png');         
+                $coverLaporan   = public_path('assets/img/report/cover-laporan.png');  
+
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
-                $incomeData     = FinancialTransaction::getIncomeByRange($startDate, $endDate);
+                $incomeData     = FinancialTransaction::getIncomeForReport($startDate, $endDate);
+                $sumIncome      = FinancialTransaction::getIncomeForReport($startDate, $endDate)->sum('transaction_amount');
+                $outcomeData    = FinancialTransaction::getOutcomeByRange($startDate, $endDate);
+                $sumOutcome     = FinancialTransaction::getOutcomeByRange($startDate, $endDate)->sum('transaction_amount');
+                $topupData      = FinancialTransaction::getTopup($startDate, $endDate);
+                $sumTopup       = FinancialTransaction::getTopup($startDate, $endDate)->sum('transaction_amount');
+                $setorData      = FinancialTransaction::getSetor($startDate, $endDate);
+                $sumSetor       = FinancialTransaction::getSetor($startDate, $endDate)->sum('transaction_amount');
+
+                //Geting Saldo Sisa
+                    $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
+                    $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
+                    $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+                    $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+                    $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;          
+                //!Geting Saldo Sisa
+
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
                 $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
-                $invoiceBon     = Invoice::getBon($startDate, $endDate);                
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);        
+                $view           ='harian';     
+                // dd($sisaBefore);
+                $data = [
+                    //Config
+                        'title'             => 'Laporan ' . $jenis,
+                        'subtitle'          => 'Pdf',
+                        'jenis'             => $jenis,
+                        'dayName'           => $dayName,
+                        'tanggal'           => $tanggal,
+                        
+                        'coverLaporan'      => $coverLaporan,
+                        'bgImage'           => $bgImage,
+                        'kopSuratImage'     => $kopSuratImage,
+                    //!Config
+                    //Invoice    
+                        'invoiceData'       => $invoiceData,
+                        'invoiceTot'        => $invoiceTot,
+                        'invoicePan'        => $invoicePan,
+                        'invoiceBon'        => $invoiceBon,
+                    //!Invoice    
+                    //Income
+                        'incomeData'        => $incomeData,
+                        'sumIncome'         => $sumIncome,
+                    //!Income
+                    //Outcome
+                        'outcomeData'       => $outcomeData,
+                        'sumOutcome'        => $sumOutcome,
+                    //!Outcome
+                    //Topup
+                        'topupData'         => $topupData,
+                        'sumTopup'          => $sumTopup,
+                    //!Topup
+                    //Setor
+                        'setorData'         => $setorData,
+                        'sumSetor'          => $sumSetor,
+                    //!Setor
+                        'sisaBefore'          => $sisaBefore,
+                ];   
+             
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
                 $jenis          = 'Mingguan';
                 $dayName        = '';
@@ -183,7 +244,7 @@ class DownloadController extends Controller
             $coverLaporan      = public_path('assets/img/report/cover-laporan.png');  
 
             if ($jenis !== '') {
-                $data = [
+                $datdaa = [
                     //Config
                         'title'             => 'Laporan ' . $jenis,
                         'subtitle'          => 'Pdf',
@@ -199,10 +260,12 @@ class DownloadController extends Controller
                         'invoiceTot'        => $invoiceTot,
                         'invoicePan'        => $invoicePan,
                         'invoiceBon'        => $invoiceBon,
+                        
+                        'incomeData'        => $incomeData,
+
                     //!Config
                 ];
-
-                $pdf = PDF::loadView('Konten.Keuangan.anu', $data);
+                $pdf = PDF::loadView("Konten.Keuangan.Laporan.$view", $data);                
                 return $pdf->stream('Laporan.pdf');
             }
         } catch (\Exception $e) {

@@ -666,14 +666,15 @@
       var totalInvoicesPJ = {{$totalInvoicesPJ}};
       var invoicesLN      = {{$invoicesLN}};
       
-      var pemasukan       = {{$incomeTotal}};
+      var pemasukan       = {{$incomeTotal+$sisaBefore}};
       var income          = {{$incomeTotal-$outcomeTotal}};
       var outcomeTotal    = {{$outcomeTotal}};
       // $topup
       var hutangCustumer  = {{$hutangCustumer}};
       var saldoKas        = {{$saldoKas}};
+      var sisakas        = {{$sisaBefore+$incomeTotal+$topup-$outcomeTotal-$saldoKas}};
       
-    </script>
+    </script>     
     <script src="{{ asset('assets') }}/js/laporan.js"></script>
     <script>         
         @if(session('response'))

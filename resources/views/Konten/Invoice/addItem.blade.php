@@ -530,8 +530,8 @@
           <form id="addNewTransactionForm" class="row g-3" action="{{ route('editTransaction') }}" method="POST">
             @csrf
             <div class="col-12">
-              <label class="form-label" for="transactionDate">Transaction Date</label>
-              <input type="date" id="transactionDate" name="transactionDate" class="form-control" value="{{ \Carbon\Carbon::parse($item->transaction_date)->format('Y-m-d') }}" />
+              <label class="form-label" for="tanggalTransaksi">Transaction Date</label>
+              <input type="date" id="tanggalTransaksi" name="tanggalTransaksi" class="form-control" value="{{ \Carbon\Carbon::parse($item->transaction_date)->format('Y-m-d') }}" />
             </div>
             <div class="col-12">
               <label class="form-label" for="amount">Jumlah</label>

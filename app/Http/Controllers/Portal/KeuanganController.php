@@ -556,7 +556,7 @@ class KeuanganController extends Controller
 
         // dd($request);
         $request->validate([
-            'transactionDate' => 'required|date',
+            'tanggalTransaksi' => 'required|date',
             'id' => 'required|exists:financial_transactions,id',
         ]);
 
@@ -565,7 +565,7 @@ class KeuanganController extends Controller
             $transaction = FinancialTransaction::findOrFail($request->input('id'));
             $amount = $this->cleanNumericInput($request->input('amount'));
             $transaction->update([
-                'transaction_date' => $request->input('transactionDate'),
+                'transaction_date' => $request->input('tanggalTransaksi'),
                 'transaction_amount' => $amount,
             ]);
 // dd($amount, $request->input('transactionDate'));
@@ -869,7 +869,7 @@ class KeuanganController extends Controller
             'outcomeTotal'      => $outcomeTotal,
             'topup'             => $topup,
             'saldoKas'          => $setorKas,
-            'sisaBefore'          => $sisaBefore,            
+            'sisaBefore'        => $sisaBefore,            
             'hutangCustumer'    => $hutangCustumer,
 
         ];
