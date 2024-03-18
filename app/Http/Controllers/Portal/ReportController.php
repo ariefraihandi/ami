@@ -49,6 +49,8 @@ class ReportController extends Controller
                 $startDate = Carbon::now()->startOfMonth()->startOfDay();
                 $endDate = Carbon::now()->endOfMonth()->endOfDay();
                 $title = 'Bulanan';
+                $starting       = Carbon::createFromDate(2023, 12, 1);
+                $yesterday      = $startDate->copy()->subDay();
                 break;
             case 'yearly':
                 $startDate = Carbon::now()->startOfYear()->startOfDay();

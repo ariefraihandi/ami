@@ -85,13 +85,13 @@
             <tbody style="font-size: 11px;">
                 @foreach($dates as $date)
                     @php
-                        $invoicesOnDate = $invoiceData->where('created_at', '>=', $date->startOfDay())->where('created_at', '<=', $date->endOfDay());
-                        $rowCount = $invoicesOnDate->count();
+                        $invoicesOnDate = $date['invoiceData']; // Mengambil data invoice untuk tanggal saat ini
+                        $rowCount = count($invoicesOnDate);
                     @endphp
                     <tr>
                         <td rowspan="{{ $rowCount }}" style="width: 15%; text-align: center;">
-                            <a href="{{ url('/report/?startDate=' . $date->format('Y-m-d') . '&endDate=' . $date->format('Y-m-d')) }}">
-                                {{ $date->format('d-m-Y') }}
+                            <a href="{{ url('/report/?startDate=' . $date['start']->format('Y-m-d') . '&endDate=' . $date['end']->format('Y-m-d')) }}">
+                                {{ $date['start']->format('d-m-Y') }}
                             </a>
                         </td>                                   
                         @if($rowCount > 0)
@@ -100,10 +100,12 @@
                                     {{ $data->invoice_name }}<br>
                                     <a href="{{ url('/print/' . $data->invoice_number) }}" target="_blank">{{ $data->invoice_number }}</a>
                                 </td>
-                                @php                           
-                                    $customer = \App\Models\Customer::where('uuid', $data->customer_uuid)->first();
-                                @endphp
-                                <td style="width: 20%;">{{ ucwords($customer->name) }}<br>{{ ucwords($customer->customer_type) }}</td>
+                                <td style="width: 20%;">
+                                    @php                           
+                                        $customer = \App\Models\Customer::where('uuid', $data->customer_uuid)->first();
+                                    @endphp
+                                    {{ ucwords($customer->name) }}<br>{{ ucwords($customer->customer_type) }}
+                                </td>
                                 <td style="width: 10%;">
                                     @if($data->status == 0)
                                         Belum Bayar
@@ -123,7 +125,9 @@
                                         {{ number_format($data->panjar_amount, 0) }},-
                                     @endif
                                 </td>
-                                <td style="width: 10%; text-align: center;">{{ number_format($data->total_amount - $data->panjar_amount, 0) }},-</td>              
+                                <td style="width: 10%; text-align: center;">
+                                    {{ number_format($data->total_amount - $data->panjar_amount, 0) }},-
+                                </td>              
                             </tr>
                             @if($index < $rowCount - 1)
                                 <tr>
@@ -132,9 +136,9 @@
                         @else
                             <td colspan="6" style="text-align: center; background-color: #E8B014; color: #000000;">Tidak ada invoice/Libur</td>
                         @endif
-                    @endforeach
-                </tr>
+                @endforeach
             </tbody>
+            
             <tfoot style="font-size: 13px; background-color: #BA0000; color: #E8B014;">
                 <tr>
                     <td colspan="5" style="text-align: right;"><strong>Sisa Tagihan:</strong></td>                        

@@ -254,7 +254,7 @@ class DownloadController extends Controller
                 $dates          = $this->generateDateRange($startDate, $endDate);
                 $keuangan       = $this->generateDateForkeuangan($startDa, $endDa);
                 $view           ='bulanan';     
-                // dd($keuangan);
+                // dd($dates);
                 $data = [
                     //Config
                         'title'             => 'Laporan ' . $jenis,
@@ -359,14 +359,24 @@ class DownloadController extends Controller
         
     public function generateDateRange(Carbon $start, Carbon $end) {
         $dates = [];
-
+    
         while ($start->lte($end)) {
-            $dates[] = $start->copy();
+            $startDate = $start->copy();
+            $endDate = $start->copy()->endOfDay();
+            $invoiceData = FinancialTransaction::getIncomeForReport($startDate, $endDate);
+    
+            $dates[] = [
+                'start' => $startDate,
+                'end' => $endDate,
+                'invoiceData' => $invoiceData,
+            ];
+    
             $start->addDay();
         }
-
+    
         return $dates;
     }
+    
 
     public function generateDateForkeuangan(Carbon $start, Carbon $end) {
         // Inisialisasi tanggal starting di luar loop
