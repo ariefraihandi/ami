@@ -36,6 +36,16 @@ class FinancialTransaction extends Model
             ->select('financial_transactions.*', 'invoices.customer_uuid', 'invoices.invoice_name', 'invoices.type', 'invoices.status', 'invoices.total_amount', 'invoices.panjar_amount', 'invoices.due_date')
             ->get();
     }
+
+    public static function getIncomeForReportBulanan($startDate, $endDate)
+{
+    return self::join('invoices', 'financial_transactions.reference_number', '=', 'invoices.invoice_number')
+        ->whereBetween('invoices.created_at', [$startDate, $endDate])
+        ->whereIn('financial_transactions.status', [1, 2, 3])
+        ->select('financial_transactions.*', 'invoices.customer_uuid', 'invoices.invoice_name', 'invoices.type', 'invoices.status', 'invoices.total_amount', 'invoices.panjar_amount', 'invoices.due_date')
+        ->get();
+}
+
     
     
 //Sum

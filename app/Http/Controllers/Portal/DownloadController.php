@@ -363,7 +363,7 @@ class DownloadController extends Controller
         while ($start->lte($end)) {
             $startDate = $start->copy();
             $endDate = $start->copy()->endOfDay();
-            $invoiceData = FinancialTransaction::getIncomeForReport($startDate, $endDate);
+            $invoiceData = FinancialTransaction::getIncomeForReportBulanan($startDate, $endDate);
     
             $dates[] = [
                 'start' => $startDate,
