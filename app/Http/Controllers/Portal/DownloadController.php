@@ -122,9 +122,13 @@ class DownloadController extends Controller
             if (!$startDate || !$endDate) {
                 $startDate = now()->startOfDay();
                 $endDate = now()->endOfDay();
+                $startDa = now()->startOfDay();
+                $endDa = now()->endOfDay();
             } else {
                 $startDate = Carbon::parse($startDate)->startOfDay();
                 $endDate = Carbon::parse($endDate)->endOfDay();
+                $startDa = Carbon::parse($startDate)->startOfDay();
+                $endDa = Carbon::parse($endDate)->endOfDay();
             }
 
             $diffInDays = $endDate->diffInDays($startDate);
@@ -197,7 +201,9 @@ class DownloadController extends Controller
                         'setorData'         => $setorData,
                         'sumSetor'          => $sumSetor,
                     //!Setor
+                    //Sisa
                         'sisaBefore'          => $sisaBefore,
+                    //!Sisa
                 ];   
              
             } elseif ($diffInDays > 0 && $diffInDays <= 6) {
@@ -211,14 +217,75 @@ class DownloadController extends Controller
                 $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);
             } elseif ($diffInDays >= 28 && $diffInDays <= 31) {
-                $jenis          = 'Bulanan';
-                $dayName        = '';
-                $bulan          = $startDate->translatedFormat('F');
-                $tanggal        = $bulan;
+                $jenis          = 'Bulanan';           
+                $starting       = Carbon::createFromDate(2023, 12, 1);
+                $yesterday      = $startDate->copy()->subDay();
+                $dayName        = $this->getIndonesianDayName($startDate);
+                $tanggal        = $startDate->translatedFormat('F Y');
+                $lastMonth      = $startDate->copy()->subMonth()->locale('id')->monthName;            
+
+                $kopSuratImage  = public_path('assets/img/report/kop.png');   
+                $bgImage        = public_path('assets/img/report/bg-report.png');         
+                $coverLaporan   = public_path('assets/img/report/cover-laporan.png');  
+
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
+
+                // dd($lastMonth);
+                $incomeData     = FinancialTransaction::getIncomeForReport($startDate, $endDate);
+                $sumIncome      = FinancialTransaction::getIncomeForReport($startDate, $endDate)->sum('transaction_amount');
+                $outcomeData    = FinancialTransaction::getOutcomeByRange($startDate, $endDate);
+                $sumOutcome     = FinancialTransaction::getOutcomeByRange($startDate, $endDate)->sum('transaction_amount');
+                $topupData      = FinancialTransaction::getTopup($startDate, $endDate);
+                $sumTopup       = FinancialTransaction::getTopup($startDate, $endDate)->sum('transaction_amount');
+                $setorData      = FinancialTransaction::getSetor($startDate, $endDate);
+                $sumSetor       = FinancialTransaction::getSetor($startDate, $endDate)->sum('transaction_amount');
+
+                //Geting Saldo Sisa
+                    $incomeForSisa      = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
+                    $outcomeForSisa     = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
+                    $topupForSisa       = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+                    $setorKasForSisa    = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+                    $sisaBefore         = $incomeForSisa+$topupForSisa-$outcomeForSisa-$setorKasForSisa;          
+                //!Geting Saldo Sisa
+
                 $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');                
                 $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
-                $invoiceBon     = Invoice::getBon($startDate, $endDate);
+                $invoiceBon     = Invoice::getBon($startDate, $endDate);        
+                $dates          = $this->generateDateRange($startDate, $endDate);
+                $keuangan       = $this->generateDateForkeuangan($startDa, $endDa);
+                $view           ='bulanan';     
+                // dd($keuangan);
+                $data = [
+                    //Config
+                        'title'             => 'Laporan ' . $jenis,
+                        'subtitle'          => 'Pdf',
+                        'jenis'             => $jenis,
+                        'dayName'           => $dayName,
+                        'tanggal'           => $tanggal,
+                        'dates'             => $dates,
+                        'lasrMonth'         => $lastMonth,
+                        
+                        'coverLaporan'      => $coverLaporan,
+                        'bgImage'           => $bgImage,
+                        'kopSuratImage'     => $kopSuratImage,
+                    //!Config
+                    //Invoice    
+                        'invoiceData'       => $invoiceData,
+                        'invoiceTot'        => $invoiceTot,
+                        'invoicePan'        => $invoicePan,
+                        'invoiceBon'        => $invoiceBon,
+                       
+                    //!Invoice    
+                    //Keuangan
+                        'keuangan'          => $keuangan,
+                        'sumIncome'         => $sumIncome,
+                        'sumOutcome'        => $sumOutcome,
+                        'sumTopup'          => $sumTopup,
+                        'sumSetor'          => $sumSetor,
+                        'sisaBefore'        => $sisaBefore,
+                    //!Keuangan                       
+                ];   
+             
             } elseif ($diffInDays >= 365) {
                 $jenis          = 'Tahunan';
                 $dayName        = '';
@@ -273,6 +340,8 @@ class DownloadController extends Controller
         }
     }
 
+
+
     public function getIndonesianDayName($date) {
         $dayNameEnglish = $date->format('l'); // Mendapatkan nama hari dalam bahasa Inggris
         $dayNameLower = strtolower($dayNameEnglish); // Mengonversi nama hari menjadi huruf kecil
@@ -288,5 +357,66 @@ class DownloadController extends Controller
         return $dayNamesIndonesian[$dayNameLower]; // Mendapatkan nama hari dalam bahasa Indonesia
     }
         
+    public function generateDateRange(Carbon $start, Carbon $end) {
+        $dates = [];
+
+        while ($start->lte($end)) {
+            $dates[] = $start->copy();
+            $start->addDay();
+        }
+
+        return $dates;
+    }
+
+    public function generateDateForkeuangan(Carbon $start, Carbon $end) {
+        // Inisialisasi tanggal starting di luar loop
+        $starting = Carbon::createFromDate(2023, 12, 1);
+    
+        $tanggals = [];
+    
+        // Iterasi melalui setiap tanggal dalam rentang
+        while ($start->lte($end)) {
+            // Tetapkan yesterday, startDate, dan endDate untuk setiap tanggal
+            $yesterday = $start->copy()->subDay()->endOfDay();
+            $startDate = $start->copy();
+            $endDate = $start->copy()->endOfDay();
+    
+            // Dapatkan data pendapatan untuk tanggal saat ini
+            $income         = FinancialTransaction::getIncomeRangeAmount($startDate, $endDate);
+            $outcome        = FinancialTransaction::getRangeOutTransonAmount($startDate, $endDate);
+            $topup          = FinancialTransaction::getWeeklyTopUpAmount($startDate, $endDate);
+            $setorKas       = FinancialTransaction::getWeeklySetorKasAmount($startDate, $endDate);
+            
+            $incomeSisa     = FinancialTransaction::getIncomeRangeAmount($starting, $yesterday);
+            $outcomeSisa    = FinancialTransaction::getRangeOutTransonAmount($starting, $yesterday);
+            $topupSisa      = FinancialTransaction::getWeeklyTopUpAmount($starting, $yesterday);
+            $setorKasSisa   = FinancialTransaction::getWeeklySetorKasAmount($starting, $yesterday);
+            $saldoLampau    = $incomeSisa+$topupSisa-$outcomeSisa-$setorKasSisa;
+            $sisakas        = $saldoLampau+$income+$topup-$outcome-$setorKas;
+    
+            // Tambahkan data ke dalam array tanggals
+            $tanggals[] = [
+                'starting'      => $starting, 
+                'yesterday'     => $yesterday,
+                'start'         => $startDate,
+                'end'           => $endDate,
+                'income'        => $income,
+                'outcome'       => $outcome,
+                'topup'         => $topup,
+                'setorKas'      => $setorKas,
+                'sisakas'   => $sisakas,
+                'saldoLampau'   => $saldoLampau,
+            ];
+    
+            // Lanjutkan ke tanggal berikutnya
+            $start->addDay();
+        }
+    
+        // Kembalikan array dari tanggal-tanggal yang telah diinisialisasi
+        return $tanggals;
+    }
+    
+    
+    
 }
 
