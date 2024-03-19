@@ -89,7 +89,11 @@
                 @foreach($dataTahunan as $index => $data)
                 <tr>
                     <td style="text-align: center; border: 1px solid black;">{{ $index + 1 }}</td>
-                    <td style="text-align: center; border: 1px solid black;">{{ $data->bulan }}</td>
+                    <td style="text-align: center; border: 1px solid black;">
+                        <a href="{{ url('/report/?startDate=' . $data->tanggal_awal->format('Y-m-d') . '&endDate=' . $data->tanggal_akhir->format('Y-m-d')) }}">
+                            {{ $data->bulan }}
+                        </a>
+                    </td>                    
                     <td style="border: 1px solid black;">Rp.{{ number_format($data->pendapatan, 0, ',', '.') }},-</td>
                     <td style="border: 1px solid black;">Rp.{{ number_format($data->pengeluaran, 0, ',', '.') }},-</td>
                     <td style="border: 1px solid black; color: {{ $data->margin < 0 ? 'red' : 'green' }}">
