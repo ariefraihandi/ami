@@ -90,7 +90,7 @@
                 <tr>
                     <td style="text-align: center; border: 1px solid black;">{{ $index + 1 }}</td>
                     <td style="text-align: center; border: 1px solid black;">
-                        <a href="{{ url('/report/?startDate=' . $data->tanggal_awal->format('Y-m-d') . '&endDate=' . $data->tanggal_akhir->format('Y-m-d')) }}">
+                        <a href="{{ url('/report/?startDate=' . $data->tanggal_awal . '&endDate=' . $data->tanggal_akhir }}">
                             {{ $data->bulan }}
                         </a>
                     </td>                    
