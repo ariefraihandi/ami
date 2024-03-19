@@ -229,8 +229,7 @@ class DownloadController extends Controller
                 $coverLaporan   = public_path('assets/img/report/cover-laporan.png');  
 
                 $invoiceData    = Invoice::getInv($startDate, $endDate);
-
-                // dd($lastMonth);
+             
                 $incomeData     = FinancialTransaction::getIncomeForReport($startDate, $endDate);
                 $sumIncome      = FinancialTransaction::getIncomeForReport($startDate, $endDate)->sum('transaction_amount');
                 $outcomeData    = FinancialTransaction::getOutcomeByRange($startDate, $endDate);
@@ -253,8 +252,7 @@ class DownloadController extends Controller
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);        
                 $dates          = $this->generateDateRange($startDate, $endDate);
                 $keuangan       = $this->generateDateForkeuangan($startDa, $endDa);
-                $view           ='bulanan';     
-                // dd($dates);
+                $view           ='bulanan';          
                 $data = [
                     //Config
                         'title'             => 'Laporan ' . $jenis,
@@ -273,8 +271,7 @@ class DownloadController extends Controller
                         'invoiceData'       => $invoiceData,
                         'invoiceTot'        => $invoiceTot,
                         'invoicePan'        => $invoicePan,
-                        'invoiceBon'        => $invoiceBon,
-                       
+                        'invoiceBon'        => $invoiceBon,                       
                     //!Invoice    
                     //Keuangan
                         'keuangan'          => $keuangan,
@@ -291,10 +288,38 @@ class DownloadController extends Controller
                 $dayName        = '';
                 $tahun          = $startDate->year;
                 $tanggal        = $tahun;    
-                $invoiceData    = Invoice::getInv($startDate, $endDate);         
-                $invoiceTot     = Invoice::getInv($startDate, $endDate)->sum('total_amount');
-                $invoicePan     = Invoice::whereBetween('created_at', [$startDate, $endDate])->sum('panjar_amount');
-                $invoiceBon     = Invoice::getBon($startDate, $endDate);
+                $view           ='tahunan';    
+                $kopSuratImage  = public_path('assets/img/report/kop.png');   
+                $bgImage        = public_path('assets/img/report/bg-report.png');         
+                $coverLaporan   = public_path('assets/img/report/cover-laporan.png');                  
+                $dataTahunan    = $this->generateDataTahunan($startDate, $endDate);
+                $tanAwalTahun   = $startDate->copy()->startOfYear();
+                $tanAkhirTahun  = $endDate->copy()->endOfYear();
+                $totalIncome    = FinancialTransaction::getIncomeRangeAmount($tanAwalTahun, $tanAkhirTahun);
+                $totalOutcome   = FinancialTransaction::getRangeOutTransonAmount($tanAwalTahun, $tanAkhirTahun);
+                $totalMargin    = $totalIncome-$totalOutcome;
+                $totalPesen     = round(($totalOutcome != 0) ? (($totalIncome - $totalOutcome) / $totalOutcome) * 100 : 0);
+                // dd($tanggalAwalTahun, $tanggalAkhirTahun);
+                $data = [
+                    //Config
+                        'title'             => 'Laporan ' . $jenis,
+                        'subtitle'          => 'Pdf',
+                        'jenis'             => $jenis,
+                        'dayName'           => $dayName,
+                        'tanggal'           => $tanggal,                                                                    
+                        'coverLaporan'      => $coverLaporan,
+                        'bgImage'           => $bgImage,
+                        'kopSuratImage'     => $kopSuratImage,
+                    //!Config
+                    //Data
+                        'dataTahunan'       => $dataTahunan,
+                        'totalIncome'       => $totalIncome,
+                        'totalOutcome'      => $totalOutcome,
+                        'totalMargin'       => $totalMargin,
+                        'totalPesen'        => $totalPesen,
+                    //!Data
+
+                ];
             } else {
                 $jenis          = 'Keuangan';
                 $dayName        = '';
@@ -306,56 +331,17 @@ class DownloadController extends Controller
                 $invoicePan     = Invoice::getInvPJ($startDate, $endDate)->sum('panjar_amount');
                 $invoiceBon     = Invoice::getBon($startDate, $endDate);
             }                        
-            $kopSuratImage     = public_path('assets/img/report/kop.png');   
-            $bgImage           = public_path('assets/img/report/bg-report.png');         
-            $coverLaporan      = public_path('assets/img/report/cover-laporan.png');  
+            
+            $pdf = PDF::loadView("Konten.Keuangan.Laporan.$view", $data);                
+            return $pdf->stream('Laporan.pdf');
 
-            if ($jenis !== '') {
-                $datdaa = [
-                    //Config
-                        'title'             => 'Laporan ' . $jenis,
-                        'subtitle'          => 'Pdf',
-                        'jenis'             => $jenis,
-                        'dayName'           => $dayName,
-                        'tanggal'           => $tanggal,
-                        
-                        'coverLaporan'      => $coverLaporan,
-                        'bgImage'           => $bgImage,
-                        'kopSuratImage'     => $kopSuratImage,
-                        
-                        'invoiceData'       => $invoiceData,
-                        'invoiceTot'        => $invoiceTot,
-                        'invoicePan'        => $invoicePan,
-                        'invoiceBon'        => $invoiceBon,
-                        
-                        'incomeData'        => $incomeData,
-
-                    //!Config
-                ];
-                $pdf = PDF::loadView("Konten.Keuangan.Laporan.$view", $data);                
-                return $pdf->stream('Laporan.pdf');
-            }
+          
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
 
-
-    public function getIndonesianDayName($date) {
-        $dayNameEnglish = $date->format('l'); // Mendapatkan nama hari dalam bahasa Inggris
-        $dayNameLower = strtolower($dayNameEnglish); // Mengonversi nama hari menjadi huruf kecil
-        $dayNamesIndonesian = [
-            'monday' => 'Senin',
-            'tuesday' => 'Selasa',
-            'wednesday' => 'Rabu',
-            'thursday' => 'Kamis',
-            'friday' => 'Jumat',
-            'saturday' => 'Sabtu',
-            'sunday' => 'Minggu'
-        ];
-        return $dayNamesIndonesian[$dayNameLower]; // Mendapatkan nama hari dalam bahasa Indonesia
-    }
         
     public function generateDateRange(Carbon $start, Carbon $end) {
         $dates = [];
@@ -376,7 +362,6 @@ class DownloadController extends Controller
     
         return $dates;
     }
-    
 
     public function generateDateForkeuangan(Carbon $start, Carbon $end) {
         // Inisialisasi tanggal starting di luar loop
@@ -426,6 +411,75 @@ class DownloadController extends Controller
         return $tanggals;
     }
     
+    public function generateDataTahunan(Carbon $start, Carbon $end)
+    {
+        $dataTahunan = array();
+        $currentDate = $start->copy();
+
+        while ($currentDate->lte($end)) {
+            $bulan          = $this->bulanIndonesia($currentDate->month);
+            $tanggalAwal    = $currentDate->copy()->startOfMonth()->toDateString();
+            $tanggalAkhir   = $currentDate->copy()->endOfMonth()->toDateString();
+
+            $pendapatan     = FinancialTransaction::getIncomeRangeAmount($tanggalAwal, $tanggalAkhir);
+            $pengeluaran    = FinancialTransaction::getRangeOutTransonAmount($tanggalAwal, $tanggalAkhir);
+
+            $margin         = $pendapatan - $pengeluaran;
+            $persentase     = round(($pengeluaran != 0) ? (($pendapatan - $pengeluaran) / $pengeluaran) * 100 : 0);
+
+            $dataTahunan[] = array(
+                'bulan'         => $bulan,
+                'tanggal_awal'  => $tanggalAwal,
+                'tanggal_akhir' => $tanggalAkhir,
+                'pendapatan'    => $pendapatan,
+                'pengeluaran'   => $pengeluaran,
+                'margin'        => $margin,
+                'persentase'    => $persentase
+            );
+
+            // Pindah ke bulan berikutnya
+            $currentDate->addMonth();
+        }
+
+        return response()->json($dataTahunan)->getData();
+    }
+
+    
+
+    private function bulanIndonesia($bulan)
+    {
+        $daftarBulan = array(
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        );
+
+        return $daftarBulan[$bulan];
+    }
+
+    public function getIndonesianDayName($date) {
+        $dayNameEnglish = $date->format('l'); // Mendapatkan nama hari dalam bahasa Inggris
+        $dayNameLower = strtolower($dayNameEnglish); // Mengonversi nama hari menjadi huruf kecil
+        $dayNamesIndonesian = [
+            'monday' => 'Senin',
+            'tuesday' => 'Selasa',
+            'wednesday' => 'Rabu',
+            'thursday' => 'Kamis',
+            'friday' => 'Jumat',
+            'saturday' => 'Sabtu',
+            'sunday' => 'Minggu'
+        ];
+        return $dayNamesIndonesian[$dayNameLower]; // Mendapatkan nama hari dalam bahasa Indonesia
+    }
     
     
 }

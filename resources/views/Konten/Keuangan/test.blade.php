@@ -284,8 +284,8 @@
             <select id="reportType" name="reportType" class="form-select mb-3">
               <option value="daily">Harian</option>
               <option value="monthly">Bulanan</option>
-              {{-- <option value="weekly">Mingguan</option>
-              <option value="yearly">Tahunan</option> --}}
+              <option value="yearly">Tahunan</option>
+              {{-- <option value="weekly">Mingguan</option> --}}
             </select>
           </div>
           <div class="modal-footer">

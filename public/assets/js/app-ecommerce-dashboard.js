@@ -1238,7 +1238,7 @@
         }
       },
       dataLabels: {
-        enabled: false
+        enabled: true
       },
       stroke: {
         width: 4,

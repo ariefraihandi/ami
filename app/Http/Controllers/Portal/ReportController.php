@@ -23,7 +23,7 @@ class ReportController extends Controller
     {
         // Validasi request
         $request->validate([
-            'reportType' => 'required|in:daily,weekly,monthly,yearly',
+            'reportType' => 'required|in:daily,monthly,yearly',
         ]);
 
         // Inisialisasi variabel tanggal awal dan akhir
@@ -38,24 +38,20 @@ class ReportController extends Controller
                 $title = 'Harian';
                 $starting       = Carbon::createFromDate(2023, 12, 1);
                 $yesterday      = $startDate->copy()->subDay();
-                break;
-                case 'weekly':
-                    // Tentukan rentang tanggal mingguan
-                    $startDate = Carbon::now()->startOfWeek(Carbon::MONDAY)->startOfDay();
-                    $endDate = Carbon::now()->endOfWeek(Carbon::SUNDAY)->endOfDay();
-                    $title = 'Mingguan';
-                    break;
+                break;        
             case 'monthly':
-                $startDate = Carbon::now()->startOfMonth()->startOfDay();
-                $endDate = Carbon::now()->endOfMonth()->endOfDay();
-                $title = 'Bulanan';
+                $startDate      = Carbon::now()->startOfMonth()->startOfDay();
+                $endDate        = Carbon::now()->endOfMonth()->endOfDay();
+                $title          = 'Bulanan';
                 $starting       = Carbon::createFromDate(2023, 12, 1);
                 $yesterday      = $startDate->copy()->subDay();
                 break;
             case 'yearly':
-                $startDate = Carbon::now()->startOfYear()->startOfDay();
-                $endDate = Carbon::now()->endOfYear()->endOfDay();
-                $title = 'Tahunan';
+                $startDate      = Carbon::now()->startOfYear()->startOfDay();
+                $endDate        = Carbon::now()->endOfYear()->endOfDay();
+                $title          = 'Tahunan';
+                $starting       = Carbon::createFromDate(2023, 12, 1);
+                $yesterday      = $startDate->copy()->subDay();
                 break;
             default:
                 // Jika jenis laporan tidak valid, kembalikan respon error
