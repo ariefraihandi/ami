@@ -110,7 +110,7 @@
                         <div class="col-sm-6 col-lg-3">
                             <div class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-3 pb-sm-0">
                                 <div>
-                                    <h6 class="mb-2">Hari Ini</h6>
+                                    <h6 class="mb-2">Tahun Ini</h6>
                                     <h5 class="mb-2">{{ $countInvoice }}</h5>           
                                 </div>
                                 <div class="avatar me-sm-4">
@@ -174,7 +174,7 @@
               </div>
               <div class="time-spending-chart">
                 <h3 class="mb-2">{{$countInvoice}} <span class="text-muted">Inv</span></h3>
-                <span class="badge bg-label-success">Hari Ini</span>
+                <span class="badge bg-label-success">Tahun Ini</span>
               </div>
             </div>
             <div id="leadsReportChart"></div>
@@ -188,7 +188,7 @@
       <div class="col-12 col-xl-8">
         <div class="card h-100">
           <div class="card-header d-flex align-items-center justify-content-between">
-            <h5 class="card-title m-0 me-2">Chart Keuangan Harian</h5>          
+            <h5 class="card-title m-0 me-2">Chart Keuangan Tahunan</h5>          
           </div>
           <div class="card-body row g-3">
             <div class="col-md-6">
@@ -206,7 +206,7 @@
                 <div class="d-flex align-items-baseline my-3">
                   <span class="text-info me-2"><i class="bx bxs-circle"></i></span>
                   <div>
-                    <p class="mb-2">Top Up Harian</p>
+                    <p class="mb-2">Top Up Tahunan</p>
                     <h5>{{ number_format($topup), 0 }},-</h5>
                   </div>
                 </div>
@@ -501,7 +501,7 @@
                       <ul class="nav nav-tabs" role="tablist">
                           <li class="nav-item">
                               <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab" data-bs-target="#navs-top-invoice" aria-controls="navs-top-invoice" aria-selected="true">
-                                  Invoice Hari Ini
+                                  Invoice Tahun Ini
                               </button>
                           </li>                          
                       </ul>
