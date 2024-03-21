@@ -13,6 +13,7 @@ use App\Http\Controllers\Portal\UserController;
 use App\Http\Controllers\Portal\ReportController;
 use App\Http\Controllers\Portal\DownloadController;
 use App\Http\Controllers\Portal\kirimWhatsapp;
+use App\Http\Controllers\Portal\LaporanController;
 
 
 Route::get('/',                         [AuthController::class, 'showLoginPage'])->name('login');
@@ -53,32 +54,36 @@ Route::middleware(['auth'])->group(function () {
 
     //item fix route
     // Route::get('/get-items',            [InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-    Route::post('item-invoices',        [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
-    Route::post('updateItem/',          [InvoiceController::class, 'updateItem'])->name('updateItem'); //NF
-    Route::get('/get-items/{invNumber}',[InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
-    Route::get('delete-item/',          [InvoiceController::class, 'deleteItem'])->name('delete.invoice');
-    Route::get('/edit-items/{itemId}',  [InvoiceController::class, 'getItemById'])->name('get.items.byId');
-    Route::get('itemData/{ItemId}',     [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
+        Route::post('item-invoices',        [InvoiceController::class, 'itemStore'])->name('addItemInvoice');
+        Route::post('updateItem/',          [InvoiceController::class, 'updateItem'])->name('updateItem'); //NF
+        Route::get('/get-items/{invNumber}',[InvoiceController::class, 'getInvoiceItems'])->name('get.invoice.items');
+        Route::get('delete-item/',          [InvoiceController::class, 'deleteItem'])->name('delete.invoice');
+        Route::get('/edit-items/{itemId}',  [InvoiceController::class, 'getItemById'])->name('get.items.byId');
+        Route::get('itemData/{ItemId}',     [InvoiceController::class, 'getInvoiceItemData'])->name('getId.Item');
     //!!item fix route
 
     // fix keuangan
-    Route::get('get-keua',                      [KeuanganController::class, 'getAllKeuangan'])->name('dataKeuangan');
-    Route::get('getDataKeuangan',               [KeuanganController::class, 'getDataKeuangan'])->name('getDataKeuangan');
-    Route::get('/getDataKeuanganById/{id}',     [KeuanganController::class, 'getDataKeuanganById'])->name('getDataKeuanganById');
-    
-    Route::get('keuangan/test',                 [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.test');
-    Route::get('keuangan',                      [KeuanganController::class, 'keuanganV2'])->name('keuangan');
-    Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
-    Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
-    Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');   
-    
-    Route::get('get-tagih',             [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
-    Route::get('keuangan/tagihan',      [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');
-    Route::post('/bayar-gaji',          [KeuanganController ::class, 'bayarGaji'])->name('bayarGaji');
-    Route::post('/edit-masa-kerja',     [KeuanganController::class, 'editMasaKerja'])->name('editMasaKerja');
-
-    Route::get('keuangan/laporan',      [KeuanganController::class, 'showLaporan'])->name('keuangan.laporan');    
+        Route::get('get-keua',                      [KeuanganController::class, 'getAllKeuangan'])->name('dataKeuangan');
+        Route::get('getDataKeuangan',               [KeuanganController::class, 'getDataKeuangan'])->name('getDataKeuangan');
+        Route::get('/getDataKeuanganById/{id}',     [KeuanganController::class, 'getDataKeuanganById'])->name('getDataKeuanganById');
+        
+        Route::get('keuangan/test',                 [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.test');
+        Route::get('keuangan',                      [KeuanganController::class, 'keuanganV2'])->name('keuangan');
+        Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
+        Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
+        Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');   
+        
+        Route::get('get-tagih',             [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
+        Route::get('keuangan/tagihan',      [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');
+        Route::post('/bayar-gaji',          [KeuanganController ::class, 'bayarGaji'])->name('bayarGaji');
+        Route::post('/edit-masa-kerja',     [KeuanganController::class, 'editMasaKerja'])->name('editMasaKerja');
     // !!fix keuangan
+
+    //Laporan
+        Route::get('laporan',                       [LaporanController::class, 'laporanHarian'])->name('laporan');
+        Route::get('laporan/bulanan',               [LaporanController::class, 'laporanBulanan'])->name('laporan.bulanan');
+        Route::get('laporan/tahunan',               [LaporanController::class, 'laporanTahunan'])->name('laporan.tahunan');
+    //!Laporan
 
     //Product fix route
     Route::get('product',               [ProductController::class, 'index'])->name('product');

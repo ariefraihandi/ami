@@ -108,7 +108,7 @@ $(function () {
         lengthMenu: [[10, 25, 50, 100], [10, 25, 50, 100]],
         pageLength: 10,
         initComplete: function () {
-            $('.btn-add-container').html('<button type="button" class="btn btn-primary mx-4 mb-3" id="addNewTransactionBtn"><i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah</span></button><button type="button" class="btn btn-success mx-2 mb-3" id="sendReportBtn"><i class="bx bx-send"></i> Kirim</button>');
+            $('.btn-add-container').html('<button type="button" class="btn btn-primary mx-4 mb-3" id="addNewTransactionBtn"><i class="bx bx-plus me-md-1"></i><span class="d-md-inline-block d-none">Tambah</span></button><button type="button" class="btn btn-success mx-4 mb-3" id="sendReportBtn"><i class="bx bxs-paper-plane bx-fade-right me-md-1"></i><span class="d-md-inline-block d-none">Kirim</span></button><button type="button" class="btn btn-info mx-4 mb-3" id="lihatLaporan"><i class="bx bx-show bx-tada me-md-1"></i><span class="d-md-inline-block d-none">Lihat Laporan</span></button>');
             
             $('#addNewTransactionBtn').on('click', function () {
                 $('#addNewTransactionModal').modal('show');
@@ -117,8 +117,12 @@ $(function () {
             $('#sendReportBtn').on('click', function () {
                 $('#sendReportModal').modal('show');
             });
+           
+            $('#lihatLaporan').on('click', function () {
+                $('#lihatLaporanModal').modal('show');
+            });          
+            
         }
-        
                 
     });
 
@@ -253,7 +257,6 @@ $('#amount').on('input', function() {
     formatCurrency(this); // Memformat nilai amount setiap kali input berubah
 });
 
-
 function showKaryawanSelect() {
   var statusSelect = document.getElementById("status");
   var karyawanSelectDiv = document.getElementById("karyawanSelectDiv");
@@ -264,17 +267,17 @@ function showKaryawanSelect() {
       karyawanSelectDiv.style.display = "none";
   }
 }
-    function formatCurrency(input) {
-        var numericValue = $(input).val().replace(/[^\d]/g, '');
-        var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');
 
-        if (trimmedValue === '') {
-            $(input).val('');
-            return;
-        }
-        $(input).val(trimmedValue);
+function formatCurrency(input) {
+    var numericValue = $(input).val().replace(/[^\d]/g, '');
+    var trimmedValue = numericValue.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/^0+/, '');
+
+    if (trimmedValue === '') {
+        $(input).val('');
+        return;
     }
-
+    $(input).val(trimmedValue);
+}
 
 function showSweetAlert(response) {
     Swal.fire({
@@ -282,4 +285,4 @@ function showSweetAlert(response) {
         title: response.title,   
         text: response.message,
     });
-  }
+}

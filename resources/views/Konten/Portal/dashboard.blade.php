@@ -56,7 +56,7 @@
                   <?php $increasePercentage = 100;?>
               @endif
               <small class="d-block mb-4 pb-1 text-muted">{{ round($increasePercentage, 2) }}% {{ $income > $incomeTotalYes ? 'Peningkatan' : 'Penururnan' }}</small>
-              <a href="{{ route('keuangan.laporan') }}" class="btn btn-sm btn-{{ $income > $incomeTotalYes ? 'success' : 'danger' }}">Lihat Laporan</a>
+              <a href="{{ route('laporan') }}" class="btn btn-sm btn-{{ $income > $incomeTotalYes ? 'success' : 'danger' }}">Lihat Laporan</a>
             </div>
           </div>
           <div class="col-4 pt-3 ps-0">
@@ -143,7 +143,7 @@
                 <div class="dropdown">
                   <button class="btn p-0" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true"aria-expanded="false"><i class="bx bx-dots-vertical-rounded"></i></button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/laporan/bulanan') }}?startDate={{ date('Y-m-d', strtotime($startingMonth)) }}&endDate={{ date('Y-m-d', strtotime($endMonth)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -177,7 +177,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/laporan/bulanan') }}?startDate={{ date('Y-m-d', strtotime($startingMonth)) }}&endDate={{ date('Y-m-d', strtotime($endMonth)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -243,7 +243,7 @@
               <i class="bx bx-dots-vertical-rounded"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="conversionRate">
-              <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+              <a class="dropdown-item" href="{{ url('/laporan/bulanan') }}?startDate={{ date('Y-m-d', strtotime($startingMonth)) }}&endDate={{ date('Y-m-d', strtotime($endMonth)) }}" target="_blank">Lihat Laporan</a>
             </div>
           </div>
         </div>
@@ -368,7 +368,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/laporan/bulanan') }}?startDate={{ date('Y-m-d', strtotime($startingMonth)) }}&endDate={{ date('Y-m-d', strtotime($endMonth)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -402,7 +402,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingMonth }}&endDate={{ $endMonth }}" target="_blank">Lihat Laporan</a>
+                    <a class="dropdown-item" href="{{ url('/laporan/bulanan') }}?startDate={{ date('Y-m-d', strtotime($startingMonth)) }}&endDate={{ date('Y-m-d', strtotime($endMonth)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -473,7 +473,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">                    
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingYear }}&endDate={{ $endingYear }}" target="_blank">Lihat Laporan</a>         
+                    <a class="dropdown-item" href="{{ url('/laporan/tahunan') }}?startDate={{ date('Y-m-d', strtotime($startingYear)) }}&endDate={{ date('Y-m-d', strtotime($endingYear)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -512,7 +512,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">                    
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingYear }}&endDate={{ $endingYear }}" target="_blank">Lihat Laporan</a>         
+                    <a class="dropdown-item" href="{{ url('/laporan/tahunan') }}?startDate={{ date('Y-m-d', strtotime($startingYear)) }}&endDate={{ date('Y-m-d', strtotime($endingYear)) }}" target="_blank">Lihat Laporan</a>
                   </div>
                 </div>
               </div>
@@ -550,7 +550,7 @@
                     <i class="bx bx-dots-vertical-rounded"></i>
                   </button>
                   <div class="dropdown-menu" aria-labelledby="cardOpt6">                    
-                    <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingYear }}&endDate={{ $endingYear }}" target="_blank">Lihat Laporan</a>         
+                    <a class="dropdown-item" href="{{ url('/laporan/tahunan') }}?startDate={{ date('Y-m-d', strtotime($startingYear)) }}&endDate={{ date('Y-m-d', strtotime($endingYear)) }}" target="_blank">Lihat Laporan</a>       
                   </div>
                 </div>
               </div>
@@ -587,7 +587,7 @@
                   <i class="bx bx-dots-vertical-rounded"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="cardOpt1">
-                  <a class="dropdown-item" href="{{ url('/keuangan/laporan') }}?startDate={{ $startingYear }}&endDate={{ $endingYear }}" target="_blank">Lihat Laporan</a>         
+                  <a class="dropdown-item" href="{{ url('/laporan/tahunan') }}?startDate={{ date('Y-m-d', strtotime($startingYear)) }}&endDate={{ date('Y-m-d', strtotime($endingYear)) }}" target="_blank">Lihat Laporan</a>
                 </div>
               </div>
             </div>

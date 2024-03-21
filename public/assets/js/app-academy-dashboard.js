@@ -1,6 +1,16 @@
-/**
- * Academy Dashboard charts and datatable
- */
+function reloadPageWithNewDates() {
+  // Mengambil nilai dari input tanggal mulai dan tanggal akhir
+  var startDate = document.getElementById("startDate").value;
+
+  // Membuat URL baru dengan tanggal yang dipilih
+  var newURL = "/laporan?startDate=" + startDate + "&endDate=" + startDate;
+
+  // Memuat ulang halaman dengan URL baru
+  window.location.href = newURL;
+}
+
+document.getElementById("startDate").addEventListener("change", reloadPageWithNewDates);
+
 
 'use strict';
 
@@ -22,32 +32,26 @@
   // Donut Chart Colors
   const chartColors = {
     donut: {
-      series1: '#71dd37e8',
-      series2: '#71dd37bf',
-      series3: config.colors.success,
-      series4: '#71dd3799',
-      series5: '#71dd3766',
-      series6: '#71dd3733'
+      series1: config.colors.success,
+      series2: config.colors.info,
+      series3: config.colors.danger
     }
   };
 
   const leadsReportChartEl = document.querySelector('#leadsReportChart'),
     leadsReportChartConfig = {
       chart: {
-        height: 157,
-        width: 130,
+        height: 180,
+        width: 180,
         parentHeightOffset: 0,
         type: 'donut'
       },
-      labels: ['36h', '56h', '16h', '32h', '56h', '16h'],
-      series: [23, 35, 10, 20, 35, 23],
+      labels: ['Lunas', 'Panjar', 'Bon'],
+      series: [countLuns, countPanjar, countInvBB],
       colors: [
         chartColors.donut.series1,
         chartColors.donut.series2,
-        chartColors.donut.series3,
-        chartColors.donut.series4,
-        chartColors.donut.series5,
-        chartColors.donut.series6
+        chartColors.donut.series3
       ],
       stroke: {
         width: 0
@@ -55,7 +59,7 @@
       dataLabels: {
         enabled: false,
         formatter: function (val, opt) {
-          return parseInt(val) + '%';
+          return parseInt(val) + ' Inv';
         }
       },
       legend: {
@@ -82,7 +86,7 @@
                 fontWeight: 500,
                 offsetY: -15,
                 formatter: function (val) {
-                  return parseInt(val) + '%';
+                  return parseInt(val) + ' Inv';
                 }
               },
               name: {
@@ -95,7 +99,7 @@
                 label: 'Total',
                 color: labelColor,
                 formatter: function (w) {
-                  return '231h';
+                  return countInvoice + ' Inv';
                 }
               }
             }
@@ -111,121 +115,134 @@
   // datatbale bar chart
 
   const horizontalBarChartEl = document.querySelector('#horizontalBarChart'),
-    horizontalBarChartConfig = {
-      chart: {
+    dataValues = [sisaBefore, pemasukan, topup, outcomeTotal, saldoKas, sisaKas]; // Data untuk horizontal bar chart
+
+// Menemukan nilai maksimum dari data
+const maxDataValue = Math.max(...dataValues);
+
+// Konfigurasi chart
+const horizontalBarChartConfig = {
+    chart: {
         height: 270,
         type: 'bar',
         toolbar: {
-          show: false
+            show: false
         }
-      },
-      plotOptions: {
+    },
+    plotOptions: {
         bar: {
-          horizontal: true,
-          barHeight: '70%',
-          distributed: true,
-          startingShape: 'rounded',
-          borderRadius: 7
+            horizontal: true,
+            barHeight: '70%',
+            distributed: true,
+            startingShape: 'rounded',
+            borderRadius: 7
         }
-      },
-      grid: {
+    },
+    grid: {
         strokeDashArray: 10,
         borderColor: borderColor,
         xaxis: {
-          lines: {
-            show: true
-          }
+            lines: {
+                show: true
+            }
         },
         yaxis: {
-          lines: {
-            show: false
-          }
+            lines: {
+                show: false
+            }
         },
         padding: {
-          top: -35,
-          bottom: -12
+            top: -35,
+            bottom: -12
         }
-      },
-
-      colors: [
-        config.colors.primary,
-        config.colors.info,
-        config.colors.success,
-        config.colors.secondary,
-        config.colors.danger,
-        config.colors.warning
-      ],
-      dataLabels: {
+    },
+    colors: [
+      config.colors.primary,
+      config.colors.success,
+      config.colors.info,
+      config.colors.danger,
+      config.colors.secondary,
+      config.colors.warning
+    ],
+    dataLabels: {
         enabled: true,
         style: {
-          colors: ['#fff'],
-          fontWeight: 200,
-          fontSize: '13px',
-          fontFamily: 'Public Sans'
+            colors: ['#fff'],
+            fontWeight: 200,
+            fontSize: '13px',
+            fontFamily: 'Public Sans'
         },
         formatter: function (val, opts) {
-          return horizontalBarChartConfig.labels[opts.dataPointIndex];
+            return 'Rp. ' + formatRupiah(dataValues[opts.dataPointIndex]);
         },
         offsetX: 0,
         dropShadow: {
-          enabled: false
+            enabled: false
         }
-      },
-      labels: ['UI Design', 'UX Design', 'Music', 'Animation', 'React', 'SEO'],
-      series: [
+    },
+    labels: ['Sisa Lampau', 'Pemasukan', 'Top Up', 'Pengeluaran', 'Setor Kas', 'Sisa Kas'],
+    series: [
         {
-          data: [35, 20, 14, 12, 10, 9]
+            data: dataValues
         }
-      ],
-
-      xaxis: {
+    ],
+    xaxis: {
         categories: ['6', '5', '4', '3', '2', '1'],
         axisBorder: {
-          show: false
+            show: false
         },
         axisTicks: {
-          show: false
+            show: false
         },
         labels: {
-          style: {
-            colors: labelColor,
-            fontSize: '13px'
-          },
-          formatter: function (val) {
-            return `${val}%`;
-          }
+            style: {
+                colors: labelColor,
+                fontSize: '13px'
+            },
+            formatter: function (val) {
+                return `${val}`;
+            }
         }
-      },
-      yaxis: {
-        max: 35,
-        labels: {
-          style: {
-            colors: [labelColor],
-            fontFamily: 'Public Sans',
-            fontSize: '13px'
-          }
-        }
-      },
-      tooltip: {
+    },
+    // yaxis: {
+    //     max: Math.ceil(maxDataValue * 1.1), // Menetapkan nilai maksimum sumbu y berdasarkan nilai maksimum data dengan memberikan sedikit ruang di atasnya
+    //     labels: {
+    //         style: {
+    //             colors: [labelColor],
+    //             fontFamily: 'Public Sans',
+    //             fontSize: '13px'
+    //         }
+    //     }
+    // },
+    tooltip: {
         enabled: true,
         style: {
-          fontSize: '12px'
+            fontSize: '12px'
         },
         onDatasetHover: {
-          highlightDataSeries: false
+            highlightDataSeries: false
         },
         custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-          return '<div class="px-3 py-2">' + '<span>' + series[seriesIndex][dataPointIndex] + '%</span>' + '</div>';
+            return '<div class="px-3 py-2">' + '<span>Rp. ' + formatRupiah(series[seriesIndex][dataPointIndex]) + '</span>' + '</div>';
         }
-      },
-      legend: {
+    },
+    legend: {
         show: false
-      }
-    };
-  if (typeof horizontalBarChartEl !== undefined && horizontalBarChartEl !== null) {
+    }
+};
+
+// Fungsi untuk memformat nilai menjadi format IDR
+function formatRupiah(angka) {
+    var reverse = angka.toString().split('').reverse().join(''),
+        ribuan = reverse.match(/\d{1,3}/g);
+    ribuan = ribuan.join('.').split('').reverse().join('');
+    return ribuan;
+}
+
+if (typeof horizontalBarChartEl !== undefined && horizontalBarChartEl !== null) {
     const horizontalBarChart = new ApexCharts(horizontalBarChartEl, horizontalBarChartConfig);
     horizontalBarChart.render();
-  }
+}
 
   //radial Barchart
 
