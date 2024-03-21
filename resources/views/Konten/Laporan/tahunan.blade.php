@@ -577,8 +577,7 @@
                                                 <td>
                                                   @if($invoice->status == 0)
                                                       <div class="progress">
-                                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">                                
-                                                          </div>
+                                                          <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
                                                       </div>
                                                   @elseif($invoice->status == 1)
                                                       @php
@@ -586,11 +585,22 @@
                                                       @endphp
                                                       <div class="progress">
                                                           <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                                            {{ number_format($percentage, 2) }}%
+                                                              {{ number_format($percentage, 2) }}%
+                                                          </div>
+                                                      </div>
+                                                  @elseif($invoice->status == 2)
+                                                      <span class="badge badge-success">Lunas</span>
+                                                      @php
+                                                          $percentage = ($invoice->panjar_amount / $invoice->total_amount) * 100;
+                                                      @endphp
+                                                      <div class="progress">
+                                                          <div class="progress-bar bg-success" role="progressbar" style="width: {{ $percentage }}%" aria-valuenow="{{ $percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                                              Lunas
                                                           </div>
                                                       </div>
                                                   @endif
                                                 </td>
+                                              
                                                 <td>
                                                   <div class="dropdown">
                                                       <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
