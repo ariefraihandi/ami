@@ -541,7 +541,7 @@
         },
         {
           name: bulanLalu,
-          data: [-incPastWeek1, -incPastWeek2, -incPastWeek3, -incPastWeek4, ]
+          data: [incPastWeek1, incPastWeek2, incPastWeek3, incPastWeek4, ]
         }
       ],
       chart: {
