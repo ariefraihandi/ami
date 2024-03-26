@@ -174,7 +174,7 @@
               </div>
               <div class="time-spending-chart">
                 <h3 class="mb-2">{{$countInvoice}} <span class="text-muted">Inv</span></h3>
-                <span class="badge bg-label-success">Tahun Ini</span>
+                <span class="badge bg-label-success">Tahunan</span>
               </div>
             </div>
             <div id="leadsReportChart"></div>
