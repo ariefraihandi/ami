@@ -526,4 +526,12 @@ function updateUrl() {
       $('.dataTables_length .form-select').removeClass('form-select-sm');
     }, 300);
   })();
+
+  function showSweetAlert(response) {
+    Swal.fire({
+        icon: response.success ? 'success' : 'error',
+        title: response.title,   
+        text: response.message,
+    });
+}
   

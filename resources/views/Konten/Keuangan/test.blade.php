@@ -127,13 +127,8 @@
             <div class="col-12">
               <div class="row g-3">
                 <div class="col-12 col-sm-6 col-lg-4">
-                    <label class="form-label">REFERENCE:</label>
-                    <input
-                        type="text"
-                        class="form-control dt-input reference-number"
-                        data-column="1"
-                        placeholder="No Invoice/Reference"
-                        data-column-index="0" />
+                    <label class="form-label">Cari Transaksi:</label>
+                    <input type="text" class="form-control dt-input reference-number" data-column="1" placeholder="No Invoice/Reference" data-column-index="0" />
                 </div>
                 <div class="col-12 col-sm-6 col-lg-4">
                     <label class="form-label">Date:</label>
@@ -306,50 +301,22 @@
               <h5 class="modal-title" id="lihatLaporanModalLabel">Lihat Laporan</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <form action="{{ route('send.report') }}" method="POST">
+          <form action="{{ route('cari.report') }}" method="POST">
               @csrf <!-- Tambahkan CSRF token untuk keamanan -->
               <div class="modal-body">
                   <p>Select report type:</p>
-                  <select id="reportType" name="reportType" class="form-select mb-3" required onchange="showDatePicker()">
+                  <select id="reportType" name="reportType" class="form-select mb-3" required>
                       <option value="">Pilih jenis laporan</option>
                       <option value="daily">Harian</option>
                       <option value="monthly">Bulanan</option>
                       <option value="yearly">Tahunan</option>
                   </select>
 
-                  <div id="datePickerContainer" class="mb-3" style="display: none;">
-                      <label for="datePicker" class="form-label">Pilih tanggal:</label>
-                      <input type="date" id="datePicker" name="datePicker" class="form-control">
-                  </div>
-
-                  <div id="monthPickerContainer" class="mb-3 d-none">
-                      <label for="monthPicker" class="form-label">Pilih bulan:</label>
-                      <select id="monthPicker" name="monthPicker" class="form-select">
-                          <option value="1">Januari</option>
-                          <option value="2">Februari</option>
-                          <option value="3">Maret</option>
-                          <option value="4">April</option>
-                          <option value="5">Mei</option>
-                          <option value="6">Juni</option>
-                          <option value="7">Juli</option>
-                          <option value="8">Agustus</option>
-                          <option value="9">September</option>
-                          <option value="10">Oktober</option>
-                          <option value="11">November</option>
-                          <option value="12">Desember</option>
-                      </select>
-                  </div>
-
-                  <div id="yearPickerContainer" class="mb-3 d-none">
-                      <label for="yearPicker" class="form-label">Pilih tahun:</label>
-                      <select id="yearPicker" name="yearPicker" class="form-select">
-                          <!-- Year options will be populated dynamically using JavaScript -->
-                      </select>
-                  </div>
+                  
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Send</button>
+                  <button type="submit" class="btn btn-info">Lihat Laporan</button>
               </div>
           </form>
       </div>

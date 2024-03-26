@@ -35,25 +35,30 @@ $(function () {
         dt_adv_filter_table.DataTable().draw();
     }
 
-    // Custom filter for date range
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         var startDate = moment(startDateEle.val(), 'YYYY/MM/DD');
         var endDate = moment(endDateEle.val(), 'YYYY/MM/DD');
-        var currentDate = moment(data[5], 'YYYY/MM/DD'); // Assuming date column index is 5
+        var currentDate = moment(data[5], 'YYYY/MM/DD')
         if (startDate.isValid() && endDate.isValid()) {
-            return currentDate.isBetween(startDate, endDate, null, '[]'); // '[]' includes both start and end dates
+            return currentDate.isBetween(startDate, endDate, null, '[]');
         }
         return true;
     });
 
-    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-        var referenceValue = referenceInput.val().trim().toUpperCase(); // Trim and convert to uppercase for case-insensitive search
-        var referenceData = data[1].toUpperCase(); // Assuming reference column index is 0
 
-        if (referenceValue !== '') {
-            return referenceData.includes(referenceValue);
+    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        var referenceValue = referenceInput.val().trim().toUpperCase();
+
+        // Lakukan pencarian di semua kolom
+        for (var i = 0; i < data.length; i++) {
+            var columnData = data[i].toUpperCase();
+            if (columnData.includes(referenceValue)) {
+                return true; // Jika nilai cocok ditemukan, kembalikan true
+            }
         }
-        return true;
+
+        // Jika tidak ada nilai cocok ditemukan di seluruh kolom, kembalikan false
+        return false;
     });
 
     // DataTable initialization for advanced filter
@@ -147,7 +152,7 @@ $(function () {
         var referenceNumber = full.reference_number;
         var customer = full.customerUuid;
         if (customer) {
-            var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer.customerUuid;
+            var link = '/invoice/add?invoiceNumber=' + referenceNumber + '&customerUuid=' + customer;
             return '<div class="text-center">' + sourceReceiver + '<br>' + '<a href="' + link + '" class="invoice-link" target="_blank"><span class="fw-medium">#' + referenceNumber + '</span></a></div>';
         } else {
             return '<div class="text-center">' + sourceReceiver + '<br>' + '#' + referenceNumber + '</div>';
@@ -202,7 +207,7 @@ function confirmDelete(deleteUrl) {
         }
     });
     return false; 
-  }
+}
 
 $(document).on('click', '.edit-transaction-btn', function() {
     var transactionId = $(this).data('transaction-id');

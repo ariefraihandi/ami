@@ -16,8 +16,7 @@ use Carbon\Carbon;
 
 
 class ReportController extends Controller
-{
-    
+{ 
 
     public function sendReport(Request $request)
     {
@@ -109,6 +108,50 @@ class ReportController extends Controller
         // Redirect pengguna ke wa.me dalam tab atau jendela baru
         return "<script>window.open('$waUrl', '_blank');window.location.href = '" . redirect()->back()->getTargetUrl() . "';</script>";
     }
+    
+    public function cariReport(Request $request)
+    {
+        // Validasi request
+        $request->validate([
+            'reportType' => 'required|in:daily,monthly,yearly',
+        ]);
+
+        // Inisialisasi variabel tanggal awal dan akhir
+        $startDate = null;
+        $endDate = null;
+        $redirectUrl = null;
+
+        // Tentukan rentang tanggal berdasarkan jenis laporan dan atur URL redirect
+        switch ($request->reportType) {
+            case 'daily':
+                $startDate = Carbon::today()->startOfDay();
+                $endDate = Carbon::today()->endOfDay();
+                $redirectUrl = route('laporan'); // Ganti 'laporan.index' dengan nama rute yang sesuai
+                break;        
+            case 'monthly':
+                $startDate = Carbon::now()->startOfMonth()->startOfDay();
+                $endDate = Carbon::now()->endOfMonth()->endOfDay();
+                $redirectUrl = route('laporan.bulanan'); // Ganti 'laporan.bulanan' dengan nama rute yang sesuai
+                break;
+            case 'yearly':
+                $startDate = Carbon::now()->startOfYear()->startOfDay();
+                $endDate = Carbon::now()->endOfYear()->endOfDay();
+                $redirectUrl = route('laporan.tahunan'); // Ganti 'laporan.tahunan' dengan nama rute yang sesuai
+                break;
+            default:
+                // Jika jenis laporan tidak valid, kembalikan respon error
+                return response()->json(['error' => 'Invalid report type.'], 400);
+        }
+
+        $response = [
+            'title' => 'Berhasil',
+            'success' => true,
+            'message' => 'Laporan Berhasil Dimuat.',
+        ];
+        
+        return redirect($redirectUrl)->with('response', $response);        
+    }
+
 
 
 }

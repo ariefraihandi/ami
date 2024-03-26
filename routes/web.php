@@ -69,14 +69,14 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('keuangan/test',                 [KeuanganController::class, 'showKeuanganIndex'])->name('keuangan.test');
         Route::get('keuangan',                      [KeuanganController::class, 'keuanganV2'])->name('keuangan');
-        Route::post('keuangan',             [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
-        Route::post('/edit-transaction',    [KeuanganController::class, 'editTransaction'])->name('editTransaction');
-        Route::get('/delete/trans',         [KeuanganController::class, 'delTrans'])->name('delTransaction');   
+        Route::post('keuangan',                     [KeuanganController::class, 'addNewTransaction'])->name('addNewTransaction');
+        Route::post('/edit-transaction',            [KeuanganController::class, 'editTransaction'])->name('editTransaction');
+        Route::get('/delete/trans',                 [KeuanganController::class, 'delTrans'])->name('delTransaction');   
         
-        Route::get('get-tagih',             [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
-        Route::get('keuangan/tagihan',      [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');
-        Route::post('/bayar-gaji',          [KeuanganController ::class, 'bayarGaji'])->name('bayarGaji');
-        Route::post('/edit-masa-kerja',     [KeuanganController::class, 'editMasaKerja'])->name('editMasaKerja');
+        Route::get('get-tagih',                     [KeuanganController::class, 'getAlltagihans'])->name('dataTagihan');
+        Route::get('keuangan/tagihan',              [KeuanganController::class, 'showTagihanIndex'])->name('keuangan.tagihan');
+        Route::post('/bayar-gaji',                  [KeuanganController ::class, 'bayarGaji'])->name('bayarGaji');
+        Route::post('/edit-masa-kerja',             [KeuanganController::class, 'editMasaKerja'])->name('editMasaKerja');
     // !!fix keuangan
 
     //Laporan
@@ -86,66 +86,67 @@ Route::middleware(['auth'])->group(function () {
     //!Laporan
 
     //Product fix route
-    Route::get('product',               [ProductController::class, 'index'])->name('product');
-    Route::post('/add-product',         [ProductController::class, 'create'])->name('addProduct');
-    Route::get('/get-product/{id}',     [ProductController::class, 'getProduct'])->name('get.product');
-    Route::get('/get-products',         [ProductController::class, 'getProducts'])->name('get.products');
-    Route::post('/updateproduct',       [ProductController::class, 'updateProduct'])->name('updateProduct');
+    Route::get('product',                           [ProductController::class, 'index'])->name('product');
+    Route::post('/add-product',                     [ProductController::class, 'create'])->name('addProduct');
+    Route::get('/get-product/{id}',                 [ProductController::class, 'getProduct'])->name('get.product');
+    Route::get('/get-products',                     [ProductController::class, 'getProducts'])->name('get.products');
+    Route::post('/updateproduct',                   [ProductController::class, 'updateProduct'])->name('updateProduct');
     // !! Product fix route
 
-    Route::get('/categories',           [ProductController::class, 'indexCategory'])->name('categories');
-    Route::post('/categories',          [ProductController::class, 'storeCategory'])->name('addCategory');
-    Route::post('/updateCategory',      [ProductController::class, 'updateCategory'])->name('updateCategory');
-    Route::get('/categories/del/{id}',  [ProductController::class, 'deleteCategory'])->name('deleteCategory');
+    Route::get('/categories',                       [ProductController::class, 'indexCategory'])->name('categories');
+    Route::post('/categories',                      [ProductController::class, 'storeCategory'])->name('addCategory');
+    Route::post('/updateCategory',                  [ProductController::class, 'updateCategory'])->name('updateCategory');
+    Route::get('/categories/del/{id}',              [ProductController::class, 'deleteCategory'])->name('deleteCategory');
 
     //menus
-    Route::get('/get-all-menus',        [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
-    Route::get('menu',                  [MenuController::class, 'showMenusIndex'])->name('menu');
-    Route::post('/add-menu',            [MenuController::class, 'addMenu'])->name('add.menu');
-    Route::get('/delete-menu',          [MenuController::class, 'deleteMenu'])->name('delete.menu');
-    Route::post('/change-access',       [MenuController::class, 'changeAccess'])->name('change.access');
+    Route::get('/get-all-menus',                    [MenuController::class, 'getAllMenus'])->name('getAll.Menus');
+    Route::get('menu',                              [MenuController::class, 'showMenusIndex'])->name('menu');
+    Route::post('/add-menu',                        [MenuController::class, 'addMenu'])->name('add.menu');
+    Route::get('/delete-menu',                      [MenuController::class, 'deleteMenu'])->name('delete.menu');
+    Route::post('/change-access',                   [MenuController::class, 'changeAccess'])->name('change.access');
 
     //submenus
-    Route::get('/get-all-submenus',         [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
-    Route::get('menu/submenu',              [MenuController::class, 'showSubmenusIndex'])->name('menu.submenu');
-    Route::post('/add-submenu',             [MenuController::class, 'addSubmenu'])->name('add.submenu');
-    Route::post('/edit-submenu',            [MenuController::class, 'editSubmenu'])->name('edit.submenu');
-    Route::get('/delete-submenu',           [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
+    Route::get('/get-all-submenus',                 [MenuController::class, 'getAllSubmenus'])->name('getAll.Submenus');
+    Route::get('menu/submenu',                      [MenuController::class, 'showSubmenusIndex'])->name('menu.submenu');
+    Route::post('/add-submenu',                     [MenuController::class, 'addSubmenu'])->name('add.submenu');
+    Route::post('/edit-submenu',                    [MenuController::class, 'editSubmenu'])->name('edit.submenu');
+    Route::get('/delete-submenu',                   [MenuController::class, 'deleteSubmenu'])->name('delete.submenu');
 
     //child Submenu
-    Route::get('/get-all-child',            [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
-    Route::get('menu/child',                [MenuController::class, 'showChildSubmenusIndex'])->name('menu.child');
-    Route::post('/add-childsubmenu',        [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
-    Route::get('/delete-childsubmenu',      [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
+    Route::get('/get-all-child',                    [MenuController::class, 'getAllChildSubmenus'])->name('getAll.childSubmenus');
+    Route::get('menu/child',                        [MenuController::class, 'showChildSubmenusIndex'])->name('menu.child');
+    Route::post('/add-childsubmenu',                [MenuController::class, 'addChildSubmenu'])->name('add.ChildSubmenu');
+    Route::get('/delete-childsubmenu',              [MenuController::class, 'deleteChildSubmenu'])->name('delete.childsubmenu');
 
     //menu role
-    Route::get('/get-all-role',             [MenuController::class, 'getAllRole'])->name('getAll.role');
-    Route::get('menu/role',                 [MenuController::class, 'showRoleIndex'])->name('menu.role');
-    Route::post('/add-role',                [MenuController::class, 'addRole'])->name('add.role');
-    Route::get('/delete-role',              [MenuController::class, 'deleteRole'])->name('delete.role');
+    Route::get('/get-all-role',                     [MenuController::class, 'getAllRole'])->name('getAll.role');
+    Route::get('menu/role',                         [MenuController::class, 'showRoleIndex'])->name('menu.role');
+    Route::post('/add-role',                        [MenuController::class, 'addRole'])->name('add.role');
+    Route::get('/delete-role',                      [MenuController::class, 'deleteRole'])->name('delete.role');
 
     //user
-    Route::get('/user/profile',             [UserController::class, 'index'])->name('user.profile');
-    Route::get('/user/gaji',                [UserController::class, 'showPayroll'])->name('user.gaji');
-    Route::get('/user/setting',             [UserController::class, 'showSetting'])->name('user.setting');
-    Route::get('/user/security',            [UserController::class, 'showSecurity'])->name('user.security');
-    Route::post('/upload-avatar',           [UserController::class, 'uploadAvatar'])->name('upload.avatar');
-    Route::post('/change-password',         [UserController::class, 'changePassword'])->name('change.password');
+    Route::get('/user/profile',                     [UserController::class, 'index'])->name('user.profile');
+    Route::get('/user/gaji',                        [UserController::class, 'showPayroll'])->name('user.gaji');
+    Route::get('/user/setting',                     [UserController::class, 'showSetting'])->name('user.setting');
+    Route::get('/user/security',                    [UserController::class, 'showSecurity'])->name('user.security');
+    Route::post('/upload-avatar',                   [UserController::class, 'uploadAvatar'])->name('upload.avatar');
+    Route::post('/change-password',                 [UserController::class, 'changePassword'])->name('change.password');
     //!!user
 
     //Send Report
-    Route::post('send-report',              [ReportController::class, 'sendReport'])->name('send.report');
+    Route::post('send-report',                      [ReportController::class, 'sendReport'])->name('send.report');
+    Route::post('cari-report',                      [ReportController::class, 'cariReport'])->name('cari.report');
     //!Send Report
 
     // users Administrator
-    Route::get('/get-all-user',             [UserController::class, 'getAllUser'])->name('getAll.User');
-    Route::get('/users',                    [UserController::class, 'showUserAdminIndex'])->name('users');
-    Route::post('users',                    [UserController::class, 'addUsers'])->name('add.users');
-    Route::get('/delete/user',              [UserController::class, 'deleteUser'])->name('delete.user');
-    Route::post('/update/user',             [UserController::class, 'update'])->name('update.user');
+    Route::get('/get-all-user',                     [UserController::class, 'getAllUser'])->name('getAll.User');
+    Route::get('/users',                            [UserController::class, 'showUserAdminIndex'])->name('users');
+    Route::post('users',                            [UserController::class, 'addUsers'])->name('add.users');
+    Route::get('/delete/user',                      [UserController::class, 'deleteUser'])->name('delete.user');
+    Route::post('/update/user',                     [UserController::class, 'update'])->name('update.user');
     //!! users Administrator
 
-    Route::get('/send-message',             [kirimWhatsapp::class, 'kirimPesan'])->name('kirim.Pesan');
+    Route::get('/send-message',                     [kirimWhatsapp::class, 'kirimPesan'])->name('kirim.Pesan');
 
-    Route::get('/users/access',             [UserController::class, 'showRoleList'])->name('users.access');
+    Route::get('/users/access',                     [UserController::class, 'showRoleList'])->name('users.access');
 });
