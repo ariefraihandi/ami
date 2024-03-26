@@ -541,7 +541,7 @@
         },
         {
           name: bulanLalu,
-          data: [incPastWeek1, incPastWeek2, incPastWeek3, incPastWeek4, ]
+          data: [-incPastWeek1, -incPastWeek2, -incPastWeek3, -incPastWeek4, ]
         }
       ],
       chart: {
@@ -558,7 +558,7 @@
           startingShape: 'rounded'
         }
       },
-      colors: [config.colors.primary, config.colors.info],
+      colors: [config.colors.success, config.colors.primary],
       dataLabels: {
         enabled: false
       },

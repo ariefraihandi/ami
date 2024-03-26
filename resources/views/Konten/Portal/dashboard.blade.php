@@ -212,8 +212,8 @@
                 </div>
               </div>
               @php
-                $bonMonthlyPercentage = ($totalBonMonthly == 0) ? 0 : ($totalBonMonthly / 50000000) * 100;                                
-              @endphp              
+                $bonMonthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($totalBonMonthly / $totalInvMouthly) * 100;
+              @endphp                          
               <span class="d-block">Unpaid Inv {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalBonMonthly, 0, ',', '.') }}</h6>
               <div id="bonMonthlyChart" class="mb-2"></div>          
@@ -228,7 +228,7 @@
       <div class="card h-100">
         <div class="card-header d-flex align-items-center justify-content-between">
           <div class="card-title mb-0">
-            <h5 class="m-0 me-2">Pendapatan {{$bulan}}</h5>
+            <h5 class="m-0 me-2">Total Pendapatan {{$bulan}}</h5>
             <small class="text-muted">Compared To Last Month</small>
           </div>
           <div class="dropdown">
@@ -374,7 +374,7 @@
               <span class="d-block">Margin {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($marginMonthly, 0, ',', '.') }}</h6>   
               @php
-                $marginPercentage = ($marginLastMonth == 0) ? 0 : (($marginMonthly - $marginLastMonth) / $marginLastMonth) * 100;
+                $marginPercentage = ($incomeThisMonth - $outcomeMountly) / $incomeThisMonth * 100;                
               @endphp
             <div id="marginChart" class="mb-2"></div>
             </div>
