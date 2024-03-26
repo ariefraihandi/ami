@@ -310,6 +310,7 @@ class DashboardController extends Controller
                 $incomeTwoMonth     = FinancialTransaction::getIncomeRangeAmount($startTwoMonth, $endTwoMonth);
                 $totalInvPaid       = Invoice::getInvPaid($startingMonth, $today);               
                 $totalInvMouthly    = Invoice::getInv($startingMonth, $today)->sum('total_amount');
+                $totalInvLastMouth  = Invoice::getInv($startPastMonth, $endPastMonth)->sum('total_amount');
                 $totalBonMonthly    = Invoice::getBon($startingMonth, $today);
                 $setorKasMonthly    = FinancialTransaction::getWeeklySetorKasAmount($startingMonth, $today);        
                 $setorKasLastMonth  = FinancialTransaction::getWeeklySetorKasAmount($startPastMonth, $endPastMonth);     
@@ -531,6 +532,7 @@ class DashboardController extends Controller
             'bulanLalu'         => $bulanLalu,
             'duaBulanLalu'      => $duaBulanLalu,
             'totalInvMouthly'   => $totalInvMouthly,
+            'totalInvLastMouth' => $totalInvLastMouth,
             'invoiceData'       => $invoiceData,
             'rataIncome'        => $averageIncomeTillNow,
             

@@ -130,6 +130,36 @@
 
     <div class="col-md-12 col-lg-4">
       <div class="row">
+        <div class="col-12 col-md-6 col-lg-12 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between gap-3">
+                <div class="d-flex align-items-start flex-column justify-content-between">
+                  <div class="card-title">
+                    <h5 class="mb-0">Income Inv {{$bulan}}</h5>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <div class="mt-auto">
+                      <h5 class="mb-0">{{ number_format($totalInvMouthly, 0, ',', '.') }}</h5>
+                      @php
+                      if ($totalInvLastMouth != 0) {
+                          $percentChange = ($totalInvMouthly - $totalInvLastMouth) / $totalInvLastMouth * 100;
+                      } else {
+                          $percentChange = 0;
+                      }
+                      $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
+                      $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
+                      @endphp
+                      <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
+                    </div>
+                  </div>
+                  <span class="badge bg-label-secondary rounded-pill">{{$bulan}}</span>
+                </div>
+                <div id="pendapatanBarChart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="col-lg-6 col-md-3 col-6 mb-4">
           <div class="card">
             <div class="card-body">
@@ -147,7 +177,7 @@
                   </div>
                 </div>
               </div>
-              <span class="d-block">Income {{$bulan}}</span>
+              <span class="d-block">Paid Inv {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalInvPaid, 0, ',', '.') }}</h6>                            
                 @php
                   $incomeMounthlyPercentage = ($totalInvMouthly == 0) ? 0 : ($totalInvPaid / $totalInvMouthly) * 100;
@@ -184,44 +214,13 @@
               @php
                 $bonMonthlyPercentage = ($totalBonMonthly == 0) ? 0 : ($totalBonMonthly / 50000000) * 100;                                
               @endphp              
-              <span class="d-block">Bon Inv {{$bulan}}</span>
+              <span class="d-block">Unpaid Inv {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($totalBonMonthly, 0, ',', '.') }}</h6>
               <div id="bonMonthlyChart" class="mb-2"></div>          
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-6 col-lg-12 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div class="d-flex justify-content-between gap-3">
-                <div class="d-flex align-items-start flex-column justify-content-between">
-                  <div class="card-title">
-                    <h5 class="mb-0">Pendapatan Mingguan</h5>
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <div class="mt-auto">
-                      <h5 class="mb-0">{{ number_format($incomeWeekly, 0, ',', '.') }}</h5>
-                      @php
-                      if ($incomeLastWeek != 0) {
-                          $percentChange = ($incomeWeekly - $incomeLastWeek) / $incomeLastWeek * 100;
-                      } else {
-                          $percentChange = 0; // Atau nilai default yang Anda tentukan
-                  }
-                  
-                  $arrowIcon = $percentChange >= 0 ? 'bx bx-up-arrow-alt' : 'bx bx-down-arrow-alt';
-                  $textColorClass = $percentChange >= 0 ? 'text-success' : 'text-danger';
-                  @endphp
-                  
-                  <small class="{{ $textColorClass }} text-nowrap fw-medium"><i class="{{ $arrowIcon }}"></i> {{ number_format($percentChange, 2) }}%</small>
-                    </div>
-                  </div>
-                  <span class="badge bg-label-secondary rounded-pill">{{$bulan}}</span>
-                </div>
-                <div id="pendapatanBarChart"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
     </div>    
      <!-- Conversion rate -->
