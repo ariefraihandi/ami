@@ -435,7 +435,7 @@
       type: 'radialBar'
     },
     colors: [config.colors.primary],
-    series: [pengeluaran],
+    series: [sisaSaldoPercen],
     plotOptions: {
       radialBar: {
         startAngle: -90,

@@ -452,10 +452,10 @@ class DashboardController extends Controller
         //!Geting Saldo Sisa This Month
         
         //Geting Saldo Sisa This Month
-          $incomeForSisaPast  = FinancialTransaction::getIncomeRangeAmount($starting, $today);
-          $outcomeForSisaPast = FinancialTransaction::getRangeOutTransonAmount($starting, $today);
-          $topupForSisaPast   = FinancialTransaction::getWeeklyTopUpAmount($starting, $today);
-          $setorKasForPast    = FinancialTransaction::getWeeklySetorKasAmount($starting, $today);
+          $incomeForSisaPast  = FinancialTransaction::getIncomeRangeAmount($starting, $endPastMonth);
+          $outcomeForSisaPast = FinancialTransaction::getRangeOutTransonAmount($starting, $endPastMonth);
+          $topupForSisaPast   = FinancialTransaction::getWeeklyTopUpAmount($starting, $endPastMonth);
+          $setorKasForPast    = FinancialTransaction::getWeeklySetorKasAmount($starting, $endPastMonth);
           $sisaSaldoPast      = $incomeForSisaPast+$topupForSisaPast-$outcomeForSisaPast-$setorKasForPast;          
         //!Geting Saldo Sisa This Month
        

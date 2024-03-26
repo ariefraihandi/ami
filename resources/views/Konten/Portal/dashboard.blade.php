@@ -407,10 +407,9 @@
               </div>
               <span class="d-block">Sisa Kas {{$bulan}}</span>
               <h6 class="card-title mb-1">Rp. {{ number_format($sisaSaldo, 0, ',', '.') }}</h6>   
-            
-              @php
-                $lastMountOutPercentage = ($sisaSaldoPast == 0) ? 0 : (($sisaSaldo - $sisaSaldoPast) / $sisaSaldoPast) * 100;
-              @endphp
+                @php
+                  $sisaSaldoPercentage = ($sisaSaldoPast == 0) ? 0 : (($sisaSaldo - $sisaSaldoPast) / $sisaSaldoPast) * 100;
+                @endphp
               <div id="outcomeChart" class="mb-2"></div>
             </div>
           </div>
@@ -944,10 +943,10 @@
   var incomeLastMonth = {{ number_format($incomeLastMonth, 0, '.', '') }};
   var incomweToMonth  = {{ number_format($incomweToMonth, 0, '.', '') }};
 
+  var sisaSaldoPercen     = {{ number_format($sisaSaldoPercentage, 0, '.', '') }};
   var incomeMonthly     = {{ number_format($incomeMounthlyPercentage, 0, '.', '') }};
   var bonMonthly        = {{ number_format($bonMonthlyPercentage, 0, '.', '') }};
   var setorkasMonthly   = {{ number_format($setorkasPercentage, 0, '.', '') }};
-  var pengeluaran       = {{ number_format($lastMountOutPercentage, 0, '.', '') }};
   var margin            = {{ number_format($marginPercentage, 0, '.', '') }};
   
   
